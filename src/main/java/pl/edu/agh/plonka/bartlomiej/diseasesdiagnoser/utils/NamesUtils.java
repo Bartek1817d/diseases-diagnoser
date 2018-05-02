@@ -1,10 +1,15 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 public class NamesUtils {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
+
     public static String generateID(String... keywords) {
         StringBuilder str = new StringBuilder();
         for (String keyword : keywords) {

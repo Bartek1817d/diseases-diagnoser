@@ -7,11 +7,15 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class Dialogs {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     public static void errorDialog(Stage ownerStage, String title, String header, String content) {
         Alert alert = new Alert(AlertType.ERROR);

@@ -1,10 +1,15 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
 public class NominalSelector<T> extends HashSet<T> implements Selector<T> {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private static final long serialVersionUID = 640758287916192919L;
 

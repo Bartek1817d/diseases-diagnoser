@@ -1,6 +1,11 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class AbstractAtom {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     protected String prefix = "base";
     protected String predicate;

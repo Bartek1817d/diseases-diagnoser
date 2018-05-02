@@ -1,8 +1,12 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 
 public class ClassDeclarationAtom<T> extends OneArgumentAtom<T> {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private Entity classEntity;
 

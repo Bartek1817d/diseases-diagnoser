@@ -2,8 +2,12 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LinearSelector<T extends Comparable<?>> implements Selector<T> {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private Range<T> range = Range.all();
 

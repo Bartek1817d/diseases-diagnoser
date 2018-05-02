@@ -1,5 +1,7 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
@@ -7,6 +9,9 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import java.util.*;
 
 public class Complex implements Comparable<Complex> {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
+
     private NominalSelector<Entity> previousDiseasesSelector;
     private NominalSelector<Entity> symptomSelector;
     private LinearSelector<Integer> ageSelector;

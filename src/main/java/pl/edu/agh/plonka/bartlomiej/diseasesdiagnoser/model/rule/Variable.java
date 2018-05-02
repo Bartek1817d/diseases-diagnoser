@@ -1,8 +1,13 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 
 public class Variable {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
+
     private String name;
     private Entity parentClass;
 

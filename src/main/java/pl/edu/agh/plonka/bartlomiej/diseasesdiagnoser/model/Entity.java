@@ -5,11 +5,15 @@ import javafx.beans.property.SimpleSetProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class Entity {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     final StringProperty id = new SimpleStringProperty();
     final StringProperty label = new SimpleStringProperty();

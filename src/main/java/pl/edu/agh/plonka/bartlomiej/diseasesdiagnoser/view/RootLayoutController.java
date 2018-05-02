@@ -5,6 +5,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 
 import java.io.File;
@@ -17,6 +19,8 @@ import java.io.File;
  * @author Bartłomiej Płonka
  */
 public class RootLayoutController {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     // Reference to the main application
     private Main main;

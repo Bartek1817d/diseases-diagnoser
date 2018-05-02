@@ -1,5 +1,7 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 
@@ -7,6 +9,8 @@ import java.util.Collection;
 import java.util.Comparator;
 
 public class ComplexComparator implements Comparator<Complex> {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private Entity learnedConcept;
     private Collection<Patient> trainingSet;

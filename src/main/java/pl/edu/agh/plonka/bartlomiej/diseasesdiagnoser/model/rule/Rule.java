@@ -1,11 +1,16 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
 
 public class Rule {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
+
     private String name;
     private Collection<AbstractAtom> bodyAtoms = new HashSet<AbstractAtom>();
     private Collection<AbstractAtom> headAtoms = new HashSet<AbstractAtom>();

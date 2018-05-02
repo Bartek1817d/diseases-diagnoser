@@ -4,11 +4,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NamesUtils;
 
 public class EntityEditDialogController {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
+
     private Main main;
     private Stage dialogStage;
     private Entity entity;

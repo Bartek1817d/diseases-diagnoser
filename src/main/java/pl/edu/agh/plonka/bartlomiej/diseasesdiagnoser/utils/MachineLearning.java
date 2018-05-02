@@ -2,6 +2,8 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils;
 
 import com.google.common.collect.Sets;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
@@ -11,6 +13,8 @@ import java.io.File;
 import java.util.*;
 
 public class MachineLearning {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private OntologyWrapper ontology;
     private Random random = new Random();

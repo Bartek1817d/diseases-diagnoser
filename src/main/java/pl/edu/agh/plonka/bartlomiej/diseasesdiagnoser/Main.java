@@ -69,10 +69,10 @@ public class Main extends Application {
      * Initializes the root layout.
      */
     private void initRootLayout() throws IOException {
+        LOG.info("Loading root layout from FXML file");
         FXMLLoader loader = new FXMLLoader();
         URL resource = getClass().getClassLoader().getResource("fxml/RootLayout.fxml");
         loader.setLocation(resource);
-        LOG.debug("Loading root layout from FXML file");
         rootLayout = loader.load();
 
         // Show the scene containing the root layout.
@@ -98,7 +98,7 @@ public class Main extends Application {
                 loadOntologyFromFile(ontologyFile);
                 setDefaultOntologyFile(ontologyFile);
             } catch (OWLOntologyCreationException e) {
-                LOG.error("Failed to load ontology " + ontologyFile + ". Creating empty ontology.");
+                LOG.warn("Failed to load ontology " + ontologyFile + ". Creating empty ontology.");
                 removeDefaultOntologyFile();
                 createNewOntology();
             }
@@ -108,22 +108,18 @@ public class Main extends Application {
     /**
      * Shows the patient overview inside the root layout.
      */
-    public void showPatientOverview() {
-        try {
-            // Load patient overview.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientOverview.fxml"));
-            AnchorPane patientOverview = loader.load();
+    public void showPatientOverview() throws IOException {
+        LOG.info("Loading patient overview layout from FXML file");
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientOverview.fxml"));
+        AnchorPane patientOverview = loader.load();
 
-            // Set patient overview into the center of root layout.
-            rootLayout.setCenter(patientOverview);
+        // Set patient overview into the center of root layout.
+        rootLayout.setCenter(patientOverview);
 
-            // Give the controller access to the main app.
-            PatientOverviewController controller = loader.getController();
-            controller.setMainApp(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Give the controller access to the main app.
+        PatientOverviewController controller = loader.getController();
+        controller.setMainApp(this);
     }
 
     /**

@@ -6,6 +6,8 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
@@ -13,6 +15,8 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
 import java.util.*;
 
 public class EntitiesEditDialogController {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     @FXML
     private TreeView<Entity> entitiesTree;

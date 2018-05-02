@@ -2,6 +2,8 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model;
 
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +14,8 @@ import java.util.Set;
  * @author Bartłomiej Płonka
  */
 public class Patient extends Entity implements Comparable<Patient> {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private final StringProperty firstName = new SimpleStringProperty();
     private final StringProperty lastName = new SimpleStringProperty();

@@ -12,6 +12,8 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.SimpleConfiguration;
 import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.OWLEntityRemover;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.swrlapi.core.SWRLAPIOWLOntology;
 import org.swrlapi.core.SWRLAPIRule;
 import org.swrlapi.core.SWRLRuleEngine;
@@ -28,6 +30,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OntologyWrapper {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private final OWLObjectRenderer renderer = new DLSyntaxObjectRenderer();
     private final Map<String, Entity> classes = new HashMap<String, Entity>();

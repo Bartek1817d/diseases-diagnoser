@@ -1,5 +1,7 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 
 import java.util.ArrayList;
@@ -8,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class Star extends ArrayList<Complex> {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     public Star() {
         add(new Complex());
