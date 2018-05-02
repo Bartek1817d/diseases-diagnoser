@@ -50,6 +50,11 @@ public class RootLayoutController {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("OWL files (*.owl)", "*.owl");
         fileChooser.getExtensionFilters().add(extFilter);
 
+        File lastOntology = main.getDefaultOntologyFile();
+        if (lastOntology != null && lastOntology.exists()) {
+            fileChooser.setInitialDirectory(lastOntology.getParentFile());
+        }
+
         // Show open file dialog
         File file = fileChooser.showOpenDialog(main.getPrimaryStage());
 
@@ -59,7 +64,7 @@ public class RootLayoutController {
                 main.setDefaultOntologyFile(file);
             } catch (OWLOntologyCreationException e) {
                 Dialogs.errorExceptionDialog(main.getPrimaryStage(), "Error creating ontology", null,
-                    "Cannot create ontology from file: " + file.getName(), e);
+                        "Cannot create ontology from file: " + file.getName(), e);
                 main.createNewOntology();
             }
         }
@@ -89,6 +94,11 @@ public class RootLayoutController {
         // Set extension filter
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("OWL files (*.owl)", "*.owl");
         fileChooser.getExtensionFilters().add(extFilter);
+
+        File lastOntology = main.getDefaultOntologyFile();
+        if (lastOntology != null && lastOntology.exists()) {
+            fileChooser.setInitialDirectory(lastOntology.getParentFile());
+        }
 
         // Show save file dialog
         File file = fileChooser.showSaveDialog(main.getPrimaryStage());
