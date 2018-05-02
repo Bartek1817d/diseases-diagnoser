@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 
 import java.io.File;
@@ -42,7 +43,7 @@ public class RootLayoutController {
      * Opens a FileChooser to let the user select an diseases knowledge base to load.
      */
     @FXML
-    private void handleOpen() {
+    private void handleOpen() throws OWLOntologyCreationException {
         FileChooser fileChooser = new FileChooser();
 
         // Set extension filter
@@ -53,7 +54,14 @@ public class RootLayoutController {
         File file = fileChooser.showOpenDialog(main.getPrimaryStage());
 
         if (file != null) {
-            main.loadOntologyFromFile(file);
+            try {
+                main.loadOntologyFromFile(file);
+                main.setDefaultOntologyFile(file);
+            } catch (OWLOntologyCreationException e) {
+                Dialogs.errorExceptionDialog(main.getPrimaryStage(), "Error creating ontology", null,
+                    "Cannot create ontology from file: " + file.getName(), e);
+                main.createNewOntology();
+            }
         }
     }
 

@@ -52,9 +52,9 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException, OWLOntologyCreationException {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Diseases Diagnoser");
+//        this.primaryStage.setTitle("Diseases Diagnoser");
 
         initRootLayout();
 
@@ -64,32 +64,35 @@ public class Main extends Application {
     /**
      * Initializes the root layout.
      */
-    public void initRootLayout() {
-        try {
-            // Load root layout from fxml file.
-            FXMLLoader loader = new FXMLLoader();
-            URL resource = getClass().getClassLoader().getResource("fxml/RootLayout.fxml");
-            loader.setLocation(resource);
-            rootLayout = (BorderPane) loader.load();
+    public void initRootLayout() throws IOException, OWLOntologyCreationException {
+        // Load root layout from fxml file.
+        FXMLLoader loader = new FXMLLoader();
+        URL resource = getClass().getClassLoader().getResource("fxml/RootLayout.fxml");
+        loader.setLocation(resource);
+        rootLayout = loader.load();
 
-            // Show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout);
-            primaryStage.setScene(scene);
+        // Show the scene containing the root layout.
+        Scene scene = new Scene(rootLayout);
+        primaryStage.setScene(scene);
 
-            // Give the controller access to the main app.
-            RootLayoutController controller = loader.getController();
-            controller.setMain(this);
+        // Give the controller access to the main app.
+        RootLayoutController controller = loader.getController();
+        controller.setMain(this);
 
-            primaryStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        primaryStage.show();
 
         File ontologyFile = getDefaultOntologyFile();
-        if (ontologyFile == null || !ontologyFile.exists())
+        if (ontologyFile == null || !ontologyFile.exists()) {
             createNewOntology();
-        else
-            loadOntologyFromFile(ontologyFile);
+        } else {
+            try {
+                loadOntologyFromFile(ontologyFile);
+                setDefaultOntologyFile(ontologyFile);
+            } catch (OWLOntologyCreationException e) {
+                removeDefaultOntologyFile();
+                createNewOntology();
+            }
+        }
     }
 
     /**
@@ -100,7 +103,7 @@ public class Main extends Application {
             // Load patient overview.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientOverview.fxml"));
-            AnchorPane patientOverview = (AnchorPane) loader.load();
+            AnchorPane patientOverview = loader.load();
 
             // Set patient overview into the center of root layout.
             rootLayout.setCenter(patientOverview);
@@ -126,7 +129,7 @@ public class Main extends Application {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientEditDialog.fxml"));
-            AnchorPane page = (AnchorPane) loader.load();
+            AnchorPane page = loader.load();
 
             // Create the dialog Stage.
             Stage dialogStage = new Stage();
@@ -157,7 +160,7 @@ public class Main extends Application {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getClassLoader().getResource("fxml/EntitiesEditDialog.fxml"));
-            AnchorPane page = (AnchorPane) loader.load();
+            AnchorPane page = loader.load();
 
             // Create the dialog Stage.
             Stage dialogStage = new Stage();
@@ -188,7 +191,7 @@ public class Main extends Application {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getClassLoader().getResource("fxml/EntityEditDialog.fxml"));
-            AnchorPane page = (AnchorPane) loader.load();
+            AnchorPane page = loader.load();
 
             // Create the dialog Stage.
             Stage dialogStage = new Stage();
@@ -240,15 +243,12 @@ public class Main extends Application {
         Preferences prefs = Preferences.userNodeForPackage(Main.class);
         if (file != null) {
             prefs.put("ontologyFile", file.getPath());
-
-            // Update the stage title.
-            primaryStage.setTitle("Diseases Diagnoser - " + file.getName());
-        } else {
-            prefs.remove("ontologyFile");
-
-            // Update the stage title.
-            primaryStage.setTitle("Diseases Diagnoser");
         }
+    }
+
+    public void removeDefaultOntologyFile() {
+        Preferences prefs = Preferences.userNodeForPackage(Main.class);
+        prefs.remove("ontologyFile");
     }
 
     /**
@@ -260,16 +260,11 @@ public class Main extends Application {
         return primaryStage;
     }
 
-    public void loadOntologyFromFile(File file) {
-        try {
-            ontology = new OntologyWrapper(file);
-            patientData.clear();
-            patientData.addAll(ontology.getPatients());
-            setDefaultOntologyFile(file);
-        } catch (OWLOntologyCreationException exception) {
-            Dialogs.errorExceptionDialog(primaryStage, "Error creating ontology", null,
-                    "Cannot create ontology from file: " + file.getName(), exception);
-        }
+    public void loadOntologyFromFile(File file) throws OWLOntologyCreationException {
+        ontology = new OntologyWrapper(file);
+        patientData.clear();
+        patientData.addAll(ontology.getPatients());
+        primaryStage.setTitle("Diseases Diagnoser - " + file.getName());
     }
 
     public void saveOntologyToFile(File file) {
@@ -278,17 +273,14 @@ public class Main extends Application {
             setDefaultOntologyFile(file);
         } catch (OWLOntologyStorageException exception) {
             Dialogs.errorExceptionDialog(primaryStage, "Error saving ontology", null,
-                    "Cannot save onytology to file: " + file.getName(), exception);
+                    "Cannot save ontology to file: " + file.getName(), exception);
         }
     }
 
-    public void createNewOntology() {
-        try {
-            ontology = new OntologyWrapper(BASE_URL);
-        } catch (OWLOntologyCreationException exception) {
-            Dialogs.errorExceptionDialog(primaryStage, "Error creating ontology", null,
-                    "Cannot create default ontology", exception);
-        }
+    public void createNewOntology() throws OWLOntologyCreationException {
+        ontology = new OntologyWrapper(BASE_URL);
+        patientData.clear();
+        primaryStage.setTitle("Diseases Diagnoser");
     }
 
     public OntologyWrapper getOntology() {
