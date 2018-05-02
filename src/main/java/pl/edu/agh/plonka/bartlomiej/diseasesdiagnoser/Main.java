@@ -11,6 +11,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
@@ -23,6 +25,8 @@ import java.util.Collection;
 import java.util.prefs.Preferences;
 
 public class Main extends Application {
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private Stage primaryStage;
     private BorderPane rootLayout;
@@ -53,22 +57,22 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException, OWLOntologyCreationException {
+        LOG.info("Starting application");
         this.primaryStage = primaryStage;
-//        this.primaryStage.setTitle("Diseases Diagnoser");
 
         initRootLayout();
-
+        initOntology();
         showPatientOverview();
     }
 
     /**
      * Initializes the root layout.
      */
-    public void initRootLayout() throws IOException, OWLOntologyCreationException {
-        // Load root layout from fxml file.
+    private void initRootLayout() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         URL resource = getClass().getClassLoader().getResource("fxml/RootLayout.fxml");
         loader.setLocation(resource);
+        LOG.debug("Loading root layout from FXML file");
         rootLayout = loader.load();
 
         // Show the scene containing the root layout.
@@ -80,15 +84,21 @@ public class Main extends Application {
         controller.setMain(this);
 
         primaryStage.show();
+    }
 
+    private void initOntology() throws OWLOntologyCreationException {
+        LOG.info("Ontology initialization.");
         File ontologyFile = getDefaultOntologyFile();
         if (ontologyFile == null || !ontologyFile.exists()) {
+            LOG.debug("Default ontology not found. Initialize empty ontology.");
             createNewOntology();
         } else {
             try {
+                LOG.debug("Found default ontology: " + ontologyFile + ". Loading from resource.");
                 loadOntologyFromFile(ontologyFile);
                 setDefaultOntologyFile(ontologyFile);
             } catch (OWLOntologyCreationException e) {
+                LOG.error("Failed to load ontology " + ontologyFile + ". Creating empty ontology.");
                 removeDefaultOntologyFile();
                 createNewOntology();
             }
