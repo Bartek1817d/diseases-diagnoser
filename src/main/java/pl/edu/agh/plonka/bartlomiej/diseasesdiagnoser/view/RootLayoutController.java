@@ -5,6 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
@@ -40,8 +41,6 @@ public class RootLayoutController {
     @FXML
     private void handleNew() throws OWLOntologyCreationException {
         LOG.info("Create new ontology.");
-        main.getPatientData().clear();
-        main.removeDefaultOntologyFile();
         main.createNewOntology();
     }
 
@@ -50,17 +49,16 @@ public class RootLayoutController {
      */
     @FXML
     private void handleOpen() throws OWLOntologyCreationException {
-        LOG.info("Open existing ontology.");
+        LOG.info("Handle opening ontology.");
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("OWL files (*.owl)", "*.owl");
         fileChooser.getExtensionFilters().add(extFilter);
 
-
-        LOG.debug("Fetching last opened ontology file directory.");
-        File lastOntology = main.getDefaultOntologyFile();
-        if (lastOntology != null && lastOntology.exists()) {
-            LOG.debug("Found last opened ontology at " + lastOntology.getParent());
-            fileChooser.setInitialDirectory(lastOntology.getParentFile());
+        LOG.debug("Fetching default directory.");
+        File defaultDirectory = main.getDefaultDirectoryFile();
+        if (defaultDirectory != null) {
+            LOG.debug("Found default directory: " + defaultDirectory.getPath());
+            fileChooser.setInitialDirectory(defaultDirectory);
         }
 
         File file = fileChooser.showOpenDialog(main.getPrimaryStage());
@@ -68,8 +66,8 @@ public class RootLayoutController {
         if (file != null) {
             try {
                 main.loadOntologyFromFile(file);
-                main.setDefaultOntologyFile(file);
             } catch (OWLOntologyCreationException e) {
+                LOG.error("Failed to load ontology from " + file.getPath() + ". Creating empty ontology.");
                 Dialogs.errorExceptionDialog(main.getPrimaryStage(), "Error creating ontology", null,
                         "Cannot create ontology from file: " + file.getName(), e);
                 main.createNewOntology();
@@ -83,9 +81,16 @@ public class RootLayoutController {
      */
     @FXML
     private void handleSave() {
-        File personFile = main.getDefaultOntologyFile();
-        if (personFile != null) {
-            main.saveOntologyToFile(personFile);
+        LOG.info("Handle saving ontology.");
+        File file = main.getDefaultOntologyFile();
+        if (file != null) {
+            try {
+                main.saveOntologyToFile(file);
+            } catch (OWLOntologyStorageException e) {
+                LOG.error("Failed to save ontology to file " + file.getPath());
+                Dialogs.errorExceptionDialog(main.getPrimaryStage(), "Error saving ontology", null,
+                        "Cannot save ontology to file: " + file.getName(), e);
+            }
         } else {
             handleSaveAs();
         }
@@ -96,15 +101,18 @@ public class RootLayoutController {
      */
     @FXML
     private void handleSaveAs() {
+        LOG.info("Handle saving as ontology.");
         FileChooser fileChooser = new FileChooser();
 
         // Set extension filter
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("OWL files (*.owl)", "*.owl");
         fileChooser.getExtensionFilters().add(extFilter);
 
-        File lastOntology = main.getDefaultOntologyFile();
-        if (lastOntology != null && lastOntology.exists()) {
-            fileChooser.setInitialDirectory(lastOntology.getParentFile());
+        LOG.debug("Fetching default directory.");
+        File defaultDirectory = main.getDefaultDirectoryFile();
+        if (defaultDirectory != null) {
+            LOG.debug("Found default directory: " + defaultDirectory.getPath());
+            fileChooser.setInitialDirectory(defaultDirectory);
         }
 
         // Show save file dialog
@@ -115,7 +123,12 @@ public class RootLayoutController {
             if (!file.getPath().endsWith(".owl")) {
                 file = new File(file.getPath() + ".owl");
             }
-            main.saveOntologyToFile(file);
+            try {
+                main.saveOntologyToFile(file);
+            } catch (OWLOntologyStorageException e) {
+                Dialogs.errorExceptionDialog(main.getPrimaryStage(), "Error saving ontology", null,
+                        "Cannot save ontology to file: " + file.getName(), e);
+            }
         }
     }
 
@@ -124,6 +137,7 @@ public class RootLayoutController {
      */
     @FXML
     private void handleAbout() {
+        LOG.info("Open an about dialog.");
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Diseases Dagnoser");
         alert.setHeaderText("About");
@@ -137,6 +151,7 @@ public class RootLayoutController {
      */
     @FXML
     private void handleExit() {
+        LOG.info("Close application.");
         System.exit(0);
     }
 }

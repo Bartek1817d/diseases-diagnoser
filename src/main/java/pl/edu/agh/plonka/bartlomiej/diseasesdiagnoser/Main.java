@@ -28,6 +28,7 @@ public class Main extends Application {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
+    private Preferences preferences = Preferences.userNodeForPackage(Main.class);
     private Stage primaryStage;
     private BorderPane rootLayout;
     private static final String BASE_URL = "http://www.agh.edu.pl/plonka/bartlomiej/ontologies/human_diseases.owl";
@@ -221,10 +222,10 @@ public class Main extends Application {
      * @return
      */
     public File getDefaultOntologyFile() {
-        Preferences prefs = Preferences.userNodeForPackage(Main.class);
-        String filePath = prefs.get("ontologyFile", null);
-        if (filePath != null) {
-            return new File(filePath);
+        String ontologyPath = preferences.get("ontologyFile", null);
+        if (ontologyPath != null) {
+            File ontologyFile = new File(ontologyPath);
+            return ontologyFile.exists() && ontologyFile.isFile() ? ontologyFile : null;
         } else {
             return null;
         }
@@ -237,15 +238,33 @@ public class Main extends Application {
      * @param file the file or null to remove the path
      */
     public void setDefaultOntologyFile(File file) {
-        Preferences prefs = Preferences.userNodeForPackage(Main.class);
-        if (file != null) {
-            prefs.put("ontologyFile", file.getPath());
+        if (file != null && file.exists() && file.isFile()) {
+            preferences.put("ontologyFile", file.getPath());
         }
     }
 
     public void removeDefaultOntologyFile() {
-        Preferences prefs = Preferences.userNodeForPackage(Main.class);
-        prefs.remove("ontologyFile");
+        preferences.remove("ontologyFile");
+    }
+
+    public File getDefaultDirectoryFile() {
+        String directoryPath = preferences.get("defaultDirectory", null);
+        if (directoryPath != null) {
+            File directoryFile = new File(directoryPath);
+            return directoryFile.exists() && directoryFile.isDirectory() ? directoryFile : null;
+        } else {
+            return null;
+        }
+    }
+
+    public void setDefaultDirectoryFile(File file) {
+        if (file != null && file.exists() && file.isDirectory()) {
+            preferences.put("defaultDirectory", file.getPath());
+        }
+    }
+
+    public void removeDefaultDirectoryFile() {
+        preferences.remove("defaultDirectory");
     }
 
     /**
@@ -261,17 +280,15 @@ public class Main extends Application {
         ontology = new OntologyWrapper(file);
         patientData.clear();
         patientData.addAll(ontology.getPatients());
+        setDefaultOntologyFile(file);
+        setDefaultDirectoryFile(file.getParentFile());
         primaryStage.setTitle("Diseases Diagnoser - " + file.getName());
     }
 
-    public void saveOntologyToFile(File file) {
-        try {
-            ontology.saveOntologyToFile(file);
-            setDefaultOntologyFile(file);
-        } catch (OWLOntologyStorageException exception) {
-            Dialogs.errorExceptionDialog(primaryStage, "Error saving ontology", null,
-                    "Cannot save ontology to file: " + file.getName(), exception);
-        }
+    public void saveOntologyToFile(File file) throws OWLOntologyStorageException {
+        ontology.saveOntologyToFile(file);
+        setDefaultOntologyFile(file);
+        setDefaultDirectoryFile(file.getParentFile());
     }
 
     public void createNewOntology() throws OWLOntologyCreationException {
