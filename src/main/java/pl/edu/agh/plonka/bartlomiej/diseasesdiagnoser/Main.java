@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.*;
 
 import java.io.File;
@@ -38,6 +39,7 @@ public class Main extends Application {
      * The data as an observable set of Patients.
      */
     private ObservableList<Patient> patientData = FXCollections.observableArrayList();
+    private PatientsService patientsService;
 
     /**
      * Constructor
@@ -62,8 +64,9 @@ public class Main extends Application {
 
         this.primaryStage = primaryStage;
 
+        OntologyWrapper ontology = createOntology();
+        patientsService = new PatientsService(ontology);
         initRootLayout();
-        initOntology();
         showPatientOverview();
     }
 
@@ -86,21 +89,21 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private void initOntology() throws OWLOntologyCreationException {
+    private OntologyWrapper createOntology() throws OWLOntologyCreationException {
         LOG.info("Ontology initialization.");
         File ontologyFile = getDefaultOntologyFile();
         if (ontologyFile == null || !ontologyFile.exists()) {
             LOG.debug("Default ontology not found. Initialize empty ontology.");
-            createNewOntology();
+            return createNewOntology();
         } else {
             try {
                 LOG.debug("Found default ontology: " + ontologyFile + ". Loading from resource.");
-                loadOntologyFromFile(ontologyFile);
                 setDefaultOntologyFile(ontologyFile);
+                return loadOntologyFromFile(ontologyFile);
             } catch (OWLOntologyCreationException e) {
                 LOG.warn("Failed to load ontology " + ontologyFile + ". Creating empty ontology.");
                 removeDefaultOntologyFile();
-                createNewOntology();
+                return createNewOntology();
             }
         }
     }
@@ -117,7 +120,7 @@ public class Main extends Application {
         rootLayout.setCenter(patientOverview);
 
         PatientOverviewController controller = loader.getController();
-        controller.setMainApp(this);
+        controller.setMainApp(this, patientsService);
     }
 
     /**
@@ -276,13 +279,14 @@ public class Main extends Application {
         return primaryStage;
     }
 
-    public void loadOntologyFromFile(File file) throws OWLOntologyCreationException {
+    public OntologyWrapper loadOntologyFromFile(File file) throws OWLOntologyCreationException {
         ontology = new OntologyWrapper(file);
         patientData.clear();
         patientData.addAll(ontology.getPatients());
         setDefaultOntologyFile(file);
         setDefaultDirectoryFile(file.getParentFile());
         primaryStage.setTitle("Diseases Diagnoser - " + file.getName());
+        return ontology;
     }
 
     public void saveOntologyToFile(File file) throws OWLOntologyStorageException {
@@ -291,10 +295,11 @@ public class Main extends Application {
         setDefaultDirectoryFile(file.getParentFile());
     }
 
-    public void createNewOntology() throws OWLOntologyCreationException {
+    public OntologyWrapper createNewOntology() throws OWLOntologyCreationException {
         ontology = new OntologyWrapper(BASE_URL);
         patientData.clear();
         primaryStage.setTitle("Diseases Diagnoser");
+        return ontology;
     }
 
     public OntologyWrapper getOntology() {

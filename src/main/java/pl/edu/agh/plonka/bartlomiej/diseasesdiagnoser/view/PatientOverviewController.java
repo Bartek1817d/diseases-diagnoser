@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -19,6 +20,8 @@ import java.util.Set;
 public class PatientOverviewController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
+
+    private PatientsService patientsService;
 
     @FXML
     private TableView<Patient> patientTable;
@@ -193,11 +196,12 @@ public class PatientOverviewController {
      *
      * @param main
      */
-    public void setMainApp(Main main) {
+    public void setMainApp(Main main, PatientsService patientsService) {
         this.main = main;
+        this.patientsService = patientsService;
 
         // Add observable list data to the table
-        patientTable.setItems(main.getPatientData());
+        patientTable.setItems(patientsService.getPatients());
     }
 
     /**
@@ -273,15 +277,10 @@ public class PatientOverviewController {
      */
     @FXML
     private void handleDeletePatient() {
-        // int selectedIndex =
-        // patientTable.getSelectionModel().getSelectedIndex();
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            // patientTable.getItems().remove(selectedIndex);
-            patientTable.getItems().remove(selectedPatient);
-            main.getOntology().deleteEntity(selectedPatient);
+            patientsService.deletePatient(selectedPatient);
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -293,14 +292,11 @@ public class PatientOverviewController {
      */
     @FXML
     private void handleNewPatient() throws IOException {
-
-        Patient tempPatient = new Patient();
-        boolean okClicked = main.showPatientEditDialog(tempPatient);
+        Patient patient = new Patient();
+        boolean okClicked = main.showPatientEditDialog(patient);
         if (okClicked) {
-            main.getPatientData().add(tempPatient);
-            main.getOntology().addPatient(tempPatient);
+            patientsService.addPatient(patient);
         }
-
     }
 
     /**
@@ -309,16 +305,14 @@ public class PatientOverviewController {
      */
     @FXML
     private void handleEditPatient() throws IOException {
-        Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
-        if (selectedPatient != null) {
-            boolean okClicked = main.showPatientEditDialog(selectedPatient);
+        Patient patient = patientTable.getSelectionModel().getSelectedItem();
+        if (patient != null) {
+            boolean okClicked = main.showPatientEditDialog(patient);
             if (okClicked) {
-                main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+                patientsService.editPatient(patient);
+                showPatientDetails(patient);
             }
-
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }

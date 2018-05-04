@@ -463,8 +463,8 @@ public class OntologyWrapper {
 
     }
 
-    public Set<Patient> getPatients() {
-        Set<Patient> patients = new HashSet<Patient>();
+    public List<Patient> getPatients() {
+        List<Patient> patients = new ArrayList<Patient>();
         Patient patient;
         for (OWLIndividual patientInd : EntitySearcher.getIndividuals(patientClass, ontology)) {
             patient = getPatient(patientInd);
