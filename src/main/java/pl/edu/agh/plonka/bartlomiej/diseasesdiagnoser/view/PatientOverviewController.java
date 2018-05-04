@@ -12,6 +12,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -190,7 +191,7 @@ public class PatientOverviewController {
     /**
      * Is called by the main application to give a reference back to itself.
      *
-     * @param mainApp
+     * @param main
      */
     public void setMainApp(Main main) {
         this.main = main;
@@ -291,7 +292,7 @@ public class PatientOverviewController {
      * details for a new patient.
      */
     @FXML
-    private void handleNewPatient() {
+    private void handleNewPatient() throws IOException {
 
         Patient tempPatient = new Patient();
         boolean okClicked = main.showPatientEditDialog(tempPatient);
@@ -307,7 +308,7 @@ public class PatientOverviewController {
      * details for the selected patient.
      */
     @FXML
-    private void handleEditPatient() {
+    private void handleEditPatient() throws IOException {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
             boolean okClicked = main.showPatientEditDialog(selectedPatient);

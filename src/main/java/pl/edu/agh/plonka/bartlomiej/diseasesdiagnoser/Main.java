@@ -58,6 +58,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException, OWLOntologyCreationException {
         LOG.info("Starting application");
+
         this.primaryStage = primaryStage;
 
         initRootLayout();
@@ -75,11 +76,9 @@ public class Main extends Application {
         loader.setLocation(resource);
         rootLayout = loader.load();
 
-        // Show the scene containing the root layout.
         Scene scene = new Scene(rootLayout);
         primaryStage.setScene(scene);
 
-        // Give the controller access to the main app.
         RootLayoutController controller = loader.getController();
         controller.setMain(this);
 
@@ -114,10 +113,8 @@ public class Main extends Application {
         loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientOverview.fxml"));
         AnchorPane patientOverview = loader.load();
 
-        // Set patient overview into the center of root layout.
         rootLayout.setCenter(patientOverview);
 
-        // Give the controller access to the main app.
         PatientOverviewController controller = loader.getController();
         controller.setMainApp(this);
     }
@@ -130,35 +127,29 @@ public class Main extends Application {
      * @param patient the patient object to be edited
      * @return true if the user clicked OK, false otherwise.
      */
-    public boolean showPatientEditDialog(Patient patient) {
-        try {
-            // Load the fxml file and create a new stage for the popup dialog.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientEditDialog.fxml"));
-            AnchorPane page = loader.load();
+    public boolean showPatientEditDialog(Patient patient) throws IOException {
+        LOG.info("Loading patient edit dialog layout from FXML file");
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientEditDialog.fxml"));
+        AnchorPane page = loader.load();
 
-            // Create the dialog Stage.
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Edit Patient");
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(primaryStage);
-            Scene scene = new Scene(page);
-            dialogStage.setScene(scene);
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Edit Patient");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
 
-            // Set the patient into the controller.
-            PatientEditDialogController controller = loader.getController();
-            controller.setMainApp(this);
-            controller.setDialogStage(dialogStage);
-            controller.setPatient(patient);
+        // Set the patient into the controller.
+        PatientEditDialogController controller = loader.getController();
+        controller.setMainApp(this);
+        controller.setDialogStage(dialogStage);
+        controller.setPatient(patient);
 
-            // Show the dialog and wait until the user closes it
-            dialogStage.showAndWait();
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
 
-            return controller.isOkClicked();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return controller.isOkClicked();
     }
 
     public boolean showEntitiesEditDialog(Entity rootEntity, Collection<Entity> currentEntities, Collection<Entity> results) {

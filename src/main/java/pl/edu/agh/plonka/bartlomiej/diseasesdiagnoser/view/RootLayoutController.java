@@ -38,9 +38,11 @@ public class RootLayoutController {
      * Creates an empty diseases knowledge base.
      */
     @FXML
-    private void handleNew() {
+    private void handleNew() throws OWLOntologyCreationException {
+        LOG.info("Create new ontology.");
         main.getPatientData().clear();
-        main.setDefaultOntologyFile(null);
+        main.removeDefaultOntologyFile();
+        main.createNewOntology();
     }
 
     /**
@@ -48,18 +50,19 @@ public class RootLayoutController {
      */
     @FXML
     private void handleOpen() throws OWLOntologyCreationException {
+        LOG.info("Open existing ontology.");
         FileChooser fileChooser = new FileChooser();
-
-        // Set extension filter
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("OWL files (*.owl)", "*.owl");
         fileChooser.getExtensionFilters().add(extFilter);
 
+
+        LOG.debug("Fetching last opened ontology file directory.");
         File lastOntology = main.getDefaultOntologyFile();
         if (lastOntology != null && lastOntology.exists()) {
+            LOG.debug("Found last opened ontology at " + lastOntology.getParent());
             fileChooser.setInitialDirectory(lastOntology.getParentFile());
         }
 
-        // Show open file dialog
         File file = fileChooser.showOpenDialog(main.getPrimaryStage());
 
         if (file != null) {
