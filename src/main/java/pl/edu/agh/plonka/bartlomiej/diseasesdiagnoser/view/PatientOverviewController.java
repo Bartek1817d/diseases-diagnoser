@@ -96,99 +96,62 @@ public class PatientOverviewController {
      */
     @FXML
     private void initialize() {
-        // Initialize the patient table with the two columns.
+
+        patientTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            firstNameLabel.setText(newValue != null ? newValue.getFirstName() : "");
+            lastNameLabel.setText(newValue != null ? newValue.getLastName(): "");
+            ageLabel.setText(newValue != null && newValue.getAge() != -1 ? Integer.toString(newValue.getAge()) : "");
+            heightLabel.setText(newValue != null && newValue.getHeight() != -1 ? Integer.toString(newValue.getHeight()) : "");
+            weightLabel.setText(newValue != null && newValue.getWeight() != -1 ? Integer.toString(newValue.getWeight()) : "");
+            symptomsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getSymptoms()) : FXCollections.emptyObservableList());
+            inferredSymptomsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getInferredSymptoms()) : FXCollections.emptyObservableList());
+            diseasesList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getDiseases()) : FXCollections.emptyObservableList());
+            inferredDiseasesList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getInferredDiseases()) : FXCollections.emptyObservableList());
+            testsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getTests()) : FXCollections.emptyObservableList());
+            inferredTestsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getInferredTests()) : FXCollections.emptyObservableList());
+            treatmentsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getTreatments()) : FXCollections.emptyObservableList());
+            inferredTreatmentsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getInferredTreatments()) : FXCollections.emptyObservableList());
+            causesList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getCauses()) : FXCollections.emptyObservableList());
+            inferredCausesList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getInferredCauses()) : FXCollections.emptyObservableList());
+            negativeTestsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getNegativeTests()) : FXCollections.emptyObservableList());
+            previousAndCurrentDiseasesList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getPreviousAndCurrentDiseases()) : FXCollections.emptyObservableList());
+        });
+
         firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
         lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
 
-        ChangeListener<Entity> symptomSelectionListener = new ChangeListener<Entity>() {
-            @Override
-            public void changed(ObservableValue<? extends Entity> observable, Entity oldValue, Entity newValue) {
-                if (newValue != null)
-                    symptomDescription.setText(newValue.getComment());
-                else
-                    symptomDescription.setText("");
-            }
-        };
+        ChangeListener<Entity> symptomSelectionListener =
+                (observable, oldValue, newValue) -> symptomDescription.setText(newValue != null ? newValue.getComment() : "");
         symptomsList.getSelectionModel().selectedItemProperty().addListener(symptomSelectionListener);
         inferredSymptomsList.getSelectionModel().selectedItemProperty().addListener(symptomSelectionListener);
 
-        ChangeListener<Entity> diseaseSelectionListener = new ChangeListener<Entity>() {
-            @Override
-            public void changed(ObservableValue<? extends Entity> observable, Entity oldValue, Entity newValue) {
-                if (newValue != null)
-                    diseaseDescription.setText(newValue.getComment());
-                else
-                    diseaseDescription.setText("");
-            }
-        };
+        ChangeListener<Entity> diseaseSelectionListener =
+                (observable, oldValue, newValue) -> diseaseDescription.setText(newValue != null ? newValue.getComment() : "");
         diseasesList.getSelectionModel().selectedItemProperty().addListener(diseaseSelectionListener);
         inferredDiseasesList.getSelectionModel().selectedItemProperty().addListener(diseaseSelectionListener);
 
-        ChangeListener<Entity> testSelectionListener = new ChangeListener<Entity>() {
-            @Override
-            public void changed(ObservableValue<? extends Entity> observable, Entity oldValue, Entity newValue) {
-                if (newValue != null)
-                    testDescription.setText(newValue.getComment());
-                else
-                    testDescription.setText("");
-            }
-        };
+        ChangeListener<Entity> testSelectionListener =
+                (observable, oldValue, newValue) -> testDescription.setText(newValue != null ? newValue.getComment() : "");
         testsList.getSelectionModel().selectedItemProperty().addListener(testSelectionListener);
         inferredTestsList.getSelectionModel().selectedItemProperty().addListener(testSelectionListener);
 
-        ChangeListener<Entity> treatmentSelectionListener = new ChangeListener<Entity>() {
-            @Override
-            public void changed(ObservableValue<? extends Entity> observable, Entity oldValue, Entity newValue) {
-                if (newValue != null)
-                    treatmentDescription.setText(newValue.getComment());
-                else
-                    treatmentDescription.setText("");
-            }
-        };
+        ChangeListener<Entity> treatmentSelectionListener =
+                (observable, oldValue, newValue) -> treatmentDescription.setText(newValue != null ? newValue.getComment() : "");
         treatmentsList.getSelectionModel().selectedItemProperty().addListener(treatmentSelectionListener);
         inferredTreatmentsList.getSelectionModel().selectedItemProperty().addListener(treatmentSelectionListener);
 
-        ChangeListener<Entity> causeSelectionListener = new ChangeListener<Entity>() {
-            @Override
-            public void changed(ObservableValue<? extends Entity> observable, Entity oldValue, Entity newValue) {
-                if (newValue != null)
-                    causeDescription.setText(newValue.getComment());
-                else
-                    causeDescription.setText("");
-            }
-        };
+        ChangeListener<Entity> causeSelectionListener =
+                (observable, oldValue, newValue) -> causeDescription.setText(newValue != null ? newValue.getComment() : "");
         causesList.getSelectionModel().selectedItemProperty().addListener(causeSelectionListener);
         inferredCausesList.getSelectionModel().selectedItemProperty().addListener(causeSelectionListener);
 
-        ChangeListener<Entity> negativeTestSelectionListener = new ChangeListener<Entity>() {
-            @Override
-            public void changed(ObservableValue<? extends Entity> observable, Entity oldValue, Entity newValue) {
-                if (newValue != null)
-                    negativeTestDescription.setText(newValue.getComment());
-                else
-                    negativeTestDescription.setText("");
-            }
-        };
+        ChangeListener<Entity> negativeTestSelectionListener =
+                (observable, oldValue, newValue) -> negativeTestDescription.setText(newValue != null ? newValue.getComment() : "");
         negativeTestsList.getSelectionModel().selectedItemProperty().addListener(negativeTestSelectionListener);
 
-        ChangeListener<Entity> prevDisSelLis = new ChangeListener<Entity>() {
-            @Override
-            public void changed(ObservableValue<? extends Entity> observable, Entity oldValue, Entity newValue) {
-                if (newValue != null)
-                    previousAndCurrentDiseasesDescription.setText(newValue.getComment());
-                else
-                    previousAndCurrentDiseasesDescription.setText("");
-            }
-        };
+        ChangeListener<Entity> prevDisSelLis =
+                (observable, oldValue, newValue) -> previousAndCurrentDiseasesDescription.setText(newValue != null ? newValue.getComment() : "");
         previousAndCurrentDiseasesList.getSelectionModel().selectedItemProperty().addListener(prevDisSelLis);
-
-        // Clear patient details.
-        showPatientDetails(null);
-
-        // Listen for selection changes and show the patient details when
-        // changed.
-        patientTable.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> showPatientDetails(newValue));
     }
 
     /**
@@ -202,74 +165,6 @@ public class PatientOverviewController {
 
         // Add observable list data to the table
         patientTable.setItems(patientsService.getPatients());
-    }
-
-    /**
-     * Fills all text fields to show details about the patient. If the specified
-     * patient is null, all text fields are cleared.
-     *
-     * @param patient the patient or null
-     */
-    private void showPatientDetails(Patient patient) {
-        if (patient != null) {
-            // Fill the labels with info from the patient object.
-            firstNameLabel.setText(patient.getFirstName() == null ? "" : patient.getFirstName());
-            lastNameLabel.setText(patient.getLastName() == null ? "" : patient.getLastName());
-            ageLabel.setText(patient.getAge() == -1 ? "" : Integer.toString(patient.getAge()));
-            heightLabel.setText(patient.getHeight() == -1 ? "" : Integer.toString(patient.getHeight()));
-            weightLabel.setText(patient.getWeight() == -1 ? "" : Integer.toString(patient.getWeight()));
-            ObservableList<Entity> items;
-            items = FXCollections.observableArrayList(patient.getSymptoms());
-            symptomsList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getInferredSymptoms());
-            inferredSymptomsList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getDiseases());
-            diseasesList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getInferredDiseases());
-            inferredDiseasesList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getTests());
-            testsList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getInferredTests());
-            inferredTestsList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getTreatments());
-            treatmentsList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getInferredTreatments());
-            inferredTreatmentsList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getCauses());
-            causesList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getInferredCauses());
-            inferredCausesList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getNegativeTests());
-            negativeTestsList.setItems(items);
-            items = FXCollections.observableArrayList(patient.getPreviousAndCurrentDiseases());
-            previousAndCurrentDiseasesList.setItems(items);
-        } else {
-            // Patient is null, remove all the text.
-            firstNameLabel.setText("");
-            lastNameLabel.setText("");
-            ageLabel.setText("");
-            heightLabel.setText("");
-            weightLabel.setText("");
-            symptomsList.getItems().clear();
-            inferredSymptomsList.getItems().clear();
-            diseasesList.getItems().clear();
-            inferredDiseasesList.getItems().clear();
-            testsList.getItems().clear();
-            inferredTestsList.getItems().clear();
-            treatmentsList.getItems().clear();
-            inferredTreatmentsList.getItems().clear();
-            causesList.getItems().clear();
-            inferredCausesList.getItems().clear();
-            negativeTestsList.getItems().clear();
-            previousAndCurrentDiseasesList.getItems().clear();
-            symptomDescription.setText("");
-            diseaseDescription.setText("");
-            testDescription.setText("");
-            treatmentDescription.setText("");
-            causeDescription.setText("");
-            negativeTestDescription.setText("");
-            previousAndCurrentDiseasesDescription.clear();
-        }
     }
 
     /**
@@ -310,7 +205,7 @@ public class PatientOverviewController {
             boolean okClicked = main.showPatientEditDialog(patient);
             if (okClicked) {
                 patientsService.editPatient(patient);
-                showPatientDetails(patient);
+//                showPatientDetails(patient);
             }
         } else {
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
@@ -328,7 +223,7 @@ public class PatientOverviewController {
             if (okClicked) {
                 selectedPatient.setSymptoms(symptoms);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             }
         } else {
             // Nothing selected.
@@ -345,7 +240,7 @@ public class PatientOverviewController {
             if (!symptoms.isEmpty()) {
                 selectedPatient.getSymptoms().removeAll(symptoms);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             } else {
                 // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Symptoms Selected",
@@ -368,7 +263,7 @@ public class PatientOverviewController {
             if (okClicked) {
                 selectedPatient.setDiseases(diseases);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             }
         } else {
             // Nothing selected.
@@ -385,7 +280,7 @@ public class PatientOverviewController {
             if (!diseases.isEmpty()) {
                 selectedPatient.getDiseases().removeAll(diseases);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             } else {
                 // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Diseases Selected",
@@ -408,7 +303,7 @@ public class PatientOverviewController {
             if (okClicked) {
                 selectedPatient.setTests(tests);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             }
         } else {
             // Nothing selected.
@@ -425,7 +320,7 @@ public class PatientOverviewController {
             if (!tests.isEmpty()) {
                 selectedPatient.getTests().removeAll(tests);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             } else {
                 // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Tests Selected",
@@ -448,7 +343,7 @@ public class PatientOverviewController {
             if (okClicked) {
                 selectedPatient.setTreatments(treatments);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             }
         } else {
             // Nothing selected.
@@ -465,7 +360,7 @@ public class PatientOverviewController {
             if (!treatments.isEmpty()) {
                 selectedPatient.getTreatments().removeAll(treatments);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             } else {
                 // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Treatments Selected",
@@ -488,7 +383,7 @@ public class PatientOverviewController {
             if (okClicked) {
                 selectedPatient.setCauses(causes);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             }
         } else {
             // Nothing selected.
@@ -505,7 +400,7 @@ public class PatientOverviewController {
             if (!causes.isEmpty()) {
                 selectedPatient.getCauses().removeAll(causes);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             } else {
                 // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Causes Selected",
@@ -528,7 +423,7 @@ public class PatientOverviewController {
             if (okClicked) {
                 selectedPatient.setNegativeTests(tests);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             }
         } else {
             // Nothing selected.
@@ -545,7 +440,7 @@ public class PatientOverviewController {
             if (!negativeTests.isEmpty()) {
                 selectedPatient.getNegativeTests().removeAll(negativeTests);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             } else {
                 // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Negative Tests Selected",
@@ -568,7 +463,7 @@ public class PatientOverviewController {
             if (okClicked) {
                 selectedPatient.setPreviousAndCurrentDiseases(diseases);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             }
         } else {
             // Nothing selected.
@@ -586,7 +481,7 @@ public class PatientOverviewController {
                 selectedPatient.getNegativeTests().removeAll(negativeTests);
                 selectedPatient.getTests().removeAll(negativeTests);
                 main.getOntology().updatePatient(selectedPatient);
-                showPatientDetails(selectedPatient);
+//                showPatientDetails(selectedPatient);
             } else {
                 // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Negative Tests Selected",
