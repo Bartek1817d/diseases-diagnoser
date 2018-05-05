@@ -1,12 +1,15 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model;
 
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Model class for a Patient.
@@ -23,30 +26,19 @@ public class Patient extends Entity implements Comparable<Patient> {
     private final IntegerProperty height = new SimpleIntegerProperty(-1);
     private final IntegerProperty weight = new SimpleIntegerProperty(-1);
     private final StringProperty placeOfResidence = new SimpleStringProperty();
-    private final SetProperty<Entity> symptoms = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> inferredSymptoms = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> diseases = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> inferredDieseases = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> tests = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> inferredTests = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> treatments = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> inferredTreatments = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> causes = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> inferredCauses = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> negativeTests = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
-    private final SetProperty<Entity> previousAndCurrentDiseases = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
+    private final ObservableList<Entity> symptoms = FXCollections.observableArrayList();
+    private final ObservableList<Entity> inferredSymptoms = FXCollections.observableArrayList();
+    private final ObservableList<Entity> diseases = FXCollections.observableArrayList();
+    private final ObservableList<Entity> inferredDiseases = FXCollections.observableArrayList();
+    private final ObservableList<Entity> tests = FXCollections.observableArrayList();
+    private final ObservableList<Entity> inferredTests = FXCollections.observableArrayList();
+    private final ObservableList<Entity> treatments = FXCollections.observableArrayList();
+    private final ObservableList<Entity> inferredTreatments = FXCollections.observableArrayList();
+    private final ObservableList<Entity> causes = FXCollections.observableArrayList();
+    private final ObservableList<Entity> inferredCauses = FXCollections.observableArrayList();
+    private final ObservableList<Entity> negativeTests = FXCollections.observableArrayList();
+    private final ObservableList<Entity> previousAndCurrentDiseases = FXCollections.observableArrayList();
+
     private float evaluation;
 
     public Patient() {
@@ -88,7 +80,7 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.firstName.set(firstName);
     }
 
-    public StringProperty firstNameProperty() {
+    public StringProperty getObservableFirstName() {
         return firstName;
     }
 
@@ -100,7 +92,7 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.lastName.set(lastName);
     }
 
-    public StringProperty lastNameProperty() {
+    public StringProperty getObservableLastName() {
         return lastName;
     }
 
@@ -112,12 +104,20 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.age.set(age);
     }
 
+    public IntegerProperty getObservableAge() {
+        return age;
+    }
+
     public int getHeight() {
         return height.get();
     }
 
     public void setHeight(int height) {
         this.height.set(height);
+    }
+
+    public IntegerProperty getObservableHeight() {
+        return height;
     }
 
     public int getWeight() {
@@ -128,6 +128,10 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.weight.set(weight);
     }
 
+    public IntegerProperty getObservableWeight() {
+        return weight;
+    }
+
     public String getPlaceOfResidence() {
         return placeOfResidence.get();
     }
@@ -136,16 +140,19 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.placeOfResidence.set(placeOfResidence);
     }
 
-    public Set<Entity> getSymptoms() {
-        return symptoms.get();
+    public StringProperty getObservablePlaceOfResidence() {
+        return placeOfResidence;
     }
 
-    public void setSymptoms(Set<Entity> symptoms) {
-        this.symptoms.clear();
-        this.symptoms.addAll(symptoms);
+    public ObservableList<Entity> getSymptoms() {
+        return symptoms;
     }
 
-    public void addSymptoms(Set<Entity> symptoms) {
+    public void setSymptoms(Collection<Entity> symptoms) {
+        this.symptoms.setAll(symptoms);
+    }
+
+    public void addSymptoms(Collection<Entity> symptoms) {
         this.symptoms.addAll(symptoms);
     }
 
@@ -153,16 +160,15 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.symptoms.add(symptom);
     }
 
-    public Set<Entity> getInferredSymptoms() {
-        return inferredSymptoms.get();
+    public ObservableList<Entity> getInferredSymptoms() {
+        return inferredSymptoms;
     }
 
-    public void setInferredSymptoms(Set<Entity> inferredSymptoms) {
-        this.inferredSymptoms.clear();
-        this.inferredSymptoms.addAll(inferredSymptoms);
+    public void setInferredSymptoms(Collection<Entity> inferredSymptoms) {
+        this.inferredSymptoms.setAll(inferredSymptoms);
     }
 
-    public void addInferredSymptoms(Set<Entity> inferredSymptoms) {
+    public void addInferredSymptoms(Collection<Entity> inferredSymptoms) {
         this.inferredSymptoms.addAll(inferredSymptoms);
     }
 
@@ -170,20 +176,15 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.symptoms.add(inferredSymptom);
     }
 
-    public void clearInferredSymptoms() {
-        inferredSymptoms.clear();
+    public ObservableList<Entity> getDiseases() {
+        return diseases;
     }
 
-    public Set<Entity> getDiseases() {
-        return diseases.get();
+    public void setDiseases(Collection<Entity> diseases) {
+        this.diseases.setAll(diseases);
     }
 
-    public void setDiseases(Set<Entity> diseases) {
-        this.diseases.clear();
-        this.diseases.addAll(diseases);
-    }
-
-    public void addDiseases(Set<Entity> diseases) {
+    public void addDiseases(Collection<Entity> diseases) {
         this.diseases.addAll(diseases);
     }
 
@@ -191,16 +192,15 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.diseases.add(disease);
     }
 
-    public Set<Entity> getInferredDiseases() {
-        return inferredDieseases.get();
+    public ObservableList<Entity> getInferredDiseases() {
+        return inferredDiseases;
     }
 
-    public void setInferredDiseases(Set<Entity> inferredDieseases) {
-        this.inferredDieseases.clear();
-        this.inferredDieseases.addAll(inferredDieseases);
+    public void setInferredDiseases(Collection<Entity> inferredDiseases) {
+        this.inferredDiseases.setAll(inferredDiseases);
     }
 
-    public void addInferredDiseases(Set<Entity> inferredDieseases) {
+    public void addInferredDiseases(Collection<Entity> inferredDieseases) {
         this.diseases.addAll(diseases);
     }
 
@@ -208,20 +208,15 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.diseases.add(inferredDiesease);
     }
 
-    public void clearInferredDiseases() {
-        inferredDieseases.clear();
+    public ObservableList<Entity> getTests() {
+        return tests;
     }
 
-    public Set<Entity> getTests() {
-        return tests.get();
+    public void setTests(Collection<Entity> tests) {
+        this.tests.setAll(tests);
     }
 
-    public void setTests(Set<Entity> tests) {
-        this.tests.clear();
-        this.tests.addAll(tests);
-    }
-
-    public void addTests(Set<Entity> tests) {
+    public void addTests(Collection<Entity> tests) {
         this.tests.addAll(tests);
     }
 
@@ -229,16 +224,15 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.tests.add(test);
     }
 
-    public Set<Entity> getInferredTests() {
-        return inferredTests.get();
+    public ObservableList<Entity> getInferredTests() {
+        return inferredTests;
     }
 
-    public void setInferredTests(Set<Entity> inferredTests) {
-        this.inferredTests.clear();
-        this.inferredTests.addAll(inferredTests);
+    public void setInferredTests(Collection<Entity> inferredTests) {
+        this.inferredTests.setAll(inferredTests);
     }
 
-    public void addInferredTests(Set<Entity> inferredTests) {
+    public void addInferredTests(Collection<Entity> inferredTests) {
         this.inferredTests.addAll(inferredTests);
     }
 
@@ -246,20 +240,15 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.inferredTests.add(inferredTest);
     }
 
-    public void clearInferredTests() {
-        inferredTests.clear();
+    public ObservableList<Entity> getTreatments() {
+        return treatments;
     }
 
-    public Set<Entity> getTreatments() {
-        return treatments.get();
+    public void setTreatments(Collection<Entity> treatments) {
+        this.treatments.setAll(treatments);
     }
 
-    public void setTreatments(Set<Entity> treatments) {
-        this.treatments.clear();
-        this.treatments.addAll(treatments);
-    }
-
-    public void addTreatments(Set<Entity> treatments) {
+    public void addTreatments(Collection<Entity> treatments) {
         this.treatments.addAll(treatments);
     }
 
@@ -267,16 +256,15 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.treatments.add(treatment);
     }
 
-    public Set<Entity> getInferredTreatments() {
-        return inferredTreatments.get();
+    public ObservableList<Entity> getInferredTreatments() {
+        return inferredTreatments;
     }
 
-    public void setInferredTreatments(Set<Entity> inferredTreatments) {
-        this.inferredTreatments.clear();
-        this.inferredTreatments.addAll(inferredTreatments);
+    public void setInferredTreatments(Collection<Entity> inferredTreatments) {
+        this.inferredTreatments.setAll(inferredTreatments);
     }
 
-    public void addInferredTreatments(Set<Entity> inferredTreatments) {
+    public void addInferredTreatments(Collection<Entity> inferredTreatments) {
         this.inferredTreatments.addAll(inferredTreatments);
     }
 
@@ -284,20 +272,15 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.inferredTreatments.add(inferredTreatment);
     }
 
-    public void clearInferredTreatments() {
-        inferredTreatments.clear();
+    public ObservableList<Entity> getCauses() {
+        return causes;
     }
 
-    public Set<Entity> getCauses() {
-        return causes.get();
+    public void setCauses(Collection<Entity> causes) {
+        this.causes.setAll(causes);
     }
 
-    public void setCauses(Set<Entity> causes) {
-        this.causes.clear();
-        this.causes.addAll(causes);
-    }
-
-    public void addCauses(Set<Entity> causes) {
+    public void addCauses(Collection<Entity> causes) {
         this.causes.addAll(causes);
     }
 
@@ -305,16 +288,15 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.causes.add(cause);
     }
 
-    public Set<Entity> getInferredCauses() {
-        return inferredCauses.get();
+    public ObservableList<Entity> getInferredCauses() {
+        return inferredCauses;
     }
 
-    public void setInferredCauses(Set<Entity> inferredCauses) {
-        this.inferredCauses.clear();
-        this.inferredCauses.addAll(inferredCauses);
+    public void setInferredCauses(Collection<Entity> inferredCauses) {
+        this.inferredCauses.setAll(inferredCauses);
     }
 
-    public void addInferredCauses(Set<Entity> inferredCauses) {
+    public void addInferredCauses(Collection<Entity> inferredCauses) {
         this.inferredCauses.addAll(inferredCauses);
     }
 
@@ -322,16 +304,15 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.inferredCauses.add(inferredCause);
     }
 
-    public Set<Entity> getNegativeTests() {
-        return negativeTests.get();
+    public ObservableList<Entity> getNegativeTests() {
+        return negativeTests;
     }
 
-    public void setNegativeTests(Set<Entity> negativeTests) {
-        this.negativeTests.clear();
-        this.negativeTests.addAll(negativeTests);
+    public void setNegativeTests(Collection<Entity> negativeTests) {
+        this.negativeTests.setAll(negativeTests);
     }
 
-    public void addNegativeTests(Set<Entity> negativeTests) {
+    public void addNegativeTests(Collection<Entity> negativeTests) {
         this.negativeTests.addAll(negativeTests);
     }
 
@@ -339,20 +320,19 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.negativeTests.add(negativeTest);
     }
 
-    public Set<Entity> getPreviousAndCurrentDiseases() {
-        return previousAndCurrentDiseases.get();
+    public ObservableList<Entity> getPreviousAndCurrentDiseases() {
+        return previousAndCurrentDiseases;
     }
 
-    public void setPreviousAndCurrentDiseases(Set<Entity> previousAndCurrentDiseases) {
-        this.previousAndCurrentDiseases.clear();
+    public void setPreviousAndCurrentDiseases(Collection<Entity> previousAndCurrentDiseases) {
+        this.previousAndCurrentDiseases.setAll(previousAndCurrentDiseases);
+    }
+
+    public void addPreviousAndCurrentDiseases(Collection<Entity> previousAndCurrentDiseases) {
         this.previousAndCurrentDiseases.addAll(previousAndCurrentDiseases);
     }
 
-    public void addPreviousAndCurrentDiseases(Set<Entity> previousAndCurrentDiseases) {
-        this.previousAndCurrentDiseases.addAll(previousAndCurrentDiseases);
-    }
-
-    public void addPreviousAndCurrentDiseases(Entity previousAndCurrentDisease) {
+    public void addPreviousOrCurrentDisease(Entity previousAndCurrentDisease) {
         this.previousAndCurrentDiseases.add(previousAndCurrentDisease);
     }
 

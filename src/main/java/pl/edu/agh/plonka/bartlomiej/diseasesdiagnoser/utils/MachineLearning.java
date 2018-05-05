@@ -108,10 +108,10 @@ public class MachineLearning {
         int disDiff = 0;
         int ageDiff = 0;
         for (Patient otherPatient : otherPatients) {
-            symptomDiff += Sets.symmetricDifference(patient.getSymptoms(), otherPatient.getSymptoms()).size();
-            negTestDiff += Sets.symmetricDifference(patient.getNegativeTests(), otherPatient.getNegativeTests()).size();
-            disDiff += Sets.symmetricDifference(patient.getPreviousAndCurrentDiseases(),
-                    otherPatient.getPreviousAndCurrentDiseases()).size();
+            symptomDiff += Sets.symmetricDifference(new HashSet<>(patient.getSymptoms()), new HashSet<>(otherPatient.getSymptoms())).size();
+            negTestDiff += Sets.symmetricDifference(new HashSet<>(patient.getNegativeTests()), new HashSet<>(otherPatient.getNegativeTests())).size();
+            disDiff += Sets.symmetricDifference(new HashSet<>(patient.getPreviousAndCurrentDiseases()),
+                    new HashSet<>(otherPatient.getPreviousAndCurrentDiseases())).size();
             if (patient.getAge() >= 0 && otherPatient.getAge() >= 0)
                 ageDiff += Math.abs(patient.getAge() - otherPatient.getAge());
         }

@@ -1,7 +1,6 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view;
 
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,6 +11,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.PositiveIntegerStringBinding;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -98,30 +98,26 @@ public class PatientOverviewController {
     private void initialize() {
 
         patientTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            firstNameLabel.setText(newValue != null ? newValue.getFirstName() : "");
-            lastNameLabel.setText(newValue != null ? newValue.getLastName(): "");
-            ageLabel.setText(newValue != null && newValue.getAge() != -1 ? Integer.toString(newValue.getAge()) : "");
-            heightLabel.setText(newValue != null && newValue.getHeight() != -1 ? Integer.toString(newValue.getHeight()) : "");
-            weightLabel.setText(newValue != null && newValue.getWeight() != -1 ? Integer.toString(newValue.getWeight()) : "");
-            symptomsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getSymptoms()) : FXCollections.emptyObservableList());
-            inferredSymptomsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getInferredSymptoms()) : FXCollections.emptyObservableList());
-            diseasesList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getDiseases()) : FXCollections.emptyObservableList());
-            inferredDiseasesList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getInferredDiseases()) : FXCollections.emptyObservableList());
-            testsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getTests()) : FXCollections.emptyObservableList());
-            inferredTestsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getInferredTests()) : FXCollections.emptyObservableList());
-            treatmentsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getTreatments()) : FXCollections.emptyObservableList());
-            inferredTreatmentsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getInferredTreatments()) : FXCollections.emptyObservableList());
-            causesList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getCauses()) : FXCollections.emptyObservableList());
-            inferredCausesList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getInferredCauses()) : FXCollections.emptyObservableList());
-            negativeTestsList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getNegativeTests()) : FXCollections.emptyObservableList());
-            previousAndCurrentDiseasesList.setItems(newValue != null ? FXCollections.observableArrayList(newValue.getPreviousAndCurrentDiseases()) : FXCollections.emptyObservableList());
+            if (newValue != null) {
+                bindPatientProperties(newValue);
+            } else {
+                unbindPatientProperties();
+                clearPersonalDataLabels();
+            }
         });
 
-        firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
-        lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
+        firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().getObservableFirstName());
+        lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().getObservableLastName());
 
-        ChangeListener<Entity> symptomSelectionListener =
-                (observable, oldValue, newValue) -> symptomDescription.setText(newValue != null ? newValue.getComment() : "");
+        ChangeListener<Entity> symptomSelectionListener = (observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                symptomDescription.textProperty().bind(newValue.getObservableComment());
+            } else {
+                symptomDescription.textProperty().unbind();
+                symptomDescription.setText("");
+            }
+
+        };
         symptomsList.getSelectionModel().selectedItemProperty().addListener(symptomSelectionListener);
         inferredSymptomsList.getSelectionModel().selectedItemProperty().addListener(symptomSelectionListener);
 
@@ -163,7 +159,6 @@ public class PatientOverviewController {
         this.main = main;
         this.patientsService = patientsService;
 
-        // Add observable list data to the table
         patientTable.setItems(patientsService.getPatients());
     }
 
@@ -217,16 +212,14 @@ public class PatientOverviewController {
     private void handleAddSymptoms() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> symptoms = new HashSet<Entity>();
+            Set<Entity> symptoms = new HashSet<>();
             boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Symptom"),
                     selectedPatient.getSymptoms(), symptoms);
             if (okClicked) {
                 selectedPatient.setSymptoms(symptoms);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -240,14 +233,11 @@ public class PatientOverviewController {
             if (!symptoms.isEmpty()) {
                 selectedPatient.getSymptoms().removeAll(symptoms);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             } else {
-                // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Symptoms Selected",
                         "Please select symptoms in the table.");
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -257,16 +247,14 @@ public class PatientOverviewController {
     private void handleAddDiseases() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> diseases = new HashSet<Entity>();
+            Set<Entity> diseases = new HashSet<>();
             boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Disease"),
                     selectedPatient.getDiseases(), diseases);
             if (okClicked) {
                 selectedPatient.setDiseases(diseases);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -280,14 +268,11 @@ public class PatientOverviewController {
             if (!diseases.isEmpty()) {
                 selectedPatient.getDiseases().removeAll(diseases);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             } else {
-                // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Diseases Selected",
                         "Please select diseases in the table.");
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -297,16 +282,14 @@ public class PatientOverviewController {
     private void handleAddTests() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> tests = new HashSet<Entity>();
+            Set<Entity> tests = new HashSet<>();
             boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Testing"),
                     selectedPatient.getTests(), tests);
             if (okClicked) {
                 selectedPatient.setTests(tests);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -320,14 +303,11 @@ public class PatientOverviewController {
             if (!tests.isEmpty()) {
                 selectedPatient.getTests().removeAll(tests);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             } else {
-                // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Tests Selected",
                         "Please select tests in the table.");
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -337,16 +317,14 @@ public class PatientOverviewController {
     private void handleAddTreatments() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> treatments = new HashSet<Entity>();
+            Set<Entity> treatments = new HashSet<>();
             boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Treatment"),
                     selectedPatient.getTreatments(), treatments);
             if (okClicked) {
                 selectedPatient.setTreatments(treatments);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -377,16 +355,14 @@ public class PatientOverviewController {
     private void handleAddCauses() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> causes = new HashSet<Entity>();
+            Set<Entity> causes = new HashSet<>();
             boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Cause"),
                     selectedPatient.getCauses(), causes);
             if (okClicked) {
                 selectedPatient.setCauses(causes);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -400,14 +376,11 @@ public class PatientOverviewController {
             if (!causes.isEmpty()) {
                 selectedPatient.getCauses().removeAll(causes);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             } else {
-                // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Causes Selected",
                         "Please select causes in the table.");
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -417,16 +390,14 @@ public class PatientOverviewController {
     private void handleAddNegativeTests() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> tests = new HashSet<Entity>();
+            Set<Entity> tests = new HashSet<>();
             boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Testing"),
                     selectedPatient.getNegativeTests(), tests);
             if (okClicked) {
                 selectedPatient.setNegativeTests(tests);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -440,14 +411,11 @@ public class PatientOverviewController {
             if (!negativeTests.isEmpty()) {
                 selectedPatient.getNegativeTests().removeAll(negativeTests);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             } else {
-                // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Negative Tests Selected",
                         "Please select negative tests in the table.");
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -457,16 +425,14 @@ public class PatientOverviewController {
     private void handleAddPreviousAndCurrentDiseases() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> diseases = new HashSet<Entity>();
+            Set<Entity> diseases = new HashSet<>();
             boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Testing"),
                     selectedPatient.getPreviousAndCurrentDiseases(), diseases);
             if (okClicked) {
                 selectedPatient.setPreviousAndCurrentDiseases(diseases);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
@@ -481,16 +447,63 @@ public class PatientOverviewController {
                 selectedPatient.getNegativeTests().removeAll(negativeTests);
                 selectedPatient.getTests().removeAll(negativeTests);
                 main.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             } else {
-                // Nothing selected.
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Negative Tests Selected",
                         "Please select negative tests in the table.");
             }
         } else {
-            // Nothing selected.
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }
+    }
+
+    private void bindPatientProperties(Patient patient) {
+        firstNameLabel.textProperty().bind(patient.getObservableFirstName());
+        lastNameLabel.textProperty().bind(patient.getObservableLastName());
+        ageLabel.textProperty().bind(new PositiveIntegerStringBinding(patient.getObservableAge()));
+        heightLabel.textProperty().bind(new PositiveIntegerStringBinding(patient.getObservableHeight()));
+        weightLabel.textProperty().bind(new PositiveIntegerStringBinding(patient.getObservableWeight()));
+
+        symptomsList.setItems(patient.getSymptoms());
+        inferredSymptomsList.setItems(patient.getInferredSymptoms());
+        diseasesList.setItems(patient.getDiseases());
+        inferredDiseasesList.setItems(patient.getInferredDiseases());
+        testsList.setItems(patient.getTests());
+        inferredTestsList.setItems(patient.getInferredTests());
+        treatmentsList.setItems(patient.getTreatments());
+        inferredTreatmentsList.setItems(patient.getInferredTreatments());
+        causesList.setItems(patient.getCauses());
+        inferredCausesList.setItems(patient.getInferredCauses());
+        negativeTestsList.setItems(patient.getNegativeTests());
+        previousAndCurrentDiseasesList.setItems(patient.getPreviousAndCurrentDiseases());
+    }
+
+    private void unbindPatientProperties() {
+        firstNameLabel.textProperty().unbind();
+        lastNameLabel.textProperty().unbind();
+        ageLabel.textProperty().unbind();
+        heightLabel.textProperty().unbind();
+        weightLabel.textProperty().unbind();
+
+        symptomsList.setItems(FXCollections.emptyObservableList());
+        inferredSymptomsList.setItems(FXCollections.emptyObservableList());
+        diseasesList.setItems(FXCollections.emptyObservableList());
+        inferredDiseasesList.setItems(FXCollections.emptyObservableList());
+        testsList.setItems(FXCollections.emptyObservableList());
+        inferredTestsList.setItems(FXCollections.emptyObservableList());
+        treatmentsList.setItems(FXCollections.emptyObservableList());
+        inferredTreatmentsList.setItems(FXCollections.emptyObservableList());
+        causesList.setItems(FXCollections.emptyObservableList());
+        inferredCausesList.setItems(FXCollections.emptyObservableList());
+        negativeTestsList.setItems(FXCollections.emptyObservableList());
+        previousAndCurrentDiseasesList.setItems(FXCollections.emptyObservableList());
+    }
+
+    private void clearPersonalDataLabels() {
+        firstNameLabel.setText("");
+        lastNameLabel.setText("");
+        ageLabel.setText("");
+        heightLabel.setText("");
+        weightLabel.setText("");
     }
 }

@@ -4,6 +4,7 @@ import javafx.beans.property.SetProperty;
 import javafx.beans.property.SimpleSetProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,10 @@ public class Entity {
 
     public String getComment() {
         return comment.get();
+    }
+
+    public ObservableValue<String> getObservableComment() {
+        return comment;
     }
 
     public void setComment(String comment) {

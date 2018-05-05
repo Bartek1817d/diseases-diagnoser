@@ -357,7 +357,7 @@ public class OntologyWrapper {
                 previousOrCurrentDiseaseProperty, ontology)) {
             Entity disease = diseases.get(renderer.render(owlCause));
             if (disease != null)
-                patient.addPreviousAndCurrentDiseases(disease);
+                patient.addPreviousOrCurrentDisease(disease);
         }
         return patient;
     }
@@ -653,7 +653,7 @@ public class OntologyWrapper {
                         } else if (predicate.equals("hadOrHasDisease")) {
                             String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
                             Patient p = (Patient) variables.get(pName);
-                            p.addPreviousAndCurrentDiseases((Entity) twoArgumentsAtom.getArgument2());
+                            p.addPreviousOrCurrentDisease((Entity) twoArgumentsAtom.getArgument2());
                         } else if (predicate.equals("hasDisease")) {
                             String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
                             Patient p = (Patient) variables.get(pName);
