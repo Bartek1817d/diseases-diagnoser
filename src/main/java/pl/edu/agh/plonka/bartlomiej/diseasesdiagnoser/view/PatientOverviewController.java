@@ -16,6 +16,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.PositiveInte
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 public class PatientOverviewController {
 
@@ -97,6 +98,9 @@ public class PatientOverviewController {
     @FXML
     private void initialize() {
 
+        firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().getObservableFirstName());
+        lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().getObservableLastName());
+
         patientTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 bindPatientProperties(newValue);
@@ -106,48 +110,28 @@ public class PatientOverviewController {
             }
         });
 
-        firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().getObservableFirstName());
-        lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().getObservableLastName());
 
-        ChangeListener<Entity> symptomSelectionListener = (observable, oldValue, newValue) -> {
+        Function<TextArea, ChangeListener<Entity>> listenerGenerator = textArea -> (observable, oldValue, newValue) -> {
             if (newValue != null) {
-                symptomDescription.textProperty().bind(newValue.getObservableComment());
+                textArea.textProperty().bind(newValue.getObservableComment());
             } else {
-                symptomDescription.textProperty().unbind();
-                symptomDescription.setText("");
+                textArea.textProperty().unbind();
+                textArea.setText("");
             }
 
         };
-        symptomsList.getSelectionModel().selectedItemProperty().addListener(symptomSelectionListener);
-        inferredSymptomsList.getSelectionModel().selectedItemProperty().addListener(symptomSelectionListener);
-
-        ChangeListener<Entity> diseaseSelectionListener =
-                (observable, oldValue, newValue) -> diseaseDescription.setText(newValue != null ? newValue.getComment() : "");
-        diseasesList.getSelectionModel().selectedItemProperty().addListener(diseaseSelectionListener);
-        inferredDiseasesList.getSelectionModel().selectedItemProperty().addListener(diseaseSelectionListener);
-
-        ChangeListener<Entity> testSelectionListener =
-                (observable, oldValue, newValue) -> testDescription.setText(newValue != null ? newValue.getComment() : "");
-        testsList.getSelectionModel().selectedItemProperty().addListener(testSelectionListener);
-        inferredTestsList.getSelectionModel().selectedItemProperty().addListener(testSelectionListener);
-
-        ChangeListener<Entity> treatmentSelectionListener =
-                (observable, oldValue, newValue) -> treatmentDescription.setText(newValue != null ? newValue.getComment() : "");
-        treatmentsList.getSelectionModel().selectedItemProperty().addListener(treatmentSelectionListener);
-        inferredTreatmentsList.getSelectionModel().selectedItemProperty().addListener(treatmentSelectionListener);
-
-        ChangeListener<Entity> causeSelectionListener =
-                (observable, oldValue, newValue) -> causeDescription.setText(newValue != null ? newValue.getComment() : "");
-        causesList.getSelectionModel().selectedItemProperty().addListener(causeSelectionListener);
-        inferredCausesList.getSelectionModel().selectedItemProperty().addListener(causeSelectionListener);
-
-        ChangeListener<Entity> negativeTestSelectionListener =
-                (observable, oldValue, newValue) -> negativeTestDescription.setText(newValue != null ? newValue.getComment() : "");
-        negativeTestsList.getSelectionModel().selectedItemProperty().addListener(negativeTestSelectionListener);
-
-        ChangeListener<Entity> prevDisSelLis =
-                (observable, oldValue, newValue) -> previousAndCurrentDiseasesDescription.setText(newValue != null ? newValue.getComment() : "");
-        previousAndCurrentDiseasesList.getSelectionModel().selectedItemProperty().addListener(prevDisSelLis);
+        symptomsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(symptomDescription));
+        inferredSymptomsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(symptomDescription));
+        diseasesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(diseaseDescription));
+        inferredDiseasesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(diseaseDescription));
+        testsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(testDescription));
+        inferredTestsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(testDescription));
+        treatmentsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(treatmentDescription));
+        inferredTreatmentsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(treatmentDescription));
+        causesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(causeDescription));
+        inferredCausesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(causeDescription));
+        negativeTestsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(negativeTestDescription));
+        previousAndCurrentDiseasesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(previousAndCurrentDiseasesDescription));
     }
 
     /**
@@ -200,7 +184,6 @@ public class PatientOverviewController {
             boolean okClicked = main.showPatientEditDialog(patient);
             if (okClicked) {
                 patientsService.editPatient(patient);
-//                showPatientDetails(patient);
             }
         } else {
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
