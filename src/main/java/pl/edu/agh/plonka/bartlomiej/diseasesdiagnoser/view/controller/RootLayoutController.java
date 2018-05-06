@@ -4,11 +4,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.Dialogs;
 
 import java.io.File;
@@ -24,16 +27,18 @@ public class RootLayoutController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-    // Reference to the main application
-    private Main main;
+    private PatientsService patientsService;
+    private String ontologyUrl;
+    private Stage primaryStage;
 
     /**
      * Is called by the main application to give a reference back to itself.
      *
-     * @param main
      */
-    public void setMain(Main main) {
-        this.main = main;
+    public void setMain(Stage primaryStage , PatientsService patientsService, String ontologyUrl) {
+        this.patientsService = patientsService;
+        this.ontologyUrl = ontologyUrl;
+        this.primaryStage = primaryStage;
     }
 
     /**
@@ -42,7 +47,7 @@ public class RootLayoutController {
     @FXML
     private void handleNew() throws OWLOntologyCreationException {
         LOG.info("Create new ontology.");
-        main.createNewOntology();
+        patientsService.createKnowledgeBase(ontologyUrl);
     }
 
     /**
@@ -56,22 +61,22 @@ public class RootLayoutController {
         fileChooser.getExtensionFilters().add(extFilter);
 
         LOG.debug("Fetching default directory.");
-        File defaultDirectory = main.getDefaultDirectoryFile();
+        File defaultDirectory = SystemDefaults.getDefaultDirectoryFile();
         if (defaultDirectory != null) {
             LOG.debug("Found default directory: " + defaultDirectory.getPath());
             fileChooser.setInitialDirectory(defaultDirectory);
         }
 
-        File file = fileChooser.showOpenDialog(main.getPrimaryStage());
+        File file = fileChooser.showOpenDialog(primaryStage);
 
         if (file != null) {
             try {
-                main.loadOntologyFromFile(file);
+                patientsService.createKnowledgeBase(file);
             } catch (OWLOntologyCreationException e) {
                 LOG.error("Failed to load ontology from " + file.getPath() + ". Creating empty ontology.");
-                Dialogs.errorExceptionDialog(main.getPrimaryStage(), "Error creating ontology", null,
+                Dialogs.errorExceptionDialog(primaryStage, "Error creating ontology", null,
                         "Cannot create ontology from file: " + file.getName(), e);
-                main.createNewOntology();
+                patientsService.createKnowledgeBase(ontologyUrl);
             }
         }
     }
@@ -83,13 +88,13 @@ public class RootLayoutController {
     @FXML
     private void handleSave() {
         LOG.info("Handle saving ontology.");
-        File file = main.getDefaultOntologyFile();
+        File file = SystemDefaults.getDefaultOntologyFile();
         if (file != null) {
             try {
-                main.saveOntologyToFile(file);
+                patientsService.saveKnowledgeBase(file);
             } catch (OWLOntologyStorageException e) {
                 LOG.error("Failed to save ontology to file " + file.getPath());
-                Dialogs.errorExceptionDialog(main.getPrimaryStage(), "Error saving ontology", null,
+                Dialogs.errorExceptionDialog(primaryStage, "Error saving ontology", null,
                         "Cannot save ontology to file: " + file.getName(), e);
             }
         } else {
@@ -110,14 +115,14 @@ public class RootLayoutController {
         fileChooser.getExtensionFilters().add(extFilter);
 
         LOG.debug("Fetching default directory.");
-        File defaultDirectory = main.getDefaultDirectoryFile();
+        File defaultDirectory = SystemDefaults.getDefaultDirectoryFile();
         if (defaultDirectory != null) {
             LOG.debug("Found default directory: " + defaultDirectory.getPath());
             fileChooser.setInitialDirectory(defaultDirectory);
         }
 
         // Show save file dialog
-        File file = fileChooser.showSaveDialog(main.getPrimaryStage());
+        File file = fileChooser.showSaveDialog(primaryStage);
 
         if (file != null) {
             // Make sure it has the correct extension
@@ -125,9 +130,9 @@ public class RootLayoutController {
                 file = new File(file.getPath() + ".owl");
             }
             try {
-                main.saveOntologyToFile(file);
+                patientsService.saveKnowledgeBase(file);
             } catch (OWLOntologyStorageException e) {
-                Dialogs.errorExceptionDialog(main.getPrimaryStage(), "Error saving ontology", null,
+                Dialogs.errorExceptionDialog(primaryStage, "Error saving ontology", null,
                         "Cannot save ontology to file: " + file.getName(), e);
             }
         }

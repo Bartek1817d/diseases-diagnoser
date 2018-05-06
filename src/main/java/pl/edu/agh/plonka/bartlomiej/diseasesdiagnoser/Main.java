@@ -72,7 +72,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
 
         RootLayoutController controller = loader.getController();
-        controller.setMain(this);
+        controller.setMain(primaryStage, patientsService, BASE_URL);
 
         primaryStage.show();
     }
