@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane prefHeight="331.0" prefWidth="298.0" xmlns="http://javafx.com/javafx/8.0.111"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.EntityEditDialogController">
+            fx:controller="pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.EntityEditDialogController">
     <children>
         <TextField fx:id="entityName" layoutX="37.0" layoutY="32.0" AnchorPane.leftAnchor="5.0"
                    AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="21.0"/>

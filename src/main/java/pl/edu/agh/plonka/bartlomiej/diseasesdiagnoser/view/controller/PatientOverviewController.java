@@ -1,4 +1,4 @@
-package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view;
+package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -12,6 +12,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.PositiveIntegerStringBinding;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.Dialogs;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -196,11 +197,11 @@ public class PatientOverviewController {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
             Set<Entity> symptoms = new HashSet<>();
-            boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Symptom"),
+            boolean okClicked = main.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Symptom"),
                     selectedPatient.getSymptoms(), symptoms);
             if (okClicked) {
                 selectedPatient.setSymptoms(symptoms);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
@@ -215,7 +216,7 @@ public class PatientOverviewController {
             ObservableList<Entity> symptoms = symptomsList.getSelectionModel().getSelectedItems();
             if (!symptoms.isEmpty()) {
                 selectedPatient.getSymptoms().removeAll(symptoms);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             } else {
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Symptoms Selected",
                         "Please select symptoms in the table.");
@@ -231,11 +232,11 @@ public class PatientOverviewController {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
             Set<Entity> diseases = new HashSet<>();
-            boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Disease"),
+            boolean okClicked = main.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Disease"),
                     selectedPatient.getDiseases(), diseases);
             if (okClicked) {
                 selectedPatient.setDiseases(diseases);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
@@ -250,7 +251,7 @@ public class PatientOverviewController {
             ObservableList<Entity> diseases = diseasesList.getSelectionModel().getSelectedItems();
             if (!diseases.isEmpty()) {
                 selectedPatient.getDiseases().removeAll(diseases);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             } else {
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Diseases Selected",
                         "Please select diseases in the table.");
@@ -266,11 +267,11 @@ public class PatientOverviewController {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
             Set<Entity> tests = new HashSet<>();
-            boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Testing"),
+            boolean okClicked = main.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Testing"),
                     selectedPatient.getTests(), tests);
             if (okClicked) {
                 selectedPatient.setTests(tests);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
@@ -285,7 +286,7 @@ public class PatientOverviewController {
             ObservableList<Entity> tests = testsList.getSelectionModel().getSelectedItems();
             if (!tests.isEmpty()) {
                 selectedPatient.getTests().removeAll(tests);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             } else {
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Tests Selected",
                         "Please select tests in the table.");
@@ -301,11 +302,11 @@ public class PatientOverviewController {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
             Set<Entity> treatments = new HashSet<>();
-            boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Treatment"),
+            boolean okClicked = main.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Treatment"),
                     selectedPatient.getTreatments(), treatments);
             if (okClicked) {
                 selectedPatient.setTreatments(treatments);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
@@ -320,7 +321,7 @@ public class PatientOverviewController {
             ObservableList<Entity> treatments = treatmentsList.getSelectionModel().getSelectedItems();
             if (!treatments.isEmpty()) {
                 selectedPatient.getTreatments().removeAll(treatments);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
 //                showPatientDetails(selectedPatient);
             } else {
                 // Nothing selected.
@@ -339,11 +340,11 @@ public class PatientOverviewController {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
             Set<Entity> causes = new HashSet<>();
-            boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Cause"),
+            boolean okClicked = main.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Cause"),
                     selectedPatient.getCauses(), causes);
             if (okClicked) {
                 selectedPatient.setCauses(causes);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
@@ -358,7 +359,7 @@ public class PatientOverviewController {
             ObservableList<Entity> causes = causesList.getSelectionModel().getSelectedItems();
             if (!causes.isEmpty()) {
                 selectedPatient.getCauses().removeAll(causes);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             } else {
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Causes Selected",
                         "Please select causes in the table.");
@@ -374,11 +375,11 @@ public class PatientOverviewController {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
             Set<Entity> tests = new HashSet<>();
-            boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Testing"),
+            boolean okClicked = main.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Testing"),
                     selectedPatient.getNegativeTests(), tests);
             if (okClicked) {
                 selectedPatient.setNegativeTests(tests);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
@@ -393,7 +394,7 @@ public class PatientOverviewController {
             ObservableList<Entity> negativeTests = negativeTestsList.getSelectionModel().getSelectedItems();
             if (!negativeTests.isEmpty()) {
                 selectedPatient.getNegativeTests().removeAll(negativeTests);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             } else {
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Negative Tests Selected",
                         "Please select negative tests in the table.");
@@ -409,11 +410,11 @@ public class PatientOverviewController {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
             Set<Entity> diseases = new HashSet<>();
-            boolean okClicked = main.showEntitiesEditDialog(main.getOntology().getClasses().get("Testing"),
+            boolean okClicked = main.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Testing"),
                     selectedPatient.getPreviousAndCurrentDiseases(), diseases);
             if (okClicked) {
                 selectedPatient.setPreviousAndCurrentDiseases(diseases);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
             Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Patient Selected",
@@ -429,7 +430,7 @@ public class PatientOverviewController {
             if (!negativeTests.isEmpty()) {
                 selectedPatient.getNegativeTests().removeAll(negativeTests);
                 selectedPatient.getTests().removeAll(negativeTests);
-                main.getOntology().updatePatient(selectedPatient);
+                patientsService.getOntology().updatePatient(selectedPatient);
             } else {
                 Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Negative Tests Selected",
                         "Please select negative tests in the table.");

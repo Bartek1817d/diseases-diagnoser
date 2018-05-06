@@ -1,4 +1,4 @@
-package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view;
+package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NamesUtils;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.Dialogs;
 
 /**
  * Dialog to edit details of a patient.
@@ -35,9 +37,11 @@ public class PatientEditDialogController {
     private Patient patient;
     private boolean okClicked = false;
     private Main main;
+    private PatientsService patientsService;
 
-    public void setMainApp(Main main) {
+    public void setMainApp(Main main, PatientsService patientsService) {
         this.main = main;
+        this.patientsService = patientsService;
     }
 
     /**
@@ -93,10 +97,10 @@ public class PatientEditDialogController {
             String fn = firstNameField.getText();
             String ln = lastNameField.getText();
             if (patient.getID() == null) {
-                if (main.getOntology().containsID(NamesUtils.generateID(fn, ln))) {
+                if (patientsService.getOntology().containsID(NamesUtils.generateID(fn, ln))) {
                     int i = 1;
                     String newID = NamesUtils.generateID(fn, ln, Integer.toString(i));
-                    while (main.getOntology().containsID(newID)) {
+                    while (patientsService.getOntology().containsID(newID)) {
                         newID = NamesUtils.generateID(fn, ln, Integer.toString(++i));
                     }
                     patient.setID(newID);

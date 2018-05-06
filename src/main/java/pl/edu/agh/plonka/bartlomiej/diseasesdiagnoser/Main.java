@@ -17,7 +17,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.*;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,12 +33,10 @@ public class Main extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
     private static final String BASE_URL = "http://www.agh.edu.pl/plonka/bartlomiej/ontologies/human_diseases.owl";
-    private OntologyWrapper ontology;
 
     /**
      * The data as an observable set of Patients.
      */
-    private ObservableList<Patient> patientData = FXCollections.observableArrayList();
     private PatientsService patientsService;
 
     /**
@@ -49,23 +47,13 @@ public class Main extends Application {
     public Main() {
     }
 
-    /**
-     * Returns the data as an observable list of Patients.
-     *
-     * @return
-     */
-    public ObservableList<Patient> getPatientData() {
-        return patientData;
-    }
-
     @Override
     public void start(Stage primaryStage) throws IOException, OWLOntologyCreationException {
         LOG.info("Starting application");
 
         this.primaryStage = primaryStage;
 
-        OntologyWrapper ontology = createOntology();
-        patientsService = new PatientsService(ontology);
+        createOntology();
         initRootLayout();
         showPatientOverview();
     }
@@ -89,21 +77,21 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private OntologyWrapper createOntology() throws OWLOntologyCreationException {
+    private void createOntology() throws OWLOntologyCreationException {
         LOG.info("Ontology initialization.");
         File ontologyFile = getDefaultOntologyFile();
         if (ontologyFile == null || !ontologyFile.exists()) {
             LOG.debug("Default ontology not found. Initialize empty ontology.");
-            return createNewOntology();
+            createNewOntology();
         } else {
             try {
                 LOG.debug("Found default ontology: " + ontologyFile + ". Loading from resource.");
                 setDefaultOntologyFile(ontologyFile);
-                return loadOntologyFromFile(ontologyFile);
+                loadOntologyFromFile(ontologyFile);
             } catch (OWLOntologyCreationException e) {
                 LOG.warn("Failed to load ontology " + ontologyFile + ". Creating empty ontology.");
                 removeDefaultOntologyFile();
-                return createNewOntology();
+                createNewOntology();
             }
         }
     }
@@ -146,7 +134,7 @@ public class Main extends Application {
 
         // Set the patient into the controller.
         PatientEditDialogController controller = loader.getController();
-        controller.setMainApp(this);
+        controller.setMainApp(this, patientsService);
         controller.setDialogStage(dialogStage);
         controller.setPatient(patient);
 
@@ -175,7 +163,7 @@ public class Main extends Application {
             controller.setMainApp(this);
             controller.setDialogStage(dialogStage);
             controller.setResultsContainer(results);
-            controller.setEntities(rootEntity, currentEntities, ontology);
+            controller.setEntities(rootEntity, currentEntities, patientsService.getOntology());
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
@@ -203,7 +191,7 @@ public class Main extends Application {
             dialogStage.setScene(scene);
 
             EntityEditDialogController controller = loader.getController();
-            controller.setMainApp(this);
+            controller.setMainApp(this, patientsService);
             controller.setDialogStage(dialogStage);
             controller.setEntity(entity);
 
@@ -279,31 +267,22 @@ public class Main extends Application {
         return primaryStage;
     }
 
-    public OntologyWrapper loadOntologyFromFile(File file) throws OWLOntologyCreationException {
-        ontology = new OntologyWrapper(file);
-        patientData.clear();
-        patientData.addAll(ontology.getPatients());
+    public void loadOntologyFromFile(File file) throws OWLOntologyCreationException {
+        patientsService = new PatientsService(file);
         setDefaultOntologyFile(file);
         setDefaultDirectoryFile(file.getParentFile());
         primaryStage.setTitle("Diseases Diagnoser - " + file.getName());
-        return ontology;
     }
 
     public void saveOntologyToFile(File file) throws OWLOntologyStorageException {
-        ontology.saveOntologyToFile(file);
+        patientsService.saveKnowledgeBase(file);
         setDefaultOntologyFile(file);
         setDefaultDirectoryFile(file.getParentFile());
     }
 
-    public OntologyWrapper createNewOntology() throws OWLOntologyCreationException {
-        ontology = new OntologyWrapper(BASE_URL);
-        patientData.clear();
+    public void createNewOntology() throws OWLOntologyCreationException {
+        patientsService = new PatientsService(BASE_URL);
         primaryStage.setTitle("Diseases Diagnoser");
-        return ontology;
-    }
-
-    public OntologyWrapper getOntology() {
-        return ontology;
     }
 
     public static void main(String[] args) {

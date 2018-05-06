@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane prefHeight="250.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.111"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.PatientEditDialogController">
+            fx:controller="pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.PatientEditDialogController">
     <children>
         <GridPane AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
             <columnConstraints>

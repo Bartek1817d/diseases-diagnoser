@@ -1,4 +1,4 @@
-package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view;
+package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -8,13 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NamesUtils;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.Dialogs;
 
 public class EntityEditDialogController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private Main main;
+    private PatientsService patientsService;
     private Stage dialogStage;
     private Entity entity;
     private boolean okClicked = false;
@@ -24,8 +27,9 @@ public class EntityEditDialogController {
     @FXML
     private TextArea entityDescription;
 
-    public void setMainApp(Main main) {
+    public void setMainApp(Main main, PatientsService patientsService) {
         this.main = main;
+        this.patientsService = patientsService;
     }
 
     /**
@@ -66,10 +70,10 @@ public class EntityEditDialogController {
             String name = entityName.getText();
             if (entity.getID() == null) {
                 String newID = NamesUtils.generateID(name);
-                if (main.getOntology().containsID(newID)) {
+                if (patientsService.getOntology().containsID(newID)) {
                     int i = 1;
                     newID = NamesUtils.generateID(name, Integer.toString(i));
-                    while (main.getOntology().containsID(newID)) {
+                    while (patientsService.getOntology().containsID(newID)) {
                         newID = NamesUtils.generateID(name, Integer.toString(++i));
                     }
                     entity.setID(newID);
