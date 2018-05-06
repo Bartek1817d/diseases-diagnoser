@@ -10,8 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.Dialogs;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.util.*;
 
@@ -25,13 +26,16 @@ public class EntitiesEditDialogController {
     private Stage dialogStage;
     private boolean okClicked = false;
     private Main main;
+    private ViewManager viewManager;
+    private PatientsService patientsService;
     private Set<CheckBoxTreeItem<Entity>> entities = new HashSet<CheckBoxTreeItem<Entity>>();
     private Collection<Entity> results;
     private Map<String, Entity> allIndividuals;
-    private OntologyWrapper ontology;
 
-    public void setMainApp(Main main) {
+    public void setMainApp(Main main, ViewManager viewManager, PatientsService patientsService) {
         this.main = main;
+        this.viewManager = viewManager;
+        this.patientsService = patientsService;
     }
 
     public void setDialogStage(Stage dialogStage) {
@@ -42,24 +46,23 @@ public class EntitiesEditDialogController {
         this.results = results;
     }
 
-    public void setEntities(Entity rootEntity, Collection<Entity> currentIndividuals, OntologyWrapper ontology) {
-        Collection<Entity> classes = ontology.getClasses().values();
-        this.ontology = ontology;
+    public void setEntities(Entity rootEntity, Collection<Entity> currentIndividuals) {
+        Collection<Entity> classes = patientsService.getOntology().getClasses().values();
         switch (rootEntity.getID()) {
             case "Symptom":
-                allIndividuals = ontology.getSymptoms();
+                allIndividuals = patientsService.getOntology().getSymptoms();
                 break;
             case "Disease":
-                allIndividuals = ontology.getDiseases();
+                allIndividuals = patientsService.getOntology().getDiseases();
                 break;
             case "Testing":
-                allIndividuals = ontology.getTests();
+                allIndividuals = patientsService.getOntology().getTests();
                 break;
             case "Treatment":
-                allIndividuals = ontology.getTreatments();
+                allIndividuals = patientsService.getOntology().getTreatments();
                 break;
             case "Cause":
-                allIndividuals = ontology.getCauses();
+                allIndividuals = patientsService.getOntology().getCauses();
                 break;
         }
         Map<Entity, TreeItem<Entity>> classMap = new HashMap<Entity, TreeItem<Entity>>();
@@ -134,13 +137,13 @@ public class EntitiesEditDialogController {
         TreeItem<Entity> treeItem = entitiesTree.getSelectionModel().getSelectedItem();
         if (treeItem != null && !entities.contains(treeItem)) {
             Entity newEntity = new Entity();
-            boolean okClicked = main.showEntityEditDialog(newEntity);
+            boolean okClicked = viewManager.showEntityEditDialog(newEntity, patientsService);
             if (okClicked) {
                 newEntity.addClass(treeItem.getValue());
                 CheckBoxTreeItem<Entity> newTreeItem = new CheckBoxTreeItem<Entity>(newEntity);
                 entities.add(newTreeItem);
                 treeItem.getChildren().add(newTreeItem);
-                ontology.addEntity(newEntity);
+                patientsService.getOntology().addEntity(newEntity);
                 allIndividuals.put(newEntity.getID(), newEntity);
             }
         } else {
@@ -155,10 +158,10 @@ public class EntitiesEditDialogController {
         TreeItem<Entity> treeItem = entitiesTree.getSelectionModel().getSelectedItem();
         if (treeItem != null && entities.contains(treeItem)) {
             Entity entity = treeItem.getValue();
-            boolean okClicked = main.showEntityEditDialog(entity);
+            boolean okClicked = viewManager.showEntityEditDialog(entity, patientsService);
             if (okClicked) {
                 entitiesTree.refresh();
-                ontology.addEntity(entity);
+                patientsService.getOntology().addEntity(entity);
             }
         } else {
             // Nothing selected.
@@ -174,7 +177,7 @@ public class EntitiesEditDialogController {
             Entity entity = treeEntity.getValue();
             treeEntity.getParent().getChildren().remove(treeEntity);
             this.entities.remove(treeEntity);
-            ontology.deleteEntity(entity);
+            patientsService.getOntology().deleteEntity(entity);
             allIndividuals.remove(entity.getID());
         } else {
             // Nothing selected.

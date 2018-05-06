@@ -1,8 +1,6 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -10,26 +8,28 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.*;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.EntitiesEditDialogController;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.PatientEditDialogController;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.PatientOverviewController;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.RootLayoutController;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.prefs.Preferences;
+
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.*;
 
 public class Main extends Application {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-    private Preferences preferences = Preferences.userNodeForPackage(Main.class);
     private Stage primaryStage;
     private BorderPane rootLayout;
     private static final String BASE_URL = "http://www.agh.edu.pl/plonka/bartlomiej/ontologies/human_diseases.owl";
@@ -37,6 +37,7 @@ public class Main extends Application {
     /**
      * The data as an observable set of Patients.
      */
+    private ViewManager viewManager;
     private PatientsService patientsService;
 
     /**
@@ -53,6 +54,7 @@ public class Main extends Application {
 
         this.primaryStage = primaryStage;
 
+        viewManager = new ViewManager(primaryStage);
         createOntology();
         initRootLayout();
         showPatientOverview();
@@ -160,10 +162,10 @@ public class Main extends Application {
             dialogStage.setScene(scene);
 
             EntitiesEditDialogController controller = loader.getController();
-            controller.setMainApp(this);
+            controller.setMainApp(this, viewManager, patientsService);
             controller.setDialogStage(dialogStage);
             controller.setResultsContainer(results);
-            controller.setEntities(rootEntity, currentEntities, patientsService.getOntology());
+            controller.setEntities(rootEntity, currentEntities);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
@@ -175,88 +177,6 @@ public class Main extends Application {
         }
     }
 
-    public boolean showEntityEditDialog(Entity entity) {
-        try {
-            // Load the fxml file and create a new stage for the popup dialog.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getClassLoader().getResource("fxml/EntityEditDialog.fxml"));
-            AnchorPane page = loader.load();
-
-            // Create the dialog Stage.
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Edit Entity");
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(primaryStage);
-            Scene scene = new Scene(page);
-            dialogStage.setScene(scene);
-
-            EntityEditDialogController controller = loader.getController();
-            controller.setMainApp(patientsService);
-            controller.setDialogStage(dialogStage);
-            controller.setEntity(entity);
-
-            // Show the dialog and wait until the user closes it
-            dialogStage.showAndWait();
-
-            return controller.isOkClicked();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Returns the person file preference, i.e. the file that was last opened.
-     * The preference is read from the OS specific registry. If no such
-     * preference can be found, null is returned.
-     *
-     * @return
-     */
-    public File getDefaultOntologyFile() {
-        String ontologyPath = preferences.get("ontologyFile", null);
-        if (ontologyPath != null) {
-            File ontologyFile = new File(ontologyPath);
-            return ontologyFile.exists() && ontologyFile.isFile() ? ontologyFile : null;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Sets the file path of the currently loaded file. The path is persisted in
-     * the OS specific registry.
-     *
-     * @param file the file or null to remove the path
-     */
-    public void setDefaultOntologyFile(File file) {
-        if (file != null && file.exists() && file.isFile()) {
-            preferences.put("ontologyFile", file.getPath());
-        }
-    }
-
-    public void removeDefaultOntologyFile() {
-        preferences.remove("ontologyFile");
-    }
-
-    public File getDefaultDirectoryFile() {
-        String directoryPath = preferences.get("defaultDirectory", null);
-        if (directoryPath != null) {
-            File directoryFile = new File(directoryPath);
-            return directoryFile.exists() && directoryFile.isDirectory() ? directoryFile : null;
-        } else {
-            return null;
-        }
-    }
-
-    public void setDefaultDirectoryFile(File file) {
-        if (file != null && file.exists() && file.isDirectory()) {
-            preferences.put("defaultDirectory", file.getPath());
-        }
-    }
-
-    public void removeDefaultDirectoryFile() {
-        preferences.remove("defaultDirectory");
-    }
 
     /**
      * Returns the main stage.
@@ -267,20 +187,14 @@ public class Main extends Application {
         return primaryStage;
     }
 
-    public void loadOntologyFromFile(File file) throws OWLOntologyCreationException {
+    private void loadOntologyFromFile(File file) throws OWLOntologyCreationException {
         patientsService = new PatientsService(file);
         setDefaultOntologyFile(file);
         setDefaultDirectoryFile(file.getParentFile());
         primaryStage.setTitle("Diseases Diagnoser - " + file.getName());
     }
 
-    public void saveOntologyToFile(File file) throws OWLOntologyStorageException {
-        patientsService.saveKnowledgeBase(file);
-        setDefaultOntologyFile(file);
-        setDefaultDirectoryFile(file.getParentFile());
-    }
-
-    public void createNewOntology() throws OWLOntologyCreationException {
+    private void createNewOntology() throws OWLOntologyCreationException {
         patientsService = new PatientsService(BASE_URL);
         primaryStage.setTitle("Diseases Diagnoser");
     }
