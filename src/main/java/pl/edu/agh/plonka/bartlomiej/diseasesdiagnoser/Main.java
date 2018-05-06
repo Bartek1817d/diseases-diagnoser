@@ -191,7 +191,7 @@ public class Main extends Application {
             dialogStage.setScene(scene);
 
             EntityEditDialogController controller = loader.getController();
-            controller.setMainApp(this, patientsService);
+            controller.setMainApp(patientsService);
             controller.setDialogStage(dialogStage);
             controller.setEntity(entity);
 

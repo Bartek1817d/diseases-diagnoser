@@ -16,7 +16,6 @@ public class EntityEditDialogController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-    private Main main;
     private PatientsService patientsService;
     private Stage dialogStage;
     private Entity entity;
@@ -27,8 +26,7 @@ public class EntityEditDialogController {
     @FXML
     private TextArea entityDescription;
 
-    public void setMainApp(Main main, PatientsService patientsService) {
-        this.main = main;
+    public void setMainApp(PatientsService patientsService) {
         this.patientsService = patientsService;
     }
 
