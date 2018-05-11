@@ -25,15 +25,13 @@ public class EntitiesEditDialogController {
 
     private Stage dialogStage;
     private boolean okClicked = false;
-    private Main main;
     private ViewManager viewManager;
     private PatientsService patientsService;
     private Set<CheckBoxTreeItem<Entity>> entities = new HashSet<CheckBoxTreeItem<Entity>>();
     private Collection<Entity> results;
     private Map<String, Entity> allIndividuals;
 
-    public void setMainApp(Main main, ViewManager viewManager, PatientsService patientsService) {
-        this.main = main;
+    public void setMainApp(ViewManager viewManager, PatientsService patientsService) {
         this.viewManager = viewManager;
         this.patientsService = patientsService;
     }
@@ -148,7 +146,7 @@ public class EntitiesEditDialogController {
             }
         } else {
             // Nothing selected.
-            Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Class Selected",
+            viewManager.warningDialog("No Selection", "No Class Selected",
                     "Please select parent class in the table.");
         }
     }
@@ -165,7 +163,7 @@ public class EntitiesEditDialogController {
             }
         } else {
             // Nothing selected.
-            Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Item Selected",
+            viewManager.warningDialog("No Selection", "No Item Selected",
                     "Please select item in the table.");
         }
     }
@@ -181,7 +179,7 @@ public class EntitiesEditDialogController {
             allIndividuals.remove(entity.getID());
         } else {
             // Nothing selected.
-            Dialogs.warningDialog(main.getPrimaryStage(), "No Selection", "No Entities Selected",
+            viewManager.warningDialog("No Selection", "No Entities Selected",
                     "Please select entities in the table.");
         }
     }
