@@ -16,13 +16,12 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.EntitiesEditDialogController;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.EntityEditDialogController;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.PatientEditDialogController;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.Collection;
 
 public class ViewManager {
@@ -34,6 +33,44 @@ public class ViewManager {
 
     public ViewManager(Stage primaryStage) {
         this.primaryStage = primaryStage;
+    }
+
+    /**
+     * Initializes the root layout.
+     */
+    public void initRootLayout(PatientsService patientsService, String baseUrl) throws IOException {
+        LOG.info("Loading root layout from FXML file");
+        FXMLLoader loader = new FXMLLoader();
+        URL resource = getClass().getClassLoader().getResource("fxml/RootLayout.fxml");
+        loader.setLocation(resource);
+        rootLayout = loader.load();
+
+        Scene scene = new Scene(rootLayout);
+        primaryStage.setScene(scene);
+
+        RootLayoutController controller = loader.getController();
+        controller.setMain(primaryStage, patientsService, baseUrl);
+
+        primaryStage.show();
+    }
+
+    /**
+     * Shows the patient overview inside the root layout.
+     */
+    public void showPatientOverview(PatientsService patientsService) throws IOException {
+        LOG.info("Loading patient overview layout from FXML file");
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientOverview.fxml"));
+        AnchorPane patientOverview = loader.load();
+
+        rootLayout.setCenter(patientOverview);
+
+        PatientOverviewController controller = loader.getController();
+        controller.setMainApp(this, patientsService);
+    }
+
+    public void setTitle(String title) {
+        primaryStage.setTitle(title);
     }
 
     public boolean showEntityEditDialog(Entity entity, PatientsService patientsService) {
