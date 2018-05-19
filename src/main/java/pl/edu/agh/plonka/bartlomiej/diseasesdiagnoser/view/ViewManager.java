@@ -14,12 +14,16 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.EntitiesEditDialogController;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.EntityEditDialogController;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.PatientEditDialogController;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collection;
 
 public class ViewManager {
 
@@ -62,6 +66,62 @@ public class ViewManager {
         }
     }
 
+    public boolean showPatientEditDialog(Patient patient, PatientsService patientsService) throws IOException {
+        LOG.info("Loading patient edit dialog layout from FXML file");
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientEditDialog.fxml"));
+        AnchorPane page = loader.load();
+
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Edit Patient");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+
+        // Set the patient into the controller.
+        PatientEditDialogController controller = loader.getController();
+        controller.setMainApp(this, patientsService);
+        controller.setDialogStage(dialogStage);
+        controller.setPatient(patient);
+
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
+
+        return controller.isOkClicked();
+    }
+
+    public boolean showEntitiesEditDialog(Entity rootEntity, Collection<Entity> currentEntities, Collection<Entity> results, PatientsService patientsService) {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getClassLoader().getResource("fxml/EntitiesEditDialog.fxml"));
+            AnchorPane page = loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Patient");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            EntitiesEditDialogController controller = loader.getController();
+            controller.setMainApp(this, patientsService);
+            controller.setDialogStage(dialogStage);
+            controller.setResultsContainer(results);
+            controller.setEntities(rootEntity, currentEntities);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void errorDialog(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(primaryStage);
@@ -87,7 +147,7 @@ public class ViewManager {
     }
 
     public void errorExceptionDialog(Stage ownerStage, String title, String header, String content,
-                                            Exception exception) {
+                                     Exception exception) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(primaryStage);
         if (alert != null)

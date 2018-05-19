@@ -5,11 +5,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NamesUtils;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.Dialogs;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 /**
  * Dialog to edit details of a patient.
@@ -36,11 +35,11 @@ public class PatientEditDialogController {
     private Stage dialogStage;
     private Patient patient;
     private boolean okClicked = false;
-    private Main main;
+    private ViewManager viewManager;
     private PatientsService patientsService;
 
-    public void setMainApp(Main main, PatientsService patientsService) {
-        this.main = main;
+    public void setMainApp(ViewManager viewManager, PatientsService patientsService) {
+        this.viewManager = viewManager;
         this.patientsService = patientsService;
     }
 
@@ -170,7 +169,7 @@ public class PatientEditDialogController {
         if (errorMessage.length() == 0) {
             return true;
         } else {
-            Dialogs.errorDialog(dialogStage, "Error creating patient", null, errorMessage);
+            viewManager.errorDialog("Error creating patient", null, errorMessage);
             return false;
         }
     }

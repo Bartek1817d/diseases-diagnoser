@@ -5,24 +5,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.EntitiesEditDialogController;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.PatientEditDialogController;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.PatientOverviewController;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.RootLayoutController;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
 
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.*;
 
@@ -110,73 +104,8 @@ public class Main extends Application {
         rootLayout.setCenter(patientOverview);
 
         PatientOverviewController controller = loader.getController();
-        controller.setMainApp(this, patientsService);
+        controller.setMainApp(viewManager, patientsService);
     }
-
-    /**
-     * Opens a dialog to edit details for the specified patient. If the user
-     * clicks OK, the changes are saved into the provided patient object and
-     * true is returned.
-     *
-     * @param patient the patient object to be edited
-     * @return true if the user clicked OK, false otherwise.
-     */
-    public boolean showPatientEditDialog(Patient patient) throws IOException {
-        LOG.info("Loading patient edit dialog layout from FXML file");
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientEditDialog.fxml"));
-        AnchorPane page = loader.load();
-
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("Edit Patient");
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(primaryStage);
-        Scene scene = new Scene(page);
-        dialogStage.setScene(scene);
-
-        // Set the patient into the controller.
-        PatientEditDialogController controller = loader.getController();
-        controller.setMainApp(this, patientsService);
-        controller.setDialogStage(dialogStage);
-        controller.setPatient(patient);
-
-        // Show the dialog and wait until the user closes it
-        dialogStage.showAndWait();
-
-        return controller.isOkClicked();
-    }
-
-    public boolean showEntitiesEditDialog(Entity rootEntity, Collection<Entity> currentEntities, Collection<Entity> results) {
-        try {
-            // Load the fxml file and create a new stage for the popup dialog.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getClassLoader().getResource("fxml/EntitiesEditDialog.fxml"));
-            AnchorPane page = loader.load();
-
-            // Create the dialog Stage.
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Edit Patient");
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(primaryStage);
-            Scene scene = new Scene(page);
-            dialogStage.setScene(scene);
-
-            EntitiesEditDialogController controller = loader.getController();
-            controller.setMainApp(viewManager, patientsService);
-            controller.setDialogStage(dialogStage);
-            controller.setResultsContainer(results);
-            controller.setEntities(rootEntity, currentEntities);
-
-            // Show the dialog and wait until the user closes it
-            dialogStage.showAndWait();
-
-            return controller.isOkClicked();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
 
     /**
      * Returns the main stage.
