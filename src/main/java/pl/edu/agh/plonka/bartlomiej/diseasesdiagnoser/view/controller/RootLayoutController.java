@@ -11,6 +11,9 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.io.File;
 
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultDirectoryFile;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultOntologyFile;
+
 /**
  * The controller for the root layout. The root layout provides the basic
  * application layout containing a menu bar and space where other JavaFX
@@ -98,6 +101,9 @@ public class RootLayoutController {
             }
             try {
                 patientsService.saveKnowledgeBase(file);
+                setDefaultOntologyFile(file);
+                setDefaultDirectoryFile(file);
+                viewManager.setTitle("Diseases Diagnoser - " + file.getName());
             } catch (OWLOntologyStorageException e) {
                 viewManager.errorExceptionDialog("Error saving ontology", null,
                         "Cannot save ontology to file: " + file.getName(), e);
