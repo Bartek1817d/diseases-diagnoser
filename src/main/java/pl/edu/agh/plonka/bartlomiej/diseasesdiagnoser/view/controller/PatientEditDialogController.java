@@ -38,7 +38,7 @@ public class PatientEditDialogController {
     private ViewManager viewManager;
     private PatientsService patientsService;
 
-    public void setMainApp(ViewManager viewManager, PatientsService patientsService) {
+    public void init(ViewManager viewManager, PatientsService patientsService) {
         this.viewManager = viewManager;
         this.patientsService = patientsService;
     }

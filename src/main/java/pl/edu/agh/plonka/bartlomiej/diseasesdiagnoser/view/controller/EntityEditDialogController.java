@@ -6,17 +6,17 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NamesUtils;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.Dialogs;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 public class EntityEditDialogController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private PatientsService patientsService;
+    private ViewManager viewManager;
     private Stage dialogStage;
     private Entity entity;
     private boolean okClicked = false;
@@ -26,7 +26,8 @@ public class EntityEditDialogController {
     @FXML
     private TextArea entityDescription;
 
-    public void setMainApp(PatientsService patientsService) {
+    public void init(ViewManager viewManager, PatientsService patientsService) {
+        this.viewManager = viewManager;
         this.patientsService = patientsService;
     }
 
@@ -92,7 +93,7 @@ public class EntityEditDialogController {
 
     private boolean isInputValid() {
         if (entityName.getText() == null || entityName.getText().length() == 0) {
-            Dialogs.errorDialog(dialogStage, "Error creating entity", null, "No valid name!\n");
+            viewManager.errorDialog("Error creating entity", null, "No valid name!\n");
             return false;
         } else
             return true;

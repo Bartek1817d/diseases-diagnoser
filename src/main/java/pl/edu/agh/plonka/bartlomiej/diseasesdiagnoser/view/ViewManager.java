@@ -9,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -16,8 +17,10 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -49,7 +52,7 @@ public class ViewManager {
         primaryStage.setScene(scene);
 
         RootLayoutController controller = loader.getController();
-        controller.setMain(primaryStage, patientsService, baseUrl);
+        controller.init(this, patientsService, baseUrl);
 
         primaryStage.show();
     }
@@ -66,7 +69,7 @@ public class ViewManager {
         rootLayout.setCenter(patientOverview);
 
         PatientOverviewController controller = loader.getController();
-        controller.setMainApp(this, patientsService);
+        controller.init(this, patientsService);
     }
 
     public void setTitle(String title) {
@@ -89,7 +92,7 @@ public class ViewManager {
             dialogStage.setScene(scene);
 
             EntityEditDialogController controller = loader.getController();
-            controller.setMainApp(patientsService);
+            controller.init(this, patientsService);
             controller.setDialogStage(dialogStage);
             controller.setEntity(entity);
 
@@ -118,7 +121,7 @@ public class ViewManager {
 
         // Set the patient into the controller.
         PatientEditDialogController controller = loader.getController();
-        controller.setMainApp(this, patientsService);
+        controller.init(this, patientsService);
         controller.setDialogStage(dialogStage);
         controller.setPatient(patient);
 
@@ -144,7 +147,7 @@ public class ViewManager {
             dialogStage.setScene(scene);
 
             EntitiesEditDialogController controller = loader.getController();
-            controller.setMainApp(this, patientsService);
+            controller.init(this, patientsService);
             controller.setDialogStage(dialogStage);
             controller.setResultsContainer(results);
             controller.setEntities(rootEntity, currentEntities);
@@ -183,7 +186,7 @@ public class ViewManager {
         alert.showAndWait();
     }
 
-    public void errorExceptionDialog(Stage ownerStage, String title, String header, String content,
+    public void errorExceptionDialog(String title, String header, String content,
                                      Exception exception) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(primaryStage);
@@ -220,5 +223,41 @@ public class ViewManager {
         alert.getDialogPane().setExpandableContent(expContent);
 
         alert.showAndWait();
+    }
+
+    public File showOpenDialog(final String description, final String... extensions) {
+        FileChooser fileChooser = fileChooser(description, extensions);
+
+        return fileChooser.showOpenDialog(primaryStage);
+    }
+
+    public File showSaveDialog(final String description, final String... extensions) {
+        FileChooser fileChooser = fileChooser(description, extensions);
+
+        return fileChooser.showSaveDialog(primaryStage);
+    }
+
+    public void informationAlert(String title, String header, String cntent) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(cntent);
+
+        alert.showAndWait();
+    }
+
+    private FileChooser fileChooser(final String description, final String... extensions) {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(description, extensions);
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        LOG.debug("Fetching default directory.");
+        File defaultDirectory = SystemDefaults.getDefaultDirectoryFile();
+        if (defaultDirectory != null) {
+            LOG.debug("Found default directory: " + defaultDirectory.getPath());
+            fileChooser.setInitialDirectory(defaultDirectory);
+        }
+
+        return fileChooser;
     }
 }

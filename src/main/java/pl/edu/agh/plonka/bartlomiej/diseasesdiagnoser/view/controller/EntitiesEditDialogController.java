@@ -8,10 +8,8 @@ import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.Main;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.Dialogs;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.util.*;
@@ -31,7 +29,7 @@ public class EntitiesEditDialogController {
     private Collection<Entity> results;
     private Map<String, Entity> allIndividuals;
 
-    public void setMainApp(ViewManager viewManager, PatientsService patientsService) {
+    public void init(ViewManager viewManager, PatientsService patientsService) {
         this.viewManager = viewManager;
         this.patientsService = patientsService;
     }

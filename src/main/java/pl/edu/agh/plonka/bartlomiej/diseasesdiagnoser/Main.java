@@ -19,17 +19,9 @@ public class Main extends Application {
 
     private static final String BASE_URL = "http://www.agh.edu.pl/plonka/bartlomiej/ontologies/human_diseases.owl";
 
-    /**
-     * The data as an observable set of Patients.
-     */
     private ViewManager viewManager;
     private PatientsService patientsService;
 
-    /**
-     * Constructor
-     *
-     * @throws OWLOntologyCreationException
-     */
     public Main() {
     }
 
