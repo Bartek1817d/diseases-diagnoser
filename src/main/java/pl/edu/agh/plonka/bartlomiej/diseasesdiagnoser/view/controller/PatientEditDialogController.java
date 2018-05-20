@@ -38,8 +38,9 @@ public class PatientEditDialogController {
     private ViewManager viewManager;
     private PatientsService patientsService;
 
-    public void init(ViewManager viewManager, PatientsService patientsService) {
+    public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService) {
         this.viewManager = viewManager;
+        this.dialogStage = dialogStage;
         this.patientsService = patientsService;
     }
 
@@ -49,15 +50,6 @@ public class PatientEditDialogController {
      */
     @FXML
     private void initialize() {
-    }
-
-    /**
-     * Sets the stage of this dialog.
-     *
-     * @param dialogStage
-     */
-    public void setDialogStage(Stage dialogStage) {
-        this.dialogStage = dialogStage;
     }
 
     /**

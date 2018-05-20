@@ -92,8 +92,7 @@ public class ViewManager {
             dialogStage.setScene(scene);
 
             EntityEditDialogController controller = loader.getController();
-            controller.init(this, patientsService);
-            controller.setDialogStage(dialogStage);
+            controller.init(this, dialogStage, patientsService);
             controller.setEntity(entity);
 
             // Show the dialog and wait until the user closes it
@@ -121,8 +120,7 @@ public class ViewManager {
 
         // Set the patient into the controller.
         PatientEditDialogController controller = loader.getController();
-        controller.init(this, patientsService);
-        controller.setDialogStage(dialogStage);
+        controller.init(this, dialogStage, patientsService);
         controller.setPatient(patient);
 
         // Show the dialog and wait until the user closes it
@@ -147,8 +145,7 @@ public class ViewManager {
             dialogStage.setScene(scene);
 
             EntitiesEditDialogController controller = loader.getController();
-            controller.init(this, patientsService);
-            controller.setDialogStage(dialogStage);
+            controller.init(this, dialogStage, patientsService);
             controller.setResultsContainer(results);
             controller.setEntities(rootEntity, currentEntities);
 

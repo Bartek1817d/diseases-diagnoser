@@ -29,13 +29,10 @@ public class EntitiesEditDialogController {
     private Collection<Entity> results;
     private Map<String, Entity> allIndividuals;
 
-    public void init(ViewManager viewManager, PatientsService patientsService) {
+    public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService) {
         this.viewManager = viewManager;
-        this.patientsService = patientsService;
-    }
-
-    public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
+        this.patientsService = patientsService;
     }
 
     public void setResultsContainer(Collection<Entity> results) {
