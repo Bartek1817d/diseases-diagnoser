@@ -102,7 +102,7 @@ public class RootLayoutController {
             try {
                 patientsService.saveKnowledgeBase(file);
                 setDefaultOntologyFile(file);
-                setDefaultDirectoryFile(file);
+                setDefaultDirectoryFile(file.getParentFile());
                 viewManager.setTitle("Diseases Diagnoser - " + file.getName());
             } catch (OWLOntologyStorageException e) {
                 viewManager.errorExceptionDialog("Error saving ontology", null,
