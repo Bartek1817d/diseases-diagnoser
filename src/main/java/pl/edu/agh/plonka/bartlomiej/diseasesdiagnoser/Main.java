@@ -29,12 +29,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException, OWLOntologyCreationException {
         LOG.info("Starting application");
         viewManager = new ViewManager(primaryStage);
-        createOntology();
+        initOntology();
         viewManager.initRootLayout(patientsService, BASE_URL);
         viewManager.showPatientOverview(patientsService);
     }
 
-    private void createOntology() throws OWLOntologyCreationException {
+    private void initOntology() throws OWLOntologyCreationException {
         LOG.info("Ontology initialization.");
         File ontologyFile = getDefaultOntologyFile();
         if (ontologyFile == null || !ontologyFile.exists()) {

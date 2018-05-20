@@ -320,14 +320,11 @@ public class PatientOverviewController {
             if (!treatments.isEmpty()) {
                 selectedPatient.getTreatments().removeAll(treatments);
                 patientsService.getOntology().updatePatient(selectedPatient);
-//                showPatientDetails(selectedPatient);
             } else {
-                // Nothing selected.
                 viewManager.warningDialog("No Selection", "No Treatments Selected",
                         "Please select treatments in the table.");
             }
         } else {
-            // Nothing selected.
             viewManager.warningDialog("No Selection", "No Patient Selected",
                     "Please select a patient in the table.");
         }

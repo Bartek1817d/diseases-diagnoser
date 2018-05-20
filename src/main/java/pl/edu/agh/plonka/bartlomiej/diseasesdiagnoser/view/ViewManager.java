@@ -1,6 +1,7 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -24,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.Collection;
 
 public class ViewManager {
@@ -43,9 +43,7 @@ public class ViewManager {
      */
     public void initRootLayout(PatientsService patientsService, String baseUrl) throws IOException {
         LOG.info("Loading root layout from FXML file");
-        FXMLLoader loader = new FXMLLoader();
-        URL resource = getClass().getClassLoader().getResource("fxml/RootLayout.fxml");
-        loader.setLocation(resource);
+        FXMLLoader loader = getFXMLLoader("fxml/RootLayout.fxml");
         rootLayout = loader.load();
 
         Scene scene = new Scene(rootLayout);
@@ -62,8 +60,7 @@ public class ViewManager {
      */
     public void showPatientOverview(PatientsService patientsService) throws IOException {
         LOG.info("Loading patient overview layout from FXML file");
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientOverview.fxml"));
+        FXMLLoader loader = getFXMLLoader("fxml/PatientOverview.fxml");
         AnchorPane patientOverview = loader.load();
 
         rootLayout.setCenter(patientOverview);
@@ -79,23 +76,15 @@ public class ViewManager {
     public boolean showEntityEditDialog(Entity entity, PatientsService patientsService) {
         try {
             // Load the fxml file and create a new stage for the popup dialog.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getClassLoader().getResource("fxml/EntityEditDialog.fxml"));
+            FXMLLoader loader = getFXMLLoader("fxml/EntityEditDialog.fxml");
             AnchorPane page = loader.load();
 
-            // Create the dialog Stage.
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Edit Entity");
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(primaryStage);
-            Scene scene = new Scene(page);
-            dialogStage.setScene(scene);
+            Stage dialogStage = createDialogStage(page, "Edit Entity");
 
             EntityEditDialogController controller = loader.getController();
             controller.init(this, dialogStage, patientsService);
             controller.setEntity(entity);
 
-            // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
             return controller.isOkClicked();
@@ -107,23 +96,15 @@ public class ViewManager {
 
     public boolean showPatientEditDialog(Patient patient, PatientsService patientsService) throws IOException {
         LOG.info("Loading patient edit dialog layout from FXML file");
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("fxml/PatientEditDialog.fxml"));
+        FXMLLoader loader = getFXMLLoader("fxml/PatientEditDialog.fxml");
         AnchorPane page = loader.load();
 
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("Edit Patient");
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(primaryStage);
-        Scene scene = new Scene(page);
-        dialogStage.setScene(scene);
+        Stage dialogStage = createDialogStage(page, "Edit Patient");
 
-        // Set the patient into the controller.
         PatientEditDialogController controller = loader.getController();
         controller.init(this, dialogStage, patientsService);
         controller.setPatient(patient);
 
-        // Show the dialog and wait until the user closes it
         dialogStage.showAndWait();
 
         return controller.isOkClicked();
@@ -131,25 +112,16 @@ public class ViewManager {
 
     public boolean showEntitiesEditDialog(Entity rootEntity, Collection<Entity> currentEntities, Collection<Entity> results, PatientsService patientsService) {
         try {
-            // Load the fxml file and create a new stage for the popup dialog.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getClassLoader().getResource("fxml/EntitiesEditDialog.fxml"));
+            FXMLLoader loader = getFXMLLoader("fxml/EntitiesEditDialog.fxml");
             AnchorPane page = loader.load();
 
-            // Create the dialog Stage.
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Edit Patient");
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(primaryStage);
-            Scene scene = new Scene(page);
-            dialogStage.setScene(scene);
+            Stage dialogStage = createDialogStage(page, "Edit Patient");
 
             EntitiesEditDialogController controller = loader.getController();
             controller.init(this, dialogStage, patientsService);
             controller.setResultsContainer(results);
             controller.setEntities(rootEntity, currentEntities);
 
-            // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
             return controller.isOkClicked();
@@ -162,7 +134,7 @@ public class ViewManager {
     public void errorDialog(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(primaryStage);
-        if (alert != null)
+        if (title != null)
             alert.setTitle(title);
         if (header != null)
             alert.setHeaderText(header);
@@ -174,7 +146,7 @@ public class ViewManager {
     public void warningDialog(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.initOwner(primaryStage);
-        if (alert != null)
+        if (title != null)
             alert.setTitle(title);
         if (header != null)
             alert.setHeaderText(header);
@@ -187,7 +159,7 @@ public class ViewManager {
                                      Exception exception) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(primaryStage);
-        if (alert != null)
+        if (title != null)
             alert.setTitle(title);
         if (header != null)
             alert.setHeaderText(header);
@@ -256,5 +228,22 @@ public class ViewManager {
         }
 
         return fileChooser;
+    }
+
+    private FXMLLoader getFXMLLoader(String resourcePath) {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource(resourcePath));
+        return loader;
+    }
+
+    private Stage createDialogStage(Parent parent, String title) {
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle(title);
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(parent);
+        dialogStage.setScene(scene);
+
+        return dialogStage;
     }
 }
