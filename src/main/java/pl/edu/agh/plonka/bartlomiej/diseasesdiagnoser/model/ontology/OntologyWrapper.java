@@ -1,4 +1,4 @@
-package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model;
+package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology;
 
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
 import com.google.common.collect.Range;
@@ -21,6 +21,8 @@ import org.swrlapi.core.SWRLRuleRenderer;
 import org.swrlapi.exceptions.SWRLBuiltInException;
 import org.swrlapi.factory.SWRLAPIFactory;
 import org.swrlapi.parser.SWRLParseException;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImplPlain;
 
@@ -45,33 +47,14 @@ public class OntologyWrapper {
     private final SWRLAPIOWLOntology ruleOntology;
     private final SWRLRuleRenderer ruleRenderer;
     private OWLEntityRemover remover;
-    private Map<String, Entity> symptoms = new HashMap<String, Entity>();
-    private Map<String, Entity> diseases = new HashMap<String, Entity>();
-    private Map<String, Entity> tests = new HashMap<String, Entity>();
-    private Map<String, Entity> treatments = new HashMap<String, Entity>();
-    private Map<String, Entity> causes = new HashMap<String, Entity>();
-    private Map<String, Rule> rules = new HashMap<String, Rule>();
+    private Map<String, Entity> symptoms = new HashMap<>();
+    private Map<String, Entity> diseases = new HashMap<>();
+    private Map<String, Entity> tests = new HashMap<>();
+    private Map<String, Entity> treatments = new HashMap<>();
+    private Map<String, Entity> causes = new HashMap<>();
+    private Map<String, Rule> rules = new HashMap<>();
     private String lang = "en";
-    private OWLDataProperty firstNameProperty;
-    private OWLDataProperty lastNameProperty;
-    private OWLDataProperty ageProperty;
-    private OWLDataProperty heightProperty;
-    private OWLDataProperty weightProperty;
-
-    private OWLObjectProperty symptomProperty;
-    private OWLObjectProperty diseaseProperty;
-    private OWLObjectProperty testProperty;
-    private OWLObjectProperty negativeTestProperty;
-    private OWLObjectProperty treatmentProperty;
-    private OWLObjectProperty causeProperty;
-    private OWLObjectProperty previousOrCurrentDiseaseProperty;
-
-    private OWLClass diseaseClass;
-    private OWLClass symptomClass;
-    private OWLClass causeClass;
-    private OWLClass treatmentClass;
-    private OWLClass testingClass;
-    private OWLClass patientClass;
+    private OntologyProperties properties;
 
     private Collection<Patient> assertedPatients = new HashSet<Patient>();
 
@@ -88,8 +71,7 @@ public class OntologyWrapper {
         ruleEngine = SWRLAPIFactory.createSWRLRuleEngine(ontology);
         ruleOntology = ruleEngine.getSWRLAPIOWLOntology();
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
-        initProperties();
-        initOWLClasses();
+        properties = new OntologyProperties(factory, prefixManager);
     }
 
     public OntologyWrapper(File ontologyFile) throws OWLOntologyCreationException {
@@ -106,8 +88,7 @@ public class OntologyWrapper {
         ruleEngine = SWRLAPIFactory.createSWRLRuleEngine(ontology);
         ruleOntology = ruleEngine.getSWRLAPIOWLOntology();
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
-        initProperties();
-        initOWLClasses();
+        properties = new OntologyProperties(factory, prefixManager);
         loadData();
     }
 
@@ -136,30 +117,6 @@ public class OntologyWrapper {
 
     public PrefixManager getPrefixManager() {
         return prefixManager;
-    }
-
-    private void initProperties() {
-        firstNameProperty = factory.getOWLDataProperty("firstName", prefixManager);
-        lastNameProperty = factory.getOWLDataProperty("lastName", prefixManager);
-        ageProperty = factory.getOWLDataProperty("age", prefixManager);
-        heightProperty = factory.getOWLDataProperty("height", prefixManager);
-        weightProperty = factory.getOWLDataProperty("weight", prefixManager);
-        symptomProperty = factory.getOWLObjectProperty("hasSymptom", prefixManager);
-        diseaseProperty = factory.getOWLObjectProperty("hasDisease", prefixManager);
-        testProperty = factory.getOWLObjectProperty("shouldMakeTest", prefixManager);
-        negativeTestProperty = factory.getOWLObjectProperty("negativeTest", prefixManager);
-        treatmentProperty = factory.getOWLObjectProperty("shouldBeTreatedWith", prefixManager);
-        causeProperty = factory.getOWLObjectProperty("causeOfDisease", prefixManager);
-        previousOrCurrentDiseaseProperty = factory.getOWLObjectProperty("hadOrHasDisease", prefixManager);
-    }
-
-    private void initOWLClasses() {
-        diseaseClass = factory.getOWLClass("Disease", prefixManager);
-        symptomClass = factory.getOWLClass("Symptom", prefixManager);
-        causeClass = factory.getOWLClass("Cause", prefixManager);
-        treatmentClass = factory.getOWLClass("Treatment", prefixManager);
-        testingClass = factory.getOWLClass("Testing", prefixManager);
-        patientClass = factory.getOWLClass("Patient", prefixManager);
     }
 
     private void loadData() {
@@ -251,7 +208,7 @@ public class OntologyWrapper {
     }
 
     public Map<String, Entity> loadSymptoms() {
-        symptoms = loadInstances(symptomClass);
+        symptoms = loadInstances(properties.symptomClass);
         return symptoms;
     }
 
@@ -260,7 +217,7 @@ public class OntologyWrapper {
     }
 
     public Map<String, Entity> loadDiseases() {
-        diseases = loadInstances(diseaseClass);
+        diseases = loadInstances(properties.diseaseClass);
         return diseases;
     }
 
@@ -269,7 +226,7 @@ public class OntologyWrapper {
     }
 
     public Map<String, Entity> loadTests() {
-        tests = loadInstances(testingClass);
+        tests = loadInstances(properties.testingClass);
         return tests;
     }
 
@@ -278,7 +235,7 @@ public class OntologyWrapper {
     }
 
     public Map<String, Entity> loadTreatments() {
-        treatments = loadInstances(treatmentClass);
+        treatments = loadInstances(properties.treatmentClass);
         return treatments;
     }
 
@@ -287,7 +244,7 @@ public class OntologyWrapper {
     }
 
     public Map<String, Entity> loadCauses() {
-        causes = loadInstances(causeClass);
+        causes = loadInstances(properties.causeClass);
         return causes;
     }
 
@@ -305,56 +262,56 @@ public class OntologyWrapper {
     private Patient getPatient(OWLIndividual patientInd) {
         Patient patient = new Patient(renderer.render(patientInd));
         Iterator<OWLLiteral> it;
-        it = EntitySearcher.getDataPropertyValues(patientInd, firstNameProperty, ontology).iterator();
+        it = EntitySearcher.getDataPropertyValues(patientInd, properties.firstNameProperty, ontology).iterator();
         if (it.hasNext())
             patient.setFirstName(renderer.render(it.next()));
-        it = EntitySearcher.getDataPropertyValues(patientInd, lastNameProperty, ontology).iterator();
+        it = EntitySearcher.getDataPropertyValues(patientInd, properties.lastNameProperty, ontology).iterator();
         if (it.hasNext())
             patient.setLastName(renderer.render(it.next()));
-        it = EntitySearcher.getDataPropertyValues(patientInd, ageProperty, ontology).iterator();
+        it = EntitySearcher.getDataPropertyValues(patientInd, properties.ageProperty, ontology).iterator();
         if (it.hasNext())
             patient.setAge(Integer.parseInt(renderer.render(it.next())));
-        it = EntitySearcher.getDataPropertyValues(patientInd, heightProperty, ontology).iterator();
+        it = EntitySearcher.getDataPropertyValues(patientInd, properties.heightProperty, ontology).iterator();
         if (it.hasNext())
             patient.setHeight(Integer.parseInt(renderer.render(it.next())));
-        it = EntitySearcher.getDataPropertyValues(patientInd, weightProperty, ontology).iterator();
+        it = EntitySearcher.getDataPropertyValues(patientInd, properties.weightProperty, ontology).iterator();
         if (it.hasNext())
             patient.setWeight(Integer.parseInt(renderer.render(it.next())));
 
-        for (OWLIndividual owlSymptom : EntitySearcher.getObjectPropertyValues(patientInd, symptomProperty, ontology)) {
+        for (OWLIndividual owlSymptom : EntitySearcher.getObjectPropertyValues(patientInd, properties.symptomProperty, ontology)) {
             Entity symptom = symptoms.get(renderer.render(owlSymptom));
             if (symptom != null)
                 patient.addSymptom(symptom);
         }
-        for (OWLIndividual owlDisease : EntitySearcher.getObjectPropertyValues(patientInd, diseaseProperty, ontology)) {
+        for (OWLIndividual owlDisease : EntitySearcher.getObjectPropertyValues(patientInd, properties.diseaseProperty, ontology)) {
             Entity disease = diseases.get(renderer.render(owlDisease));
             if (disease != null)
                 patient.addDisease(disease);
         }
-        for (OWLIndividual owlTest : EntitySearcher.getObjectPropertyValues(patientInd, testProperty, ontology)) {
+        for (OWLIndividual owlTest : EntitySearcher.getObjectPropertyValues(patientInd, properties.testProperty, ontology)) {
             Entity test = tests.get(renderer.render(owlTest));
             if (test != null)
                 patient.addTest(test);
         }
-        for (OWLIndividual owlTest : EntitySearcher.getObjectPropertyValues(patientInd, negativeTestProperty,
+        for (OWLIndividual owlTest : EntitySearcher.getObjectPropertyValues(patientInd, properties.negativeTestProperty,
                 ontology)) {
             Entity test = tests.get(renderer.render(owlTest));
             if (test != null)
                 patient.addNegativeTest(test);
         }
-        for (OWLIndividual owlTreatment : EntitySearcher.getObjectPropertyValues(patientInd, treatmentProperty,
+        for (OWLIndividual owlTreatment : EntitySearcher.getObjectPropertyValues(patientInd, properties.treatmentProperty,
                 ontology)) {
             Entity treatment = treatments.get(renderer.render(owlTreatment));
             if (treatment != null)
                 patient.addTreatment(treatment);
         }
-        for (OWLIndividual owlCause : EntitySearcher.getObjectPropertyValues(patientInd, causeProperty, ontology)) {
+        for (OWLIndividual owlCause : EntitySearcher.getObjectPropertyValues(patientInd, properties.causeProperty, ontology)) {
             Entity cause = causes.get(renderer.render(owlCause));
             if (cause != null)
                 patient.addTreatment(cause);
         }
         for (OWLIndividual owlCause : EntitySearcher.getObjectPropertyValues(patientInd,
-                previousOrCurrentDiseaseProperty, ontology)) {
+                properties.previousOrCurrentDiseaseProperty, ontology)) {
             Entity disease = diseases.get(renderer.render(owlCause));
             if (disease != null)
                 patient.addPreviousOrCurrentDisease(disease);
@@ -366,7 +323,7 @@ public class OntologyWrapper {
         reasoner.flush();
         OWLNamedIndividual patientInd = factory.getOWLNamedIndividual(patient.getID(), prefixManager);
         Set<Entity> inferredSymptoms = new HashSet<Entity>();
-        for (OWLNamedIndividual symptomInd : reasoner.getObjectPropertyValues(patientInd, symptomProperty)
+        for (OWLNamedIndividual symptomInd : reasoner.getObjectPropertyValues(patientInd, properties.symptomProperty)
                 .getFlattened()) {
             inferredSymptoms.add(symptoms.get(renderer.render(symptomInd)));
         }
@@ -374,7 +331,7 @@ public class OntologyWrapper {
         patient.setInferredSymptoms(inferredSymptoms);
 
         Set<Entity> inferredDiseases = new HashSet<Entity>();
-        for (OWLNamedIndividual diseaseInd : reasoner.getObjectPropertyValues(patientInd, diseaseProperty)
+        for (OWLNamedIndividual diseaseInd : reasoner.getObjectPropertyValues(patientInd, properties.diseaseProperty)
                 .getFlattened()) {
             inferredDiseases.add(diseases.get(renderer.render(diseaseInd)));
         }
@@ -382,14 +339,14 @@ public class OntologyWrapper {
         patient.setInferredDiseases(inferredDiseases);
 
         Set<Entity> inferredTests = new HashSet<Entity>();
-        for (OWLNamedIndividual testInd : reasoner.getObjectPropertyValues(patientInd, testProperty).getFlattened()) {
+        for (OWLNamedIndividual testInd : reasoner.getObjectPropertyValues(patientInd, properties.testProperty).getFlattened()) {
             inferredTests.add(tests.get(renderer.render(testInd)));
         }
         inferredTests.removeAll(patient.getTests());
         patient.setInferredTests(inferredTests);
 
         Set<Entity> inferredTreatments = new HashSet<Entity>();
-        for (OWLNamedIndividual treatmentInd : reasoner.getObjectPropertyValues(patientInd, treatmentProperty)
+        for (OWLNamedIndividual treatmentInd : reasoner.getObjectPropertyValues(patientInd, properties.treatmentProperty)
                 .getFlattened()) {
             inferredTreatments.add(treatments.get(renderer.render(treatmentInd)));
         }
@@ -397,7 +354,7 @@ public class OntologyWrapper {
         patient.setInferredTreatments(inferredTreatments);
 
         Set<Entity> inferredCauses = new HashSet<Entity>();
-        for (OWLNamedIndividual causeInd : reasoner.getObjectPropertyValues(patientInd, causeProperty).getFlattened()) {
+        for (OWLNamedIndividual causeInd : reasoner.getObjectPropertyValues(patientInd, properties.causeProperty).getFlattened()) {
             inferredCauses.add(causes.get(renderer.render(causeInd)));
         }
         inferredCauses.removeAll(patient.getCauses());
@@ -409,43 +366,43 @@ public class OntologyWrapper {
     public void addPatient(Patient patient) {
         OWLNamedIndividual patientInd = factory.getOWLNamedIndividual(patient.getID(), prefixManager);
         // patient class assertion
-        ontologyManager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(patientClass, patientInd));
+        ontologyManager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(properties.patientClass, patientInd));
         if (patient.getFirstName() != null)
             ontologyManager.addAxiom(ontology,
-                    factory.getOWLDataPropertyAssertionAxiom(firstNameProperty, patientInd, patient.getFirstName()));
+                    factory.getOWLDataPropertyAssertionAxiom(properties.firstNameProperty, patientInd, patient.getFirstName()));
         if (patient.getLastName() != null)
             ontologyManager.addAxiom(ontology,
-                    factory.getOWLDataPropertyAssertionAxiom(lastNameProperty, patientInd, patient.getLastName()));
+                    factory.getOWLDataPropertyAssertionAxiom(properties.lastNameProperty, patientInd, patient.getLastName()));
         if (patient.getAge() > 0)
             ontologyManager.addAxiom(ontology,
-                    factory.getOWLDataPropertyAssertionAxiom(ageProperty, patientInd, patient.getAge()));
+                    factory.getOWLDataPropertyAssertionAxiom(properties.ageProperty, patientInd, patient.getAge()));
         if (patient.getHeight() > 0)
             ontologyManager.addAxiom(ontology,
-                    factory.getOWLDataPropertyAssertionAxiom(heightProperty, patientInd, patient.getHeight()));
+                    factory.getOWLDataPropertyAssertionAxiom(properties.heightProperty, patientInd, patient.getHeight()));
         if (patient.getWeight() > 0)
             ontologyManager.addAxiom(ontology,
-                    factory.getOWLDataPropertyAssertionAxiom(weightProperty, patientInd, patient.getWeight()));
+                    factory.getOWLDataPropertyAssertionAxiom(properties.weightProperty, patientInd, patient.getWeight()));
         for (Entity symptom : patient.getSymptoms())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(symptomProperty, patientInd,
+            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.symptomProperty, patientInd,
                     factory.getOWLNamedIndividual(symptom.getID(), prefixManager)));
         for (Entity disease : patient.getDiseases())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(diseaseProperty, patientInd,
+            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.diseaseProperty, patientInd,
                     factory.getOWLNamedIndividual(disease.getID(), prefixManager)));
         for (Entity test : patient.getTests())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(testProperty, patientInd,
+            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.testProperty, patientInd,
                     factory.getOWLNamedIndividual(test.getID(), prefixManager)));
         for (Entity test : patient.getNegativeTests())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(negativeTestProperty,
+            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.negativeTestProperty,
                     patientInd, factory.getOWLNamedIndividual(test.getID(), prefixManager)));
         for (Entity treatment : patient.getTreatments())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(treatmentProperty, patientInd,
+            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.treatmentProperty, patientInd,
                     factory.getOWLNamedIndividual(treatment.getID(), prefixManager)));
         for (Entity cause : patient.getCauses())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(causeProperty, patientInd,
+            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.causeProperty, patientInd,
                     factory.getOWLNamedIndividual(cause.getID(), prefixManager)));
         for (Entity disease : patient.getPreviousAndCurrentDiseases())
             ontologyManager.addAxiom(ontology,
-                    factory.getOWLObjectPropertyAssertionAxiom(previousOrCurrentDiseaseProperty, patientInd,
+                    factory.getOWLObjectPropertyAssertionAxiom(properties.previousOrCurrentDiseaseProperty, patientInd,
                             factory.getOWLNamedIndividual(disease.getID(), prefixManager)));
     }
 
@@ -466,7 +423,7 @@ public class OntologyWrapper {
     public List<Patient> getPatients() {
         List<Patient> patients = new ArrayList<Patient>();
         Patient patient;
-        for (OWLIndividual patientInd : EntitySearcher.getIndividuals(patientClass, ontology)) {
+        for (OWLIndividual patientInd : EntitySearcher.getIndividuals(properties.patientClass, ontology)) {
             patient = getPatient(patientInd);
             patient = getInferredPatient(patient);
             patients.add(patient);
@@ -642,82 +599,93 @@ public class OntologyWrapper {
                     if (atom instanceof TwoArgumentsAtom) {
                         TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) atom;
                         String predicate = twoArgumentsAtom.getPredicate();
-                        if (predicate.equals("hasSymptom")) {
-                            String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
-                            Patient p = (Patient) variables.get(pName);
-                            p.addSymptom((Entity) twoArgumentsAtom.getArgument2());
-                        } else if (predicate.equals("negativeTest")) {
-                            String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
-                            Patient p = (Patient) variables.get(pName);
-                            p.addNegativeTest((Entity) twoArgumentsAtom.getArgument2());
-                        } else if (predicate.equals("hadOrHasDisease")) {
-                            String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
-                            Patient p = (Patient) variables.get(pName);
-                            p.addPreviousOrCurrentDisease((Entity) twoArgumentsAtom.getArgument2());
-                        } else if (predicate.equals("hasDisease")) {
-                            String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
-                            Patient p = (Patient) variables.get(pName);
-                            p.addDisease((Entity) twoArgumentsAtom.getArgument2());
-                        } else if (predicate.equals("age")) {
-                            Variable patientVariable = (Variable) twoArgumentsAtom.getArgument1();
-                            Variable ageVariable = (Variable) twoArgumentsAtom.getArgument2();
-                            Patient p = (Patient) variables.get(patientVariable.getName());
-                            Range<Integer> ageRange = Range.all();
-                            for (AbstractAtom atom2 : rule.getBodyAtoms()) {
-                                if (atom2 instanceof TwoArgumentsAtom) {
-                                    TwoArgumentsAtom<Variable, Integer> twoArgumentsAtom2 = (TwoArgumentsAtom) atom2;
-                                    if (twoArgumentsAtom.getPrefix().equals("swrlb")
-                                            && twoArgumentsAtom2.getArgument1().equals(ageVariable)
-                                            && twoArgumentsAtom2.getArgument2() instanceof Integer) {
-                                        int ageBound = twoArgumentsAtom2.getArgument2();
-                                        switch (twoArgumentsAtom2.getPredicate()) {
-                                            case "equal":
-                                                ageRange = ageRange.intersection(Range.singleton(ageBound));
-                                                break;
-                                            case "greaterThan":
-                                                ageRange = ageRange.intersection(Range.greaterThan(ageBound));
-                                                break;
-                                            case "greaterThanOrEqual":
-                                                ageRange = ageRange.intersection(Range.atLeast(ageBound));
-                                                break;
-                                            case "lessThan":
-                                                ageRange = ageRange.intersection(Range.lessThan(ageBound));
-                                                break;
-                                            case "lessThanOrEqual":
-                                                ageRange = ageRange.intersection(Range.atMost(ageBound));
-                                                break;
+                        switch (predicate) {
+                            case "hasSymptom": {
+                                String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
+                                Patient p = (Patient) variables.get(pName);
+                                p.addSymptom((Entity) twoArgumentsAtom.getArgument2());
+                                break;
+                            }
+                            case "negativeTest": {
+                                String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
+                                Patient p = (Patient) variables.get(pName);
+                                p.addNegativeTest((Entity) twoArgumentsAtom.getArgument2());
+                                break;
+                            }
+                            case "hadOrHasDisease": {
+                                String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
+                                Patient p = (Patient) variables.get(pName);
+                                p.addPreviousOrCurrentDisease((Entity) twoArgumentsAtom.getArgument2());
+                                break;
+                            }
+                            case "hasDisease": {
+                                String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
+                                Patient p = (Patient) variables.get(pName);
+                                p.addDisease((Entity) twoArgumentsAtom.getArgument2());
+                                break;
+                            }
+                            case "age": {
+                                Variable patientVariable = (Variable) twoArgumentsAtom.getArgument1();
+                                Variable ageVariable = (Variable) twoArgumentsAtom.getArgument2();
+                                Patient p = (Patient) variables.get(patientVariable.getName());
+                                Range<Integer> ageRange = Range.all();
+                                for (AbstractAtom atom2 : rule.getBodyAtoms()) {
+                                    if (atom2 instanceof TwoArgumentsAtom) {
+                                        TwoArgumentsAtom<Variable, Integer> twoArgumentsAtom2 = (TwoArgumentsAtom) atom2;
+                                        if (twoArgumentsAtom.getPrefix().equals("swrlb")
+                                                && twoArgumentsAtom2.getArgument1().equals(ageVariable)
+                                                && twoArgumentsAtom2.getArgument2() instanceof Integer) {
+                                            int ageBound = twoArgumentsAtom2.getArgument2();
+                                            switch (twoArgumentsAtom2.getPredicate()) {
+                                                case "equal":
+                                                    ageRange = ageRange.intersection(Range.singleton(ageBound));
+                                                    break;
+                                                case "greaterThan":
+                                                    ageRange = ageRange.intersection(Range.greaterThan(ageBound));
+                                                    break;
+                                                case "greaterThanOrEqual":
+                                                    ageRange = ageRange.intersection(Range.atLeast(ageBound));
+                                                    break;
+                                                case "lessThan":
+                                                    ageRange = ageRange.intersection(Range.lessThan(ageBound));
+                                                    break;
+                                                case "lessThanOrEqual":
+                                                    ageRange = ageRange.intersection(Range.atMost(ageBound));
+                                                    break;
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            if (ageRange.hasUpperBound() && ageRange.hasLowerBound()
-                                    && ageRange.upperEndpoint() == ageRange.lowerEndpoint())
-                                p.setAge(ageRange.upperEndpoint());
-                            else {
-                                int lowerBound = 0;
-                                int upperBound = 10;
-                                if (ageRange.hasUpperBound()) {
-                                    switch (ageRange.upperBoundType()) {
-                                        case OPEN:
-                                            upperBound = ageRange.upperEndpoint();
-                                            break;
-                                        case CLOSED:
-                                            upperBound = ageRange.upperEndpoint() + 1;
+                                if (ageRange.hasUpperBound() && ageRange.hasLowerBound()
+                                        && ageRange.upperEndpoint() == ageRange.lowerEndpoint())
+                                    p.setAge(ageRange.upperEndpoint());
+                                else {
+                                    int lowerBound = 0;
+                                    int upperBound = 10;
+                                    if (ageRange.hasUpperBound()) {
+                                        switch (ageRange.upperBoundType()) {
+                                            case OPEN:
+                                                upperBound = ageRange.upperEndpoint();
+                                                break;
+                                            case CLOSED:
+                                                upperBound = ageRange.upperEndpoint() + 1;
+                                        }
                                     }
-                                }
-                                if (ageRange.hasLowerBound()) {
-                                    switch (ageRange.lowerBoundType()) {
-                                        case OPEN:
-                                            lowerBound = ageRange.lowerEndpoint() + 1;
-                                            break;
-                                        case CLOSED:
-                                            lowerBound = ageRange.lowerEndpoint();
+                                    if (ageRange.hasLowerBound()) {
+                                        switch (ageRange.lowerBoundType()) {
+                                            case OPEN:
+                                                lowerBound = ageRange.lowerEndpoint() + 1;
+                                                break;
+                                            case CLOSED:
+                                                lowerBound = ageRange.lowerEndpoint();
+                                        }
                                     }
+                                    Random random = new Random();
+                                    p.setAge(lowerBound + random.nextInt(upperBound - lowerBound));
                                 }
-                                Random random = new Random();
-                                p.setAge(lowerBound + random.nextInt(upperBound - lowerBound));
-                            }
 
+                                break;
+                            }
                         }
 
                     }

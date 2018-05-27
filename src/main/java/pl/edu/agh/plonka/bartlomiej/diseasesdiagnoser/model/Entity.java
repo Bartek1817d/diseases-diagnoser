@@ -16,11 +16,11 @@ public class Entity {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-    final StringProperty id = new SimpleStringProperty();
-    final StringProperty label = new SimpleStringProperty();
-    final StringProperty comment = new SimpleStringProperty();
-    final SetProperty<Entity> classes = new SimpleSetProperty<Entity>(
-            FXCollections.observableSet(new HashSet<Entity>()));
+    private final StringProperty id = new SimpleStringProperty();
+    private final StringProperty label = new SimpleStringProperty();
+    private final StringProperty comment = new SimpleStringProperty();
+    private final SetProperty<Entity> classes = new SimpleSetProperty<>(
+            FXCollections.observableSet(new HashSet<>()));
 
     public Entity() {
     }
@@ -97,10 +97,9 @@ public class Entity {
             return false;
         Entity other = (Entity) obj;
         if (id.get() == null) {
-            if (other.id.get() != null)
-                return false;
-        } else if (!id.get().equals(other.id.get()))
-            return false;
-        return true;
+            return other.id.get() == null;
+        } else {
+            return id.get().equals(other.id.get());
+        }
     }
 }

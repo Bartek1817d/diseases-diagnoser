@@ -5,7 +5,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 
@@ -27,8 +27,8 @@ public class MachineLearning {
     private static final float epsilon = 0.5f;
 
     public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) {
-        Collection<Rule> rules = new HashSet<Rule>();
-        Set<Patient> uncoveredSet = new HashSet<Patient>(trainingSet);
+        Collection<Rule> rules = new HashSet<>();
+        Set<Patient> uncoveredSet = new HashSet<>(trainingSet);
         while (!uncoveredSet.isEmpty()) {
             // System.out.println("Covered " + (float)((trainingSet.size() -
             // uncoveredSet.size()) / trainingSet.size()));
@@ -128,11 +128,11 @@ public class MachineLearning {
         System.out.println(positivePatient.getID() + " " + negativePatient.getID());
         System.out.println(negativePatient);
 
-        Collection<Complex> resultComplexes = new ArrayList<Complex>();
+        Collection<Complex> resultComplexes = new ArrayList<>();
 
         if (!positivePatient.getSymptoms().isEmpty() && !negativePatient.getSymptoms().isEmpty()
                 && !positivePatient.getSymptoms().containsAll(negativePatient.getSymptoms())) {
-            NominalSelector<Entity> symptomsSelector = new NominalSelector<Entity>(ontology.getSymptoms().values());
+            NominalSelector<Entity> symptomsSelector = new NominalSelector<>(ontology.getSymptoms().values());
             symptomsSelector.removeAll(negativePatient.getSymptoms());
             if (!Collections.disjoint(symptomsSelector, positivePatient.getSymptoms())) {
                 // if
@@ -147,7 +147,7 @@ public class MachineLearning {
 
         if (!positivePatient.getNegativeTests().isEmpty() && !negativePatient.getNegativeTests().isEmpty()
                 && !positivePatient.getNegativeTests().containsAll(negativePatient.getNegativeTests())) {
-            NominalSelector<Entity> negativeTestsSelector = new NominalSelector<Entity>(ontology.getTests().values());
+            NominalSelector<Entity> negativeTestsSelector = new NominalSelector<>(ontology.getTests().values());
             negativeTestsSelector.removeAll(negativePatient.getNegativeTests());
             if (!Collections.disjoint(negativeTestsSelector, positivePatient.getNegativeTests())) {
                 // if
@@ -163,7 +163,7 @@ public class MachineLearning {
         if (!positivePatient.getPreviousAndCurrentDiseases().isEmpty()
                 && !negativePatient.getPreviousAndCurrentDiseases().isEmpty() && !positivePatient
                 .getPreviousAndCurrentDiseases().containsAll(negativePatient.getPreviousAndCurrentDiseases())) {
-            NominalSelector<Entity> previousDiseasesSelector = new NominalSelector<Entity>(
+            NominalSelector<Entity> previousDiseasesSelector = new NominalSelector<>(
                     ontology.getDiseases().values());
             previousDiseasesSelector.removeAll(negativePatient.getPreviousAndCurrentDiseases());
             if (!Collections.disjoint(previousDiseasesSelector, positivePatient.getPreviousAndCurrentDiseases())) {

@@ -3,7 +3,7 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.OntologyWrapper;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 
 import java.util.*;

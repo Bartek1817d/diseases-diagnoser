@@ -57,6 +57,8 @@ public class RootLayoutController {
         if (file != null) {
             try {
                 patientsService.createKnowledgeBase(file);
+                setDefaultOntologyFile(file);
+                setDefaultDirectoryFile(file.getParentFile());
             } catch (OWLOntologyCreationException e) {
                 LOG.error("Failed to load ontology from " + file.getPath() + ". Creating empty ontology.");
                 viewManager.errorExceptionDialog("Error creating ontology", null,

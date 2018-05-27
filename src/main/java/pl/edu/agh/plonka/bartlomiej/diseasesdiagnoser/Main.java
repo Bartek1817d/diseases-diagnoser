@@ -39,11 +39,11 @@ public class Main extends Application {
         File ontologyFile = getDefaultOntologyFile();
         if (ontologyFile == null || !ontologyFile.exists()) {
             LOG.debug("Default ontology not found. Initialize empty ontology.");
+            removeDefaultOntologyFile();
             createNewOntology();
         } else {
             try {
                 LOG.debug("Found default ontology: " + ontologyFile + ". Loading from resource.");
-                setDefaultOntologyFile(ontologyFile);
                 loadOntologyFromFile(ontologyFile);
             } catch (OWLOntologyCreationException e) {
                 LOG.warn("Failed to load ontology " + ontologyFile + ". Creating empty ontology.");
