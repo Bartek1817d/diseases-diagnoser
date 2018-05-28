@@ -1,0 +1,145 @@
+package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology;
+
+import org.apache.commons.lang3.StringUtils;
+import org.semanticweb.owlapi.model.SWRLAtom;
+import org.swrlapi.core.SWRLAPIOWLOntology;
+import org.swrlapi.core.SWRLAPIRule;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class RulesLoader {
+
+    private final SWRLAPIOWLOntology ruleOntology;
+
+    RulesLoader(SWRLAPIOWLOntology ruleOntology) {
+        this.ruleOntology = ruleOntology;
+    }
+
+    Map<String, Rule> loadRules(Map<String, Entity> classes,
+                                Map<String, Entity> symptoms,
+                                Map<String, Entity> diseases,
+                                Map<String, Entity> tests,
+                                Map<String, Entity> treatments,
+                                Map<String, Entity> causes) {
+        Map<String, Rule> rules = new HashMap<>();
+        for (SWRLAPIRule swrlRule : ruleOntology.getSWRLRules()) {
+            Rule rule = new Rule(swrlRule.getRuleName());
+            for (SWRLAtom atom : swrlRule.getBody())
+                rule.addBodyAtom(parseSWRLAtom(atom, classes, symptoms, diseases, tests, treatments, causes));
+            for (SWRLAtom atom : swrlRule.getHead())
+                rule.addHeadAtom(parseSWRLAtom(atom, classes, symptoms, diseases, tests, treatments, causes));
+            rules.put(rule.getName(), rule);
+        }
+        return rules;
+    }
+
+    @SuppressWarnings("unchecked")
+    private AbstractAtom parseSWRLAtom(SWRLAtom swrlAtom,
+                                       Map<String, Entity> classes,
+                                       Map<String, Entity> symptoms,
+                                       Map<String, Entity> diseases,
+                                       Map<String, Entity> tests,
+                                       Map<String, Entity> treatments,
+                                       Map<String, Entity> causes) {
+        String str = swrlAtom.toString();
+        Pattern atomPattern = Pattern
+                .compile("^(?<atomType>\\p{Alpha}+)\\(<\\S+#(?<atomID>\\w+)> (?<atomArguments>.+)\\)$");
+        Pattern argumentPattern = Pattern.compile(
+                "((?<argumentType>\\p{Alpha}*)\\(?<\\S+#(?<argumentID>\\w+)>\\)?)|(\"(?<value>\\d+)\"\\^\\^xsd:(?<valueType>[a-z]+))");
+        Matcher atomMatcher = atomPattern.matcher(str);
+        if (atomMatcher.find()) {
+
+            String atomType = atomMatcher.group("atomType");
+            String atomID = atomMatcher.group("atomID");
+            String atomArguments = atomMatcher.group("atomArguments");
+            Matcher argumentMatcher = argumentPattern.matcher(atomArguments);
+
+            // class declaration
+            if (atomType.equals("ClassAtom")) {
+                if (argumentMatcher.find()) {
+                    String argumentType = argumentMatcher.group("argumentType");
+                    String argumentID = argumentMatcher.group("argumentID");
+                    if (argumentType.equals("Variable"))
+                        return new ClassDeclarationAtom<Variable>(classes.get(atomID), new Variable(argumentID));
+                    if (symptoms.containsKey(argumentID))
+                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), symptoms.get(argumentID));
+                    if (diseases.containsKey(argumentID))
+                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), diseases.get(argumentID));
+                    if (tests.containsKey(argumentID))
+                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), tests.get(argumentID));
+                    if (treatments.containsKey(argumentID))
+                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), treatments.get(argumentID));
+                    if (causes.containsKey(argumentID))
+                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), causes.get(argumentID));
+                }
+
+            } else if (atomType.equals("ObjectPropertyAtom") || atomType.equals("DataPropertyAtom")
+                    || atomType.equals("BuiltInAtom")) { // property
+                int i = 0;
+                @SuppressWarnings("rawtypes")
+                TwoArgumentsAtom atom;
+                if (atomType.equals("BuiltInAtom"))
+                    atom = new TwoArgumentsAtom<>(atomID, "swrlb");
+                else
+                    atom = new TwoArgumentsAtom<>(atomID);
+                while (argumentMatcher.find()) {
+                    i += 1;
+                    String argumentType = argumentMatcher.group("argumentType");
+                    String argumentID = argumentMatcher.group("argumentID");
+                    String value = argumentMatcher.group("value");
+                    String valueType = argumentMatcher.group("valueType");
+                    if (argumentType != null && argumentType.equals("Variable") && argumentID != null) {
+                        switch (i) {
+                            case 1:
+                                atom.setArgument1(new Variable(argumentID));
+                                continue;
+                            case 2:
+                                atom.setArgument2(new Variable(argumentID));
+                                return atom;
+                        }
+                    } else if (argumentType != null && argumentType.equals("") && argumentID != null) {
+                        Entity entity = null;
+                        if (symptoms.containsKey(argumentID))
+                            entity = symptoms.get(argumentID);
+                        else if (diseases.containsKey(argumentID))
+                            entity = diseases.get(argumentID);
+                        else if (tests.containsKey(argumentID))
+                            entity = tests.get(argumentID);
+                        else if (treatments.containsKey(argumentID))
+                            entity = treatments.get(argumentID);
+                        else if (causes.containsKey(argumentID))
+                            entity = causes.get(argumentID);
+
+                        switch (i) {
+                            case 1:
+                                atom.setArgument1(entity);
+                                break;
+                            case 2:
+                                atom.setArgument2(entity);
+                                break;
+                        }
+                    } else if (valueType != null && value != null && StringUtils.isNumeric(value)) {
+                        int intVal = Integer.parseInt(value);
+                        switch (i) {
+                            case 1:
+                                atom.setArgument1(intVal);
+                                break;
+                            case 2:
+                                atom.setArgument2(intVal);
+                                break;
+                        }
+                    }
+                }
+                if (i == 2 && atom.getArgument1() != null && atom.getArgument2() != null) {
+                    return atom;
+                }
+            }
+        }
+        return null;
+    }
+}

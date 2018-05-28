@@ -20,6 +20,7 @@ public class ClassDeclarationAtom<T> extends OneArgumentAtom<T> {
     }
 
     public ClassDeclarationAtom(Entity classEntity, T argument) {
+        super(classEntity.getID());
         this.classEntity = classEntity;
         this.argument = argument;
     }
@@ -67,21 +68,5 @@ public class ClassDeclarationAtom<T> extends OneArgumentAtom<T> {
         } else if (!classEntity.equals(other.classEntity))
             return false;
         return true;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder str = new StringBuilder(prefix);
-        str.append(':');
-        str.append(classEntity.getID());
-        str.append('(');
-        if (argument instanceof Entity) {
-            str.append(prefix);
-            str.append(':');
-            str.append(((Entity) argument).getID());
-        } else
-            str.append(argument);
-        str.append(')');
-        return str.toString();
     }
 }

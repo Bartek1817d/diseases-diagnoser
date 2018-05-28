@@ -37,6 +37,7 @@ public class OntologyWrapper {
 
     private final OWLObjectRenderer renderer = new DLSyntaxObjectRenderer();
     private final EntitiesLoader entitiesLoader;
+    private final RulesLoader rulesLoader;
     private Map<String, Entity> classes = new HashMap<>();
     private final OWLOntology ontology;
     private final OWLDataFactory factory;
@@ -74,6 +75,7 @@ public class OntologyWrapper {
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
         entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
+        rulesLoader = new RulesLoader(ruleOntology);
     }
 
     public OntologyWrapper(File ontologyFile) throws OWLOntologyCreationException {
@@ -92,13 +94,13 @@ public class OntologyWrapper {
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
         entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
+        rulesLoader = new RulesLoader(ruleOntology);
         loadData();
     }
 
     public static void main(String args[])
             throws OWLOntologyCreationException, SWRLParseException, SWRLBuiltInException, OWLOntologyStorageException {
         OntologyWrapper ontology = new OntologyWrapper(new File("res/human_diseases.owl"));
-        ontology.loadRules();
         System.out.println(ontology.generatePatientsFromRules());
     }
 
@@ -129,7 +131,7 @@ public class OntologyWrapper {
         tests = entitiesLoader.loadInstances(properties.testingClass, classes);
         treatments = entitiesLoader.loadInstances(properties.treatmentClass, classes);
         causes = entitiesLoader.loadInstances(properties.causeClass, classes);
-        loadRules();
+        rules = rulesLoader.loadRules(classes, symptoms, diseases, tests, treatments, causes);
         generatePatientsFromRules();
     }
 
@@ -354,117 +356,6 @@ public class OntologyWrapper {
 
     public boolean containsID(String id) {
         return ontology.containsEntityInSignature(IRI.create(prefixManager.getDefaultPrefix(), id));
-    }
-
-    @SuppressWarnings("unchecked")
-    private AbstractAtom parseSWRLAtom(SWRLAtom swrlAtom) {
-        String str = swrlAtom.toString();
-        Pattern atomPattern = Pattern
-                .compile("^(?<atomType>\\p{Alpha}+)\\(<\\S+#(?<atomID>\\w+)> (?<atomArguments>.+)\\)$");
-        Pattern argumentPattern = Pattern.compile(
-                "((?<argumentType>\\p{Alpha}*)\\(?<\\S+#(?<argumentID>\\w+)>\\)?)|(\"(?<value>\\d+)\"\\^\\^xsd:(?<valueType>[a-z]+))");
-        Matcher atomMatcher = atomPattern.matcher(str);
-        if (atomMatcher.find()) {
-
-            String atomType = atomMatcher.group("atomType");
-            String atomID = atomMatcher.group("atomID");
-            String atomArguments = atomMatcher.group("atomArguments");
-            Matcher argumentMatcher = argumentPattern.matcher(atomArguments);
-
-            // class declaration
-            if (atomType.equals("ClassAtom")) {
-                if (argumentMatcher.find()) {
-                    String argumentType = argumentMatcher.group("argumentType");
-                    String argumentID = argumentMatcher.group("argumentID");
-                    if (argumentType.equals("Variable"))
-                        return new ClassDeclarationAtom<Variable>(classes.get(atomID), new Variable(argumentID));
-                    if (symptoms.containsKey(argumentID))
-                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), symptoms.get(argumentID));
-                    if (diseases.containsKey(argumentID))
-                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), diseases.get(argumentID));
-                    if (tests.containsKey(argumentID))
-                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), tests.get(argumentID));
-                    if (treatments.containsKey(argumentID))
-                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), treatments.get(argumentID));
-                    if (causes.containsKey(argumentID))
-                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), causes.get(argumentID));
-                }
-
-            } else if (atomType.equals("ObjectPropertyAtom") || atomType.equals("DataPropertyAtom")
-                    || atomType.equals("BuiltInAtom")) { // property
-                int i = 0;
-                @SuppressWarnings("rawtypes")
-                TwoArgumentsAtom atom;
-                if (atomType.equals("BuiltInAtom"))
-                    atom = new TwoArgumentsAtom<>(atomID, "swrlb");
-                else
-                    atom = new TwoArgumentsAtom<>(atomID);
-                while (argumentMatcher.find()) {
-                    i += 1;
-                    String argumentType = argumentMatcher.group("argumentType");
-                    String argumentID = argumentMatcher.group("argumentID");
-                    String value = argumentMatcher.group("value");
-                    String valueType = argumentMatcher.group("valueType");
-                    if (argumentType != null && argumentType.equals("Variable") && argumentID != null) {
-                        switch (i) {
-                            case 1:
-                                atom.setArgument1(new Variable(argumentID));
-                                continue;
-                            case 2:
-                                atom.setArgument2(new Variable(argumentID));
-                                return atom;
-                        }
-                    } else if (argumentType != null && argumentType.equals("") && argumentID != null) {
-                        Entity entity = null;
-                        if (symptoms.containsKey(argumentID))
-                            entity = symptoms.get(argumentID);
-                        else if (diseases.containsKey(argumentID))
-                            entity = diseases.get(argumentID);
-                        else if (tests.containsKey(argumentID))
-                            entity = tests.get(argumentID);
-                        else if (treatments.containsKey(argumentID))
-                            entity = treatments.get(argumentID);
-                        else if (causes.containsKey(argumentID))
-                            entity = causes.get(argumentID);
-
-                        switch (i) {
-                            case 1:
-                                atom.setArgument1(entity);
-                                break;
-                            case 2:
-                                atom.setArgument2(entity);
-                                break;
-                        }
-                    } else if (valueType != null && value != null && StringUtils.isNumeric(value)) {
-                        int intVal = Integer.parseInt(value);
-                        switch (i) {
-                            case 1:
-                                atom.setArgument1(intVal);
-                                break;
-                            case 2:
-                                atom.setArgument2(intVal);
-                                break;
-                        }
-                    }
-                }
-                if (i == 2 && atom.getArgument1() != null && atom.getArgument2() != null) {
-                    return atom;
-                }
-            }
-        }
-        return null;
-    }
-
-    public Map<String, Rule> loadRules() {
-        for (SWRLAPIRule swrlRule : ruleOntology.getSWRLRules()) {
-            Rule rule = new Rule(swrlRule.getRuleName());
-            for (SWRLAtom atom : swrlRule.getBody())
-                rule.addBodyAtom(parseSWRLAtom(atom));
-            for (SWRLAtom atom : swrlRule.getHead())
-                rule.addHeadAtom(parseSWRLAtom(atom));
-            rules.put(rule.getName(), rule);
-        }
-        return rules;
     }
 
     public Map<String, Rule> getRules() {
