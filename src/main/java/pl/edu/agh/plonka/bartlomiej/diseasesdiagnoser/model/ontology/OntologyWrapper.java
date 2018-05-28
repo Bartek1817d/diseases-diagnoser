@@ -36,7 +36,8 @@ public class OntologyWrapper {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private final OWLObjectRenderer renderer = new DLSyntaxObjectRenderer();
-    private final Map<String, Entity> classes = new HashMap<String, Entity>();
+    private final EntitiesLoader entitiesLoader;
+    private Map<String, Entity> classes = new HashMap<>();
     private final OWLOntology ontology;
     private final OWLDataFactory factory;
     private final PrefixManager prefixManager;
@@ -72,6 +73,7 @@ public class OntologyWrapper {
         ruleOntology = ruleEngine.getSWRLAPIOWLOntology();
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
+        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, lang);
     }
 
     public OntologyWrapper(File ontologyFile) throws OWLOntologyCreationException {
@@ -89,6 +91,7 @@ public class OntologyWrapper {
         ruleOntology = ruleEngine.getSWRLAPIOWLOntology();
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
+        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, lang);
         loadData();
     }
 
@@ -120,7 +123,7 @@ public class OntologyWrapper {
     }
 
     private void loadData() {
-        loadClasses();
+        classes = entitiesLoader.loadClasses();
         loadSymptoms();
         loadDiseases();
         loadTests();
