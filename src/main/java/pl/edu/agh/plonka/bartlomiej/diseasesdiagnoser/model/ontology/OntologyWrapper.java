@@ -73,7 +73,7 @@ public class OntologyWrapper {
         ruleOntology = ruleEngine.getSWRLAPIOWLOntology();
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
-        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, lang);
+        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
     }
 
     public OntologyWrapper(File ontologyFile) throws OWLOntologyCreationException {
@@ -91,7 +91,7 @@ public class OntologyWrapper {
         ruleOntology = ruleEngine.getSWRLAPIOWLOntology();
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
-        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, lang);
+        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
         loadData();
     }
 
@@ -124,142 +124,38 @@ public class OntologyWrapper {
 
     private void loadData() {
         classes = entitiesLoader.loadClasses();
-        loadSymptoms();
-        loadDiseases();
-        loadTests();
-        loadTreatments();
-        loadCauses();
+        symptoms = entitiesLoader.loadInstances(properties.symptomClass, classes);
+        diseases = entitiesLoader.loadInstances(properties.diseaseClass, classes);
+        tests = entitiesLoader.loadInstances(properties.testingClass, classes);
+        treatments = entitiesLoader.loadInstances(properties.treatmentClass, classes);
+        causes = entitiesLoader.loadInstances(properties.causeClass, classes);
         loadRules();
         generatePatientsFromRules();
-    }
-
-    public Map<String, Entity> loadClasses() {
-        for (OWLClass owlClass : ontology.getClassesInSignature()) {
-            String classID = renderer.render(owlClass);
-            Entity classEntity = classes.get(classID);
-            if (classEntity == null) {
-                classEntity = new Entity(classID);
-                classes.put(classID, classEntity);
-            }
-            if (classEntity.getLabel() == null) {
-                for (OWLAnnotation annotation : EntitySearcher.getAnnotations(owlClass, ontology,
-                        factory.getRDFSLabel())) {
-                    OWLAnnotationValue val = annotation.getValue();
-                    if (val instanceof OWLLiteral) {
-                        OWLLiteral label = (OWLLiteral) val;
-                        if (label.hasLang(lang))
-                            classEntity.setLabel(label.getLiteral());
-                    }
-                }
-                for (OWLAnnotation annotation : EntitySearcher.getAnnotations(owlClass, ontology,
-                        factory.getRDFSComment())) {
-                    OWLAnnotationValue val = annotation.getValue();
-                    if (val instanceof OWLLiteral) {
-                        OWLLiteral comment = (OWLLiteral) val;
-                        if (comment.hasLang(lang))
-                            classEntity.setComment(comment.getLiteral());
-                    }
-                }
-            }
-            for (OWLClassExpression owlSuperClass : EntitySearcher.getSuperClasses(owlClass, ontology)) {
-                if (owlSuperClass.isAnonymous())
-                    continue;
-                String superClassID = renderer.render(owlSuperClass);
-                Entity superClassEntity = classes.get(superClassID);
-                if (superClassEntity == null) {
-                    superClassEntity = new Entity(superClassID);
-                    classes.put(superClassID, superClassEntity);
-                }
-                classEntity.addClass(superClassEntity);
-            }
-        }
-        return classes;
     }
 
     public Map<String, Entity> getClasses() {
         return classes;
     }
 
-    private Map<String, Entity> loadInstances(OWLClass owlClass) {
-        Map<String, Entity> instances = new HashMap<String, Entity>();
-        for (OWLNamedIndividual owlInstance : reasoner.getInstances(owlClass, false).getFlattened()) {
-            String instanceID = renderer.render(owlInstance);
-            Entity instance = new Entity(instanceID);
-            for (OWLClassExpression owlParentClass : EntitySearcher.getTypes(owlInstance, ontology))
-                instance.addClass(classes.get(renderer.render(owlParentClass)));
-            for (OWLAnnotation annotation : EntitySearcher.getAnnotations(owlInstance, ontology,
-                    factory.getRDFSLabel())) {
-                OWLAnnotationValue val = annotation.getValue();
-                if (val instanceof OWLLiteral) {
-                    OWLLiteral label = (OWLLiteral) val;
-                    if (label.hasLang(lang))
-                        instance.setLabel(label.getLiteral());
-                }
-            }
-            for (OWLAnnotation annotation : EntitySearcher.getAnnotations(owlInstance, ontology,
-                    factory.getRDFSComment())) {
-                OWLAnnotationValue val = annotation.getValue();
-                if (val instanceof OWLLiteral) {
-                    OWLLiteral comment = (OWLLiteral) val;
-                    if (comment.hasLang(lang))
-                        instance.setComment(comment.getLiteral());
-                }
-            }
-            instances.put(instanceID, instance);
-        }
-        return instances;
-    }
-
-    public Map<String, Entity> loadSymptoms() {
-        symptoms = loadInstances(properties.symptomClass);
-        return symptoms;
-    }
 
     public Map<String, Entity> getSymptoms() {
         return symptoms;
-    }
-
-    public Map<String, Entity> loadDiseases() {
-        diseases = loadInstances(properties.diseaseClass);
-        return diseases;
     }
 
     public Map<String, Entity> getDiseases() {
         return diseases;
     }
 
-    public Map<String, Entity> loadTests() {
-        tests = loadInstances(properties.testingClass);
-        return tests;
-    }
-
     public Map<String, Entity> getTests() {
         return tests;
-    }
-
-    public Map<String, Entity> loadTreatments() {
-        treatments = loadInstances(properties.treatmentClass);
-        return treatments;
     }
 
     public Map<String, Entity> getTreatments() {
         return treatments;
     }
 
-    public Map<String, Entity> loadCauses() {
-        causes = loadInstances(properties.causeClass);
-        return causes;
-    }
-
     public Map<String, Entity> getCauses() {
         return causes;
-    }
-
-    public Set<OWLNamedIndividual> getClassInstances(String classID) {
-        OWLDataFactory factory = ontologyManager.getOWLDataFactory();
-        OWLClass owlClass = factory.getOWLClass(classID, prefixManager);
-        reasoner.flush();
-        return reasoner.getInstances(owlClass, true).getFlattened();
     }
 
     private Patient getPatient(OWLIndividual patientInd) {

@@ -2,6 +2,7 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology;
 
 import org.semanticweb.owlapi.io.OWLObjectRenderer;
 import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.search.EntitySearcher;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 
@@ -13,12 +14,14 @@ class EntitiesLoader {
     private final OWLOntology ontology;
     private final OWLObjectRenderer renderer;
     private final OWLDataFactory factory;
+    private final OWLReasoner reasoner;
     private String lang;
 
-    EntitiesLoader(OWLOntology ontology, OWLObjectRenderer renderer, OWLDataFactory factory, String lang) {
+    EntitiesLoader(OWLOntology ontology, OWLObjectRenderer renderer, OWLDataFactory factory,  OWLReasoner reasoner, String lang) {
         this.ontology = ontology;
         this.renderer = renderer;
         this.factory = factory;
+        this.reasoner = reasoner;
         this.lang = lang;
     }
 
@@ -35,6 +38,14 @@ class EntitiesLoader {
             }
         }
         return classes;
+    }
+
+    Map<String, Entity> loadInstances(OWLClass owlClass, Map<String, Entity> classes) {
+        Map<String, Entity> instances = new HashMap<>();
+        for (OWLNamedIndividual owlInstance : reasoner.getInstances(owlClass, false).getFlattened()) {
+            loadInstance(owlInstance, instances, classes);
+        }
+        return instances;
     }
 
     private Entity loadClass(OWLEntity owlClass, Map<String, Entity> classes) {
@@ -72,6 +83,17 @@ class EntitiesLoader {
             }
         }
         return null;
+    }
+
+    private Entity loadInstance(OWLNamedIndividual owlInstance, Map<String, Entity> instances, Map<String, Entity> classes) {
+        String instanceID = renderer.render(owlInstance);
+        Entity instance = new Entity(instanceID);
+        for (OWLClassExpression owlParentClass : EntitySearcher.getTypes(owlInstance, ontology))
+            instance.addClass(classes.get(renderer.render(owlParentClass)));
+        instance.setLabel(getLabel(owlInstance));
+        instance.setComment(getComment(owlInstance));
+        instances.put(instanceID, instance);
+        return instance;
     }
 }
 
