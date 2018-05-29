@@ -214,7 +214,7 @@ public class MachineLearning {
     public static void main(String args[]) throws OWLOntologyCreationException {
         OntologyWrapper ontology = new OntologyWrapper(new File("res/human_diseases.owl"));
         MachineLearning machineLearning = new MachineLearning(ontology);
-        machineLearning.sequentialCovering(new HashSet<Patient>(ontology.getAssertedPatients()));
+        machineLearning.sequentialCovering(new HashSet<>(ontology.generatePatientsFromRules()));
     }
 
 }

@@ -61,85 +61,108 @@ public class RulesLoader {
 
             // class declaration
             if (atomType.equals("ClassAtom")) {
-                if (argumentMatcher.find()) {
-                    String argumentType = argumentMatcher.group("argumentType");
-                    String argumentID = argumentMatcher.group("argumentID");
-                    if (argumentType.equals("Variable"))
-                        return new ClassDeclarationAtom<Variable>(classes.get(atomID), new Variable(argumentID));
-                    if (symptoms.containsKey(argumentID))
-                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), symptoms.get(argumentID));
-                    if (diseases.containsKey(argumentID))
-                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), diseases.get(argumentID));
-                    if (tests.containsKey(argumentID))
-                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), tests.get(argumentID));
-                    if (treatments.containsKey(argumentID))
-                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), treatments.get(argumentID));
-                    if (causes.containsKey(argumentID))
-                        return new ClassDeclarationAtom<Entity>(classes.get(atomID), causes.get(argumentID));
-                }
-
+                return parseClassAtom(atomID, argumentMatcher, classes, symptoms, diseases, tests, treatments, causes);
             } else if (atomType.equals("ObjectPropertyAtom") || atomType.equals("DataPropertyAtom")
                     || atomType.equals("BuiltInAtom")) { // property
-                int i = 0;
-                @SuppressWarnings("rawtypes")
-                TwoArgumentsAtom atom;
-                if (atomType.equals("BuiltInAtom"))
-                    atom = new TwoArgumentsAtom<>(atomID, "swrlb");
-                else
-                    atom = new TwoArgumentsAtom<>(atomID);
-                while (argumentMatcher.find()) {
-                    i += 1;
-                    String argumentType = argumentMatcher.group("argumentType");
-                    String argumentID = argumentMatcher.group("argumentID");
-                    String value = argumentMatcher.group("value");
-                    String valueType = argumentMatcher.group("valueType");
-                    if (argumentType != null && argumentType.equals("Variable") && argumentID != null) {
-                        switch (i) {
-                            case 1:
-                                atom.setArgument1(new Variable(argumentID));
-                                continue;
-                            case 2:
-                                atom.setArgument2(new Variable(argumentID));
-                                return atom;
-                        }
-                    } else if (argumentType != null && argumentType.equals("") && argumentID != null) {
-                        Entity entity = null;
-                        if (symptoms.containsKey(argumentID))
-                            entity = symptoms.get(argumentID);
-                        else if (diseases.containsKey(argumentID))
-                            entity = diseases.get(argumentID);
-                        else if (tests.containsKey(argumentID))
-                            entity = tests.get(argumentID);
-                        else if (treatments.containsKey(argumentID))
-                            entity = treatments.get(argumentID);
-                        else if (causes.containsKey(argumentID))
-                            entity = causes.get(argumentID);
-
-                        switch (i) {
-                            case 1:
-                                atom.setArgument1(entity);
-                                break;
-                            case 2:
-                                atom.setArgument2(entity);
-                                break;
-                        }
-                    } else if (valueType != null && value != null && StringUtils.isNumeric(value)) {
-                        int intVal = Integer.parseInt(value);
-                        switch (i) {
-                            case 1:
-                                atom.setArgument1(intVal);
-                                break;
-                            case 2:
-                                atom.setArgument2(intVal);
-                                break;
-                        }
-                    }
-                }
-                if (i == 2 && atom.getArgument1() != null && atom.getArgument2() != null) {
-                    return atom;
-                }
+                return parseTwoArgumentsAtom(atomType, atomID, argumentMatcher, symptoms, diseases, tests, treatments, causes);
             }
         }
         return null;
+    }
+
+    private AbstractAtom parseClassAtom(String atomID,
+                                        Matcher argumentMatcher,
+                                        Map<String, Entity> classes,
+                                        Map<String, Entity> symptoms,
+                                        Map<String, Entity> diseases,
+                                        Map<String, Entity> tests,
+                                        Map<String, Entity> treatments,
+                                        Map<String, Entity> causes) {
+        if (argumentMatcher.find()) {
+            String argumentType = argumentMatcher.group("argumentType");
+            String argumentID = argumentMatcher.group("argumentID");
+            if (argumentType.equals("Variable"))
+                return new ClassDeclarationAtom<>(classes.get(atomID), new Variable(argumentID));
+            if (symptoms.containsKey(argumentID))
+                return new ClassDeclarationAtom<>(classes.get(atomID), symptoms.get(argumentID));
+            if (diseases.containsKey(argumentID))
+                return new ClassDeclarationAtom<>(classes.get(atomID), diseases.get(argumentID));
+            if (tests.containsKey(argumentID))
+                return new ClassDeclarationAtom<>(classes.get(atomID), tests.get(argumentID));
+            if (treatments.containsKey(argumentID))
+                return new ClassDeclarationAtom<>(classes.get(atomID), treatments.get(argumentID));
+            if (causes.containsKey(argumentID))
+                return new ClassDeclarationAtom<>(classes.get(atomID), causes.get(argumentID));
+        }
+        return null;
+    }
+
+    private AbstractAtom parseTwoArgumentsAtom(String atomType,
+                                               String atomID,
+                                               Matcher argumentMatcher,
+                                               Map<String, Entity> symptoms,
+                                               Map<String, Entity> diseases,
+                                               Map<String, Entity> tests,
+                                               Map<String, Entity> treatments,
+                                               Map<String, Entity> causes) {
+        int i = 0;
+        @SuppressWarnings("rawtypes")
+        TwoArgumentsAtom atom;
+        if (atomType.equals("BuiltInAtom"))
+            atom = new TwoArgumentsAtom<>(atomID, "swrlb");
+        else
+            atom = new TwoArgumentsAtom<>(atomID);
+        while (argumentMatcher.find()) {
+            i += 1;
+            String argumentType = argumentMatcher.group("argumentType");
+            String argumentID = argumentMatcher.group("argumentID");
+            String value = argumentMatcher.group("value");
+            String valueType = argumentMatcher.group("valueType");
+
+            if (argumentType != null && argumentID != null) {
+                if (argumentType.equals("Variable")) {
+                    setAtomArgument(atom, new Variable(argumentID), i);
+                } else if (argumentType.equals("")) {
+                    Entity entity = getEntityFromArgumentId(argumentID, symptoms, diseases, tests, treatments, causes);
+                    setAtomArgument(atom, entity, i);
+                }
+            } else if (valueType != null && value != null && StringUtils.isNumeric(value)) {
+                int intVal = Integer.parseInt(value);
+                setAtomArgument(atom, intVal, i);
+            }
+        }
+        if (i == 2 && atom.getArgument1() != null && atom.getArgument2() != null)
+            return atom;
+        else
+            return null;
+    }
+
+    private <T> void setAtomArgument(TwoArgumentsAtom atom, T argument, int i) {
+        switch (i) {
+            case 1:
+                atom.setArgument1(argument);
+            case 2:
+                atom.setArgument2(argument);
+        }
+    }
+
+    private Entity getEntityFromArgumentId(String argumentID,
+                                           Map<String, Entity> symptoms,
+                                           Map<String, Entity> diseases,
+                                           Map<String, Entity> tests,
+                                           Map<String, Entity> treatments,
+                                           Map<String, Entity> causes) {
+        if (symptoms.containsKey(argumentID))
+            return symptoms.get(argumentID);
+        else if (diseases.containsKey(argumentID))
+            return diseases.get(argumentID);
+        else if (tests.containsKey(argumentID))
+            return tests.get(argumentID);
+        else if (treatments.containsKey(argumentID))
+            return treatments.get(argumentID);
+        else if (causes.containsKey(argumentID))
+            return causes.get(argumentID);
+        else
+            return null;
     }
 }

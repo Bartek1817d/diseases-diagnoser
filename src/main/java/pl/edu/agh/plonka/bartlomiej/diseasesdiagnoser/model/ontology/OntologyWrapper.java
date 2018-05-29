@@ -58,8 +58,6 @@ public class OntologyWrapper {
     private String lang = "en";
     private OntologyProperties properties;
 
-    private Collection<Patient> assertedPatients = new HashSet<Patient>();
-
     public OntologyWrapper(String baseURL) throws OWLOntologyCreationException {
         ontologyManager = OWLManager.createOWLOntologyManager();
         factory = ontologyManager.getOWLDataFactory();
@@ -132,7 +130,6 @@ public class OntologyWrapper {
         treatments = entitiesLoader.loadInstances(properties.treatmentClass, classes);
         causes = entitiesLoader.loadInstances(properties.causeClass, classes);
         rules = rulesLoader.loadRules(classes, symptoms, diseases, tests, treatments, causes);
-        generatePatientsFromRules();
     }
 
     public Map<String, Entity> getClasses() {
@@ -322,7 +319,7 @@ public class OntologyWrapper {
     }
 
     public List<Patient> getPatients() {
-        List<Patient> patients = new ArrayList<Patient>();
+        List<Patient> patients = new ArrayList<>();
         Patient patient;
         for (OWLIndividual patientInd : EntitySearcher.getIndividuals(properties.patientClass, ontology)) {
             patient = getPatient(patientInd);
@@ -364,7 +361,7 @@ public class OntologyWrapper {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public Collection<Patient> generatePatientsFromRules() {
-        assertedPatients.clear();
+        Collection<Patient> patients = new ArrayList<>();
         Pattern diseasePattern = Pattern.compile("(?<diseaseID>\\w+)Disease(?<number>\\d+)");
         for (Rule rule : rules.values()) {
             Matcher diseaseMatcher = diseasePattern.matcher(rule.getName());
@@ -372,7 +369,7 @@ public class OntologyWrapper {
                 // System.out.println(rule);
                 String diseaseID = diseaseMatcher.group("diseaseID");
                 String number = diseaseMatcher.group("number");
-                Map<String, Entity> variables = new HashMap<String, Entity>();
+                Map<String, Entity> variables = new HashMap<>();
                 Patient patient = null;
                 for (AbstractAtom atom : rule.getBodyAtoms()) {
                     if (atom instanceof ClassDeclarationAtom
@@ -394,25 +391,25 @@ public class OntologyWrapper {
                                 String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
                                 Patient p = (Patient) variables.get(pName);
                                 p.addSymptom((Entity) twoArgumentsAtom.getArgument2());
-                                break;
+                                continue;
                             }
                             case "negativeTest": {
                                 String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
                                 Patient p = (Patient) variables.get(pName);
                                 p.addNegativeTest((Entity) twoArgumentsAtom.getArgument2());
-                                break;
+                                continue;
                             }
                             case "hadOrHasDisease": {
                                 String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
                                 Patient p = (Patient) variables.get(pName);
                                 p.addPreviousOrCurrentDisease((Entity) twoArgumentsAtom.getArgument2());
-                                break;
+                                continue;
                             }
                             case "hasDisease": {
                                 String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
                                 Patient p = (Patient) variables.get(pName);
                                 p.addDisease((Entity) twoArgumentsAtom.getArgument2());
-                                break;
+                                continue;
                             }
                             case "age": {
                                 Variable patientVariable = (Variable) twoArgumentsAtom.getArgument1();
@@ -492,18 +489,9 @@ public class OntologyWrapper {
                     }
                 }
                 if (patient != null)
-                    assertedPatients.add(patient);
+                    patients.add(patient);
             }
         }
-        return assertedPatients;
+        return patients;
     }
-
-    public Collection<Patient> getAssertedPatients() {
-        return assertedPatients;
-    }
-
-    public void addAssertedPatient(Patient patient) {
-        assertedPatients.add(patient);
-    }
-
 }
