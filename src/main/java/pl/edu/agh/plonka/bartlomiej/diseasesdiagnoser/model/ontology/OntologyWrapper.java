@@ -28,12 +28,18 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.google.common.collect.BoundType.OPEN;
 
 public class OntologyWrapper {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
+
+    private static final Integer MIN_AGE = 0;
+    private static final Integer MAX_AGE = 100;
 
     private static final Pattern diseasePattern = Pattern.compile("(?<diseaseID>\\w+)Disease(?<number>\\d+)");
     private static final Random random = new Random();
@@ -163,61 +169,21 @@ public class OntologyWrapper {
 
     private Patient getPatient(OWLIndividual patientInd) {
         Patient patient = new Patient(renderer.render(patientInd));
-        Iterator<OWLLiteral> it;
-        it = EntitySearcher.getDataPropertyValues(patientInd, properties.firstNameProperty, ontology).iterator();
-        if (it.hasNext())
-            patient.setFirstName(renderer.render(it.next()));
-        it = EntitySearcher.getDataPropertyValues(patientInd, properties.lastNameProperty, ontology).iterator();
-        if (it.hasNext())
-            patient.setLastName(renderer.render(it.next()));
-        it = EntitySearcher.getDataPropertyValues(patientInd, properties.ageProperty, ontology).iterator();
-        if (it.hasNext())
-            patient.setAge(Integer.parseInt(renderer.render(it.next())));
-        it = EntitySearcher.getDataPropertyValues(patientInd, properties.heightProperty, ontology).iterator();
-        if (it.hasNext())
-            patient.setHeight(Integer.parseInt(renderer.render(it.next())));
-        it = EntitySearcher.getDataPropertyValues(patientInd, properties.weightProperty, ontology).iterator();
-        if (it.hasNext())
-            patient.setWeight(Integer.parseInt(renderer.render(it.next())));
 
-        for (OWLIndividual owlSymptom : EntitySearcher.getObjectPropertyValues(patientInd, properties.symptomProperty, ontology)) {
-            Entity symptom = symptoms.get(renderer.render(owlSymptom));
-            if (symptom != null)
-                patient.addSymptom(symptom);
-        }
-        for (OWLIndividual owlDisease : EntitySearcher.getObjectPropertyValues(patientInd, properties.diseaseProperty, ontology)) {
-            Entity disease = diseases.get(renderer.render(owlDisease));
-            if (disease != null)
-                patient.addDisease(disease);
-        }
-        for (OWLIndividual owlTest : EntitySearcher.getObjectPropertyValues(patientInd, properties.testProperty, ontology)) {
-            Entity test = tests.get(renderer.render(owlTest));
-            if (test != null)
-                patient.addTest(test);
-        }
-        for (OWLIndividual owlTest : EntitySearcher.getObjectPropertyValues(patientInd, properties.negativeTestProperty,
-                ontology)) {
-            Entity test = tests.get(renderer.render(owlTest));
-            if (test != null)
-                patient.addNegativeTest(test);
-        }
-        for (OWLIndividual owlTreatment : EntitySearcher.getObjectPropertyValues(patientInd, properties.treatmentProperty,
-                ontology)) {
-            Entity treatment = treatments.get(renderer.render(owlTreatment));
-            if (treatment != null)
-                patient.addTreatment(treatment);
-        }
-        for (OWLIndividual owlCause : EntitySearcher.getObjectPropertyValues(patientInd, properties.causeProperty, ontology)) {
-            Entity cause = causes.get(renderer.render(owlCause));
-            if (cause != null)
-                patient.addTreatment(cause);
-        }
-        for (OWLIndividual owlCause : EntitySearcher.getObjectPropertyValues(patientInd,
-                properties.previousOrCurrentDiseaseProperty, ontology)) {
-            Entity disease = diseases.get(renderer.render(owlCause));
-            if (disease != null)
-                patient.addPreviousOrCurrentDisease(disease);
-        }
+        setPatientStringProperty(patientInd, properties.firstNameProperty, patient::setFirstName);
+        setPatientStringProperty(patientInd, properties.lastNameProperty, patient::setLastName);
+        setPatientIntegerProperty(patientInd, properties.ageProperty, patient::setAge);
+        setPatientIntegerProperty(patientInd, properties.heightProperty, patient::setHeight);
+        setPatientIntegerProperty(patientInd, properties.weightProperty, patient::setWeight);
+
+        setPatientObjectProperty(patientInd, properties.symptomProperty, symptoms, patient::addSymptom);
+        setPatientObjectProperty(patientInd, properties.diseaseProperty, diseases, patient::addDisease);
+        setPatientObjectProperty(patientInd, properties.testProperty, tests, patient::addTest);
+        setPatientObjectProperty(patientInd, properties.negativeTestProperty, tests, patient::addNegativeTest);
+        setPatientObjectProperty(patientInd, properties.treatmentProperty, treatments, patient::addTreatment);
+        setPatientObjectProperty(patientInd, properties.causeProperty, causes, patient::addCause);
+        setPatientObjectProperty(patientInd, properties.previousOrCurrentDiseaseProperty, diseases, patient::addPreviousOrCurrentDisease);
+
         return patient;
     }
 
@@ -483,11 +449,11 @@ public class OntologyWrapper {
         Range<Integer> ageRange = Range.all();
         for (AbstractAtom atom : rule.getBodyAtoms()) {
             if (atom instanceof TwoArgumentsAtom) {
-                TwoArgumentsAtom<Variable, Integer> twoArgumentsAtom = (TwoArgumentsAtom) atom;
+                TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) atom;
                 if (atom.getPrefix().equals("swrlb")
                         && twoArgumentsAtom.getArgument1().equals(ageVariable)
                         && twoArgumentsAtom.getArgument2() instanceof Integer) {
-                    int ageBound = twoArgumentsAtom.getArgument2();
+                    int ageBound = (int) twoArgumentsAtom.getArgument2();
                     ageRange = intersection(ageRange, atom.getPredicate(), ageBound);
                 }
             }
@@ -513,31 +479,52 @@ public class OntologyWrapper {
     }
 
     private Integer selectNumberFromRange(Range<Integer> range) {
-        if (range.hasUpperBound() && range.hasLowerBound()
-                && (range.upperEndpoint().equals(range.lowerEndpoint())))
-            return range.upperEndpoint();
-        else {
-            int lowerBound = 0;
-            int upperBound = 10;
-            if (range.hasUpperBound()) {
-                switch (range.upperBoundType()) {
-                    case OPEN:
-                        upperBound = range.upperEndpoint();
-                        break;
-                    case CLOSED:
-                        upperBound = range.upperEndpoint() + 1;
-                }
+        if (range.hasUpperBound() && range.hasLowerBound()) {
+            if (range.upperBoundType() == OPEN && range.lowerBoundType() == OPEN && range.upperEndpoint() - range.lowerEndpoint() <= 1)
+                return null;
+            if (range.upperEndpoint().equals(range.lowerEndpoint()))
+                return range.upperEndpoint();
+        }
+        int lowerBound = MIN_AGE;
+        int upperBound = MAX_AGE;
+        if (range.hasUpperBound()) {
+            switch (range.upperBoundType()) {
+                case OPEN:
+                    upperBound = range.upperEndpoint() - 1;
+                    break;
+                case CLOSED:
+                    upperBound = range.upperEndpoint();
             }
-            if (range.hasLowerBound()) {
-                switch (range.lowerBoundType()) {
-                    case OPEN:
-                        lowerBound = range.lowerEndpoint() + 1;
-                        break;
-                    case CLOSED:
-                        lowerBound = range.lowerEndpoint();
-                }
+        }
+        if (range.hasLowerBound()) {
+            switch (range.lowerBoundType()) {
+                case OPEN:
+                    lowerBound = range.lowerEndpoint() + 1;
+                    break;
+                case CLOSED:
+                    lowerBound = range.lowerEndpoint();
             }
-            return lowerBound + random.nextInt(upperBound - lowerBound);
+        }
+        return lowerBound + random.nextInt(upperBound - lowerBound + 1);
+    }
+
+    private void setPatientStringProperty(OWLIndividual patientInd, OWLDataProperty property, Consumer<String> setter) {
+        Iterator<OWLLiteral> it = EntitySearcher.getDataPropertyValues(patientInd, property, ontology).iterator();
+        if (it.hasNext())
+            setter.accept(renderer.render(it.next()));
+    }
+
+    private void setPatientIntegerProperty(OWLIndividual patientInd, OWLDataProperty property, Consumer<Integer> setter) {
+        Iterator<OWLLiteral> it = EntitySearcher.getDataPropertyValues(patientInd, property, ontology).iterator();
+        if (it.hasNext())
+            setter.accept(Integer.parseInt(renderer.render(it.next())));
+    }
+
+    private void setPatientObjectProperty(OWLIndividual patientInd, OWLObjectProperty property, Map<String, Entity> entities, Consumer<Entity> setter) {
+        for (OWLIndividual entityInd : EntitySearcher.getObjectPropertyValues(patientInd, property, ontology)) {
+            Entity entity = entities.get(renderer.render(entityInd));
+            if (entity != null)
+                setter.accept(entity);
         }
     }
 }
