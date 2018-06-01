@@ -2,7 +2,6 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology;
 
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
 import com.google.common.collect.Range;
-import org.apache.commons.lang3.StringUtils;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
 import org.semanticweb.owlapi.io.OWLObjectRenderer;
@@ -15,7 +14,6 @@ import org.semanticweb.owlapi.util.OWLEntityRemover;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.swrlapi.core.SWRLAPIOWLOntology;
-import org.swrlapi.core.SWRLAPIRule;
 import org.swrlapi.core.SWRLRuleEngine;
 import org.swrlapi.core.SWRLRuleRenderer;
 import org.swrlapi.exceptions.SWRLBuiltInException;
@@ -27,6 +25,8 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImplPlain;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +34,10 @@ import java.util.regex.Pattern;
 public class OntologyWrapper {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
+
+    private static final Pattern diseasePattern = Pattern.compile("(?<diseaseID>\\w+)Disease(?<number>\\d+)");
+    private static final Random random = new Random();
+
 
     private final OWLObjectRenderer renderer = new DLSyntaxObjectRenderer();
     private final EntitiesLoader entitiesLoader;
@@ -326,6 +330,7 @@ public class OntologyWrapper {
             patient = getInferredPatient(patient);
             patients.add(patient);
         }
+        patients.addAll(generatePatientsFromRules());
         return patients;
     }
 
@@ -362,136 +367,177 @@ public class OntologyWrapper {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public Collection<Patient> generatePatientsFromRules() {
         Collection<Patient> patients = new ArrayList<>();
-        Pattern diseasePattern = Pattern.compile("(?<diseaseID>\\w+)Disease(?<number>\\d+)");
         for (Rule rule : rules.values()) {
-            Matcher diseaseMatcher = diseasePattern.matcher(rule.getName());
-            if (diseaseMatcher.find()) {
-                // System.out.println(rule);
-                String diseaseID = diseaseMatcher.group("diseaseID");
-                String number = diseaseMatcher.group("number");
-                Map<String, Entity> variables = new HashMap<>();
-                Patient patient = null;
-                for (AbstractAtom atom : rule.getBodyAtoms()) {
-                    if (atom instanceof ClassDeclarationAtom
-                            && ((ClassDeclarationAtom) atom).getArgument() instanceof Variable) {
-                        Variable var = (Variable) (((ClassDeclarationAtom) atom).getArgument());
-                        if (((ClassDeclarationAtom) atom).getClassEntity().equals(classes.get("Patient"))) {
-                            patient = new Patient(diseaseID + number, diseaseID, number);
-                            variables.put(var.getName(), patient);
-                        } else
-                            variables.put(var.getName(), var.getParentClass());
-                    }
-                }
-                for (AbstractAtom atom : rule.getBodyAtoms()) {
-                    if (atom instanceof TwoArgumentsAtom) {
-                        TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) atom;
-                        String predicate = twoArgumentsAtom.getPredicate();
-                        switch (predicate) {
-                            case "hasSymptom": {
-                                String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
-                                Patient p = (Patient) variables.get(pName);
-                                p.addSymptom((Entity) twoArgumentsAtom.getArgument2());
-                                continue;
-                            }
-                            case "negativeTest": {
-                                String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
-                                Patient p = (Patient) variables.get(pName);
-                                p.addNegativeTest((Entity) twoArgumentsAtom.getArgument2());
-                                continue;
-                            }
-                            case "hadOrHasDisease": {
-                                String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
-                                Patient p = (Patient) variables.get(pName);
-                                p.addPreviousOrCurrentDisease((Entity) twoArgumentsAtom.getArgument2());
-                                continue;
-                            }
-                            case "hasDisease": {
-                                String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
-                                Patient p = (Patient) variables.get(pName);
-                                p.addDisease((Entity) twoArgumentsAtom.getArgument2());
-                                continue;
-                            }
-                            case "age": {
-                                Variable patientVariable = (Variable) twoArgumentsAtom.getArgument1();
-                                Variable ageVariable = (Variable) twoArgumentsAtom.getArgument2();
-                                Patient p = (Patient) variables.get(patientVariable.getName());
-                                Range<Integer> ageRange = Range.all();
-                                for (AbstractAtom atom2 : rule.getBodyAtoms()) {
-                                    if (atom2 instanceof TwoArgumentsAtom) {
-                                        TwoArgumentsAtom<Variable, Integer> twoArgumentsAtom2 = (TwoArgumentsAtom) atom2;
-                                        if (twoArgumentsAtom.getPrefix().equals("swrlb")
-                                                && twoArgumentsAtom2.getArgument1().equals(ageVariable)
-                                                && twoArgumentsAtom2.getArgument2() instanceof Integer) {
-                                            int ageBound = twoArgumentsAtom2.getArgument2();
-                                            switch (twoArgumentsAtom2.getPredicate()) {
-                                                case "equal":
-                                                    ageRange = ageRange.intersection(Range.singleton(ageBound));
-                                                    break;
-                                                case "greaterThan":
-                                                    ageRange = ageRange.intersection(Range.greaterThan(ageBound));
-                                                    break;
-                                                case "greaterThanOrEqual":
-                                                    ageRange = ageRange.intersection(Range.atLeast(ageBound));
-                                                    break;
-                                                case "lessThan":
-                                                    ageRange = ageRange.intersection(Range.lessThan(ageBound));
-                                                    break;
-                                                case "lessThanOrEqual":
-                                                    ageRange = ageRange.intersection(Range.atMost(ageBound));
-                                                    break;
-                                            }
-                                        }
-                                    }
-                                }
-                                if (ageRange.hasUpperBound() && ageRange.hasLowerBound()
-                                        && ageRange.upperEndpoint() == ageRange.lowerEndpoint())
-                                    p.setAge(ageRange.upperEndpoint());
-                                else {
-                                    int lowerBound = 0;
-                                    int upperBound = 10;
-                                    if (ageRange.hasUpperBound()) {
-                                        switch (ageRange.upperBoundType()) {
-                                            case OPEN:
-                                                upperBound = ageRange.upperEndpoint();
-                                                break;
-                                            case CLOSED:
-                                                upperBound = ageRange.upperEndpoint() + 1;
-                                        }
-                                    }
-                                    if (ageRange.hasLowerBound()) {
-                                        switch (ageRange.lowerBoundType()) {
-                                            case OPEN:
-                                                lowerBound = ageRange.lowerEndpoint() + 1;
-                                                break;
-                                            case CLOSED:
-                                                lowerBound = ageRange.lowerEndpoint();
-                                        }
-                                    }
-                                    Random random = new Random();
-                                    p.setAge(lowerBound + random.nextInt(upperBound - lowerBound));
-                                }
-
-                                break;
-                            }
-                        }
-
-                    }
-                }
-                for (AbstractAtom atom : rule.getHeadAtoms()) {
-                    if (atom instanceof TwoArgumentsAtom) {
-                        TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) atom;
-                        String predicate = twoArgumentsAtom.getPredicate();
-                        if (predicate.equals("hasDisease")) {
-                            String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
-                            Patient p = (Patient) variables.get(pName);
-                            p.addDisease((Entity) twoArgumentsAtom.getArgument2());
-                        }
-                    }
-                }
-                if (patient != null)
-                    patients.add(patient);
-            }
+            Patient patient = generatePatientFromRule(rule);
+            if (patient != null)
+                patients.add(patient);
         }
         return patients;
+    }
+
+    private Patient generatePatientFromRule(Rule rule) {
+        Matcher diseaseMatcher = diseasePattern.matcher(rule.getName());
+        if (diseaseMatcher.find()) {
+            // System.out.println(rule);
+            String diseaseID = diseaseMatcher.group("diseaseID");
+            String number = diseaseMatcher.group("number");
+            Map<String, Entity> variables = new HashMap<>();
+            Patient patient = parseVariables(rule, diseaseID, number, variables);
+            parseRuleBodyAtoms(rule, variables);
+            parseRuleHeadAtoms(rule, variables);
+            return patient;
+        } else
+            return null;
+    }
+
+    private Patient parseVariables(Rule rule, String diseaseID, String number, Map<String, Entity> variables) {
+        Patient patient = null;
+        for (AbstractAtom atom : rule.getBodyAtoms()) {
+            if (atom instanceof ClassDeclarationAtom
+                    && ((ClassDeclarationAtom) atom).getArgument() instanceof Variable) {
+                Variable var = (Variable) (((ClassDeclarationAtom) atom).getArgument());
+                if (((ClassDeclarationAtom) atom).getClassEntity().equals(classes.get("Patient"))) {
+                    patient = new Patient(diseaseID + number, diseaseID, number);
+                    variables.put(var.getName(), patient);
+                } else
+                    variables.put(var.getName(), var.getParentClass());
+            }
+        }
+
+        return patient;
+    }
+
+    private void parseRuleBodyAtoms(Rule rule, Map<String, Entity> variables) {
+        for (AbstractAtom atom : rule.getBodyAtoms()) {
+            if (atom instanceof TwoArgumentsAtom) {
+                TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) atom;
+                String predicate = twoArgumentsAtom.getPredicate();
+                switch (predicate) {
+                    case "hasSymptom": {
+                        addEntityToPatient(twoArgumentsAtom, variables, "addSymptom");
+                        break;
+                    }
+                    case "negativeTest": {
+                        addEntityToPatient(twoArgumentsAtom, variables, "addNegativeTest");
+                        break;
+                    }
+                    case "hadOrHasDisease": {
+                        addEntityToPatient(twoArgumentsAtom, variables, "addPreviousOrCurrentDisease");
+                        break;
+                    }
+                    case "hasDisease": {
+                        addEntityToPatient(twoArgumentsAtom, variables, "addDisease");
+                        break;
+                    }
+                    case "age": {
+                        setPatientAge(rule, twoArgumentsAtom, variables);
+                        break;
+                    }
+                }
+
+            }
+        }
+    }
+
+    private void parseRuleHeadAtoms(Rule rule, Map<String, Entity> variables) {
+        for (AbstractAtom atom : rule.getHeadAtoms()) {
+            if (atom instanceof TwoArgumentsAtom) {
+                TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) atom;
+                String predicate = twoArgumentsAtom.getPredicate();
+                if (predicate.equals("hasDisease")) {
+                    String pName = ((Variable) twoArgumentsAtom.getArgument1()).getName();
+                    Patient p = (Patient) variables.get(pName);
+                    p.addDisease((Entity) twoArgumentsAtom.getArgument2());
+                }
+            }
+        }
+    }
+
+    private void addEntityToPatient(TwoArgumentsAtom atom, Map<String, Entity> variables, String patientMethod) {
+        try {
+            addEntityToPatient(atom, variables, Patient.class.getMethod(patientMethod, Entity.class));
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addEntityToPatient(TwoArgumentsAtom atom, Map<String, Entity> variables, Method patientMethod) {
+        String pName = ((Variable) atom.getArgument1()).getName();
+        Patient p = (Patient) variables.get(pName);
+        try {
+            patientMethod.invoke(p, (Entity) atom.getArgument2());
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setPatientAge(Rule rule, TwoArgumentsAtom atom, Map<String, Entity> variables) {
+        Variable patientVariable = (Variable) atom.getArgument1();
+        Variable ageVariable = (Variable) atom.getArgument2();
+        Patient p = (Patient) variables.get(patientVariable.getName());
+        Range<Integer> ageRange = calculateAgeRange(rule, ageVariable);
+        p.setAge(selectNumberFromRange(ageRange));
+    }
+
+    private Range<Integer> calculateAgeRange(Rule rule, Variable ageVariable) {
+        Range<Integer> ageRange = Range.all();
+        for (AbstractAtom atom : rule.getBodyAtoms()) {
+            if (atom instanceof TwoArgumentsAtom) {
+                TwoArgumentsAtom<Variable, Integer> twoArgumentsAtom = (TwoArgumentsAtom) atom;
+                if (atom.getPrefix().equals("swrlb")
+                        && twoArgumentsAtom.getArgument1().equals(ageVariable)
+                        && twoArgumentsAtom.getArgument2() instanceof Integer) {
+                    int ageBound = twoArgumentsAtom.getArgument2();
+                    ageRange = intersection(ageRange, atom.getPredicate(), ageBound);
+                }
+            }
+        }
+        return ageRange;
+    }
+
+    private Range<Integer> intersection(Range<Integer> range, String operator, Integer bound) {
+        switch (operator) {
+            case "equal":
+                return range.intersection(Range.singleton(bound));
+            case "greaterThan":
+                return range.intersection(Range.greaterThan(bound));
+            case "greaterThanOrEqual":
+                return range.intersection(Range.atLeast(bound));
+            case "lessThan":
+                return range.intersection(Range.lessThan(bound));
+            case "lessThanOrEqual":
+                return range.intersection(Range.atMost(bound));
+            default:
+                return range;
+        }
+    }
+
+    private Integer selectNumberFromRange(Range<Integer> range) {
+        if (range.hasUpperBound() && range.hasLowerBound()
+                && (range.upperEndpoint().equals(range.lowerEndpoint())))
+            return range.upperEndpoint();
+        else {
+            int lowerBound = 0;
+            int upperBound = 10;
+            if (range.hasUpperBound()) {
+                switch (range.upperBoundType()) {
+                    case OPEN:
+                        upperBound = range.upperEndpoint();
+                        break;
+                    case CLOSED:
+                        upperBound = range.upperEndpoint() + 1;
+                }
+            }
+            if (range.hasLowerBound()) {
+                switch (range.lowerBoundType()) {
+                    case OPEN:
+                        lowerBound = range.lowerEndpoint() + 1;
+                        break;
+                    case CLOSED:
+                        lowerBound = range.lowerEndpoint();
+                }
+            }
+            return lowerBound + random.nextInt(upperBound - lowerBound);
+        }
     }
 }
