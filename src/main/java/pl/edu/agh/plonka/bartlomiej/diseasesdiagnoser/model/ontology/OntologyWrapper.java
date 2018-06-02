@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -190,43 +191,12 @@ public class OntologyWrapper {
     private Patient getInferredPatient(Patient patient) {
         reasoner.flush();
         OWLNamedIndividual patientInd = factory.getOWLNamedIndividual(patient.getID(), prefixManager);
-        Set<Entity> inferredSymptoms = new HashSet<Entity>();
-        for (OWLNamedIndividual symptomInd : reasoner.getObjectPropertyValues(patientInd, properties.symptomProperty)
-                .getFlattened()) {
-            inferredSymptoms.add(symptoms.get(renderer.render(symptomInd)));
-        }
-        inferredSymptoms.removeAll(patient.getSymptoms());
-        patient.setInferredSymptoms(inferredSymptoms);
 
-        Set<Entity> inferredDiseases = new HashSet<Entity>();
-        for (OWLNamedIndividual diseaseInd : reasoner.getObjectPropertyValues(patientInd, properties.diseaseProperty)
-                .getFlattened()) {
-            inferredDiseases.add(diseases.get(renderer.render(diseaseInd)));
-        }
-        inferredDiseases.removeAll(patient.getDiseases());
-        patient.setInferredDiseases(inferredDiseases);
-
-        Set<Entity> inferredTests = new HashSet<Entity>();
-        for (OWLNamedIndividual testInd : reasoner.getObjectPropertyValues(patientInd, properties.testProperty).getFlattened()) {
-            inferredTests.add(tests.get(renderer.render(testInd)));
-        }
-        inferredTests.removeAll(patient.getTests());
-        patient.setInferredTests(inferredTests);
-
-        Set<Entity> inferredTreatments = new HashSet<Entity>();
-        for (OWLNamedIndividual treatmentInd : reasoner.getObjectPropertyValues(patientInd, properties.treatmentProperty)
-                .getFlattened()) {
-            inferredTreatments.add(treatments.get(renderer.render(treatmentInd)));
-        }
-        inferredTreatments.removeAll(patient.getTreatments());
-        patient.setInferredTreatments(inferredTreatments);
-
-        Set<Entity> inferredCauses = new HashSet<Entity>();
-        for (OWLNamedIndividual causeInd : reasoner.getObjectPropertyValues(patientInd, properties.causeProperty).getFlattened()) {
-            inferredCauses.add(causes.get(renderer.render(causeInd)));
-        }
-        inferredCauses.removeAll(patient.getCauses());
-        patient.setInferredCauses(inferredCauses);
+        setPatientInferredObjectProperty(patientInd, properties.symptomProperty, symptoms, patient::getSymptoms, patient::setInferredSymptoms);
+        setPatientInferredObjectProperty(patientInd, properties.diseaseProperty, diseases, patient::getDiseases, patient::setInferredDiseases);
+        setPatientInferredObjectProperty(patientInd, properties.testProperty, tests, patient::getTests, patient::setInferredTests);
+        setPatientInferredObjectProperty(patientInd, properties.treatmentProperty, treatments, patient::getTreatments, patient::setInferredTreatments);
+        setPatientInferredObjectProperty(patientInd, properties.causeProperty, causes, patient::getCauses, patient::setInferredCauses);
 
         return patient;
     }
@@ -526,5 +496,17 @@ public class OntologyWrapper {
             if (entity != null)
                 setter.accept(entity);
         }
+    }
+
+    private void setPatientInferredObjectProperty(OWLNamedIndividual patientInd, OWLObjectProperty property,
+                                                  Map<String, Entity> entities, Supplier<Collection<Entity>> getter,
+                                                  Consumer<Collection<Entity>> setter) {
+        Set<Entity> inferredEntities = new HashSet<>();
+        for (OWLNamedIndividual entityInd : reasoner.getObjectPropertyValues(patientInd, property)
+                .getFlattened()) {
+            inferredEntities.add(entities.get(renderer.render(entityInd)));
+        }
+        inferredEntities.removeAll(getter.get());
+        setter.accept(inferredEntities);
     }
 }
