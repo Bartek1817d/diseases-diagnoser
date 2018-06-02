@@ -205,43 +205,20 @@ public class OntologyWrapper {
         OWLNamedIndividual patientInd = factory.getOWLNamedIndividual(patient.getID(), prefixManager);
         // patient class assertion
         ontologyManager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(properties.patientClass, patientInd));
-        if (patient.getFirstName() != null)
-            ontologyManager.addAxiom(ontology,
-                    factory.getOWLDataPropertyAssertionAxiom(properties.firstNameProperty, patientInd, patient.getFirstName()));
-        if (patient.getLastName() != null)
-            ontologyManager.addAxiom(ontology,
-                    factory.getOWLDataPropertyAssertionAxiom(properties.lastNameProperty, patientInd, patient.getLastName()));
-        if (patient.getAge() > 0)
-            ontologyManager.addAxiom(ontology,
-                    factory.getOWLDataPropertyAssertionAxiom(properties.ageProperty, patientInd, patient.getAge()));
-        if (patient.getHeight() > 0)
-            ontologyManager.addAxiom(ontology,
-                    factory.getOWLDataPropertyAssertionAxiom(properties.heightProperty, patientInd, patient.getHeight()));
-        if (patient.getWeight() > 0)
-            ontologyManager.addAxiom(ontology,
-                    factory.getOWLDataPropertyAssertionAxiom(properties.weightProperty, patientInd, patient.getWeight()));
-        for (Entity symptom : patient.getSymptoms())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.symptomProperty, patientInd,
-                    factory.getOWLNamedIndividual(symptom.getID(), prefixManager)));
-        for (Entity disease : patient.getDiseases())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.diseaseProperty, patientInd,
-                    factory.getOWLNamedIndividual(disease.getID(), prefixManager)));
-        for (Entity test : patient.getTests())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.testProperty, patientInd,
-                    factory.getOWLNamedIndividual(test.getID(), prefixManager)));
-        for (Entity test : patient.getNegativeTests())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.negativeTestProperty,
-                    patientInd, factory.getOWLNamedIndividual(test.getID(), prefixManager)));
-        for (Entity treatment : patient.getTreatments())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.treatmentProperty, patientInd,
-                    factory.getOWLNamedIndividual(treatment.getID(), prefixManager)));
-        for (Entity cause : patient.getCauses())
-            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(properties.causeProperty, patientInd,
-                    factory.getOWLNamedIndividual(cause.getID(), prefixManager)));
-        for (Entity disease : patient.getPreviousAndCurrentDiseases())
-            ontologyManager.addAxiom(ontology,
-                    factory.getOWLObjectPropertyAssertionAxiom(properties.previousOrCurrentDiseaseProperty, patientInd,
-                            factory.getOWLNamedIndividual(disease.getID(), prefixManager)));
+
+        setPatientIndStringProperty(patientInd, properties.firstNameProperty, patient.getFirstName());
+        setPatientIndStringProperty(patientInd, properties.lastNameProperty, patient.getLastName());
+        setPatientIndIntegerProperty(patientInd, properties.ageProperty, patient.getAge());
+        setPatientIndIntegerProperty(patientInd, properties.heightProperty, patient.getHeight());
+        setPatientIndIntegerProperty(patientInd, properties.weightProperty, patient.getWeight());
+
+        setPatientIndObjectProperty(patientInd, properties.symptomProperty, patient.getSymptoms());
+        setPatientIndObjectProperty(patientInd, properties.diseaseProperty, patient.getDiseases());
+        setPatientIndObjectProperty(patientInd, properties.testProperty, patient.getTests());
+        setPatientIndObjectProperty(patientInd, properties.negativeTestProperty, patient.getNegativeTests());
+        setPatientIndObjectProperty(patientInd, properties.treatmentProperty, patient.getTreatments());
+        setPatientIndObjectProperty(patientInd, properties.causeProperty, patient.getCauses());
+        setPatientIndObjectProperty(patientInd, properties.previousOrCurrentDiseaseProperty, patient.getPreviousAndCurrentDiseases());
     }
 
     public void addEntity(Entity ind) {
@@ -508,5 +485,26 @@ public class OntologyWrapper {
         }
         inferredEntities.removeAll(getter.get());
         setter.accept(inferredEntities);
+    }
+
+    private void setPatientIndStringProperty(OWLIndividual patientInd, OWLDataProperty property, String value) {
+        if (value != null && !value.equals("")) {
+            ontologyManager.addAxiom(ontology,
+                    factory.getOWLDataPropertyAssertionAxiom(property, patientInd, value));
+        }
+    }
+
+    private void setPatientIndIntegerProperty(OWLIndividual patientInd, OWLDataProperty property, Integer value) {
+        if (value != null && value > 0) {
+            ontologyManager.addAxiom(ontology,
+                    factory.getOWLDataPropertyAssertionAxiom(property, patientInd, value));
+        }
+    }
+
+    private void setPatientIndObjectProperty(OWLIndividual patientInd, OWLObjectProperty property, Collection<Entity> entities) {
+        for (Entity entity : entities) {
+            ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(property, patientInd,
+                    factory.getOWLNamedIndividual(entity.getID(), prefixManager)));
+        }
     }
 }
