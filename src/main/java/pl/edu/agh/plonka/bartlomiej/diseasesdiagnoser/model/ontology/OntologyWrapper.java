@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.BoundType.OPEN;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class OntologyWrapper {
 
@@ -221,18 +222,11 @@ public class OntologyWrapper {
         setPatientIndObjectProperty(patientInd, properties.previousOrCurrentDiseaseProperty, patient.getPreviousAndCurrentDiseases());
     }
 
-    public void addEntity(Entity ind) {
-        OWLNamedIndividual owlInd = factory.getOWLNamedIndividual(ind.getID(), prefixManager);
-        for (Entity cls : ind.getClasses()) {
-            OWLClass owlClass = factory.getOWLClass(cls.getID(), prefixManager);
-            ontologyManager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(owlClass, owlInd));
-        }
-        ontologyManager.addAxiom(ontology, factory.getOWLAnnotationAssertionAxiom(factory.getRDFSLabel(),
-                owlInd.getIRI(), new OWLLiteralImplPlain(ind.getLabel(), lang)));
-        if (ind.getComment() != null)
-            ontologyManager.addAxiom(ontology, factory.getOWLAnnotationAssertionAxiom(factory.getRDFSComment(),
-                    owlInd.getIRI(), new OWLLiteralImplPlain(ind.getComment(), lang)));
-
+    public void addEntity(Entity entity) {
+        OWLNamedIndividual entityInd = factory.getOWLNamedIndividual(entity.getID(), prefixManager);
+        setEntityIndClasses(entityInd, entity.getClasses());
+        setEntityIndProperty(entityInd, factory.getRDFSLabel(), entity.getLabel());
+        setEntityIndProperty(entityInd, factory.getRDFSComment(), entity.getComment());
     }
 
     public List<Patient> getPatients() {
@@ -488,7 +482,7 @@ public class OntologyWrapper {
     }
 
     private void setPatientIndStringProperty(OWLIndividual patientInd, OWLDataProperty property, String value) {
-        if (value != null && !value.equals("")) {
+        if (isNotBlank(value)) {
             ontologyManager.addAxiom(ontology,
                     factory.getOWLDataPropertyAssertionAxiom(property, patientInd, value));
         }
@@ -505,6 +499,20 @@ public class OntologyWrapper {
         for (Entity entity : entities) {
             ontologyManager.addAxiom(ontology, factory.getOWLObjectPropertyAssertionAxiom(property, patientInd,
                     factory.getOWLNamedIndividual(entity.getID(), prefixManager)));
+        }
+    }
+
+    private void setEntityIndClasses(OWLNamedIndividual entityInd, Collection<Entity> classes) {
+        for (Entity cls : classes) {
+            OWLClass owlClass = factory.getOWLClass(cls.getID(), prefixManager);
+            ontologyManager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(owlClass, entityInd));
+        }
+    }
+
+    private void setEntityIndProperty(OWLNamedIndividual entityInd, OWLAnnotationProperty property, String value) {
+        if (isNotBlank(value)) {
+            ontologyManager.addAxiom(ontology, factory.getOWLAnnotationAssertionAxiom(property,
+                    entityInd.getIRI(), new OWLLiteralImplPlain(value, lang)));
         }
     }
 }
