@@ -185,7 +185,7 @@ public class Complex implements Comparable<Complex> {
                     if (ageSelector != null) {
                         Variable ageVariable = new Variable("_age");
                         TwoArgumentsAtom<Variable, Variable> ageAtom = new TwoArgumentsAtom<Variable, Variable>(
-                                "negativeTest", patientVariable, ageVariable);
+                                "age", patientVariable, ageVariable);
                         rule.addBodyAtom(ageAtom);
                         if (ageSelector.hasLowerBound() && ageSelector.hasUpperBound()
                                 && ageSelector.lowerEndpoint().equals(ageSelector.upperEndpoint())) {

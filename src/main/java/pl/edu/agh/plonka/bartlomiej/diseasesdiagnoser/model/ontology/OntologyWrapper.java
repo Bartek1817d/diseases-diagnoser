@@ -46,7 +46,6 @@ public class OntologyWrapper {
     private static final Pattern diseasePattern = Pattern.compile("(?<diseaseID>\\w+)Disease(?<number>\\d+)");
     private static final Random random = new Random();
 
-
     private final OWLObjectRenderer renderer = new DLSyntaxObjectRenderer();
     private final EntitiesLoader entitiesLoader;
     private final RulesLoader rulesLoader;
@@ -108,32 +107,6 @@ public class OntologyWrapper {
         loadData();
     }
 
-    public static void main(String args[])
-            throws OWLOntologyCreationException, SWRLParseException, SWRLBuiltInException, OWLOntologyStorageException {
-        OntologyWrapper ontology = new OntologyWrapper(new File("res/human_diseases.owl"));
-        System.out.println(ontology.generatePatientsFromRules());
-    }
-
-    public OWLDocumentFormat getOntologyFormat() {
-        return ontologyFormat;
-    }
-
-    public OWLOntologyManager getOntologyManager() {
-        return ontologyManager;
-    }
-
-    public OWLOntology getOntology() {
-        return ontology;
-    }
-
-    public OWLReasoner getReasoner() {
-        return reasoner;
-    }
-
-    public PrefixManager getPrefixManager() {
-        return prefixManager;
-    }
-
     private void loadData() {
         classes = entitiesLoader.loadClasses();
         symptoms = entitiesLoader.loadInstances(properties.symptomClass, classes);
@@ -147,7 +120,6 @@ public class OntologyWrapper {
     public Map<String, Entity> getClasses() {
         return classes;
     }
-
 
     public Map<String, Entity> getSymptoms() {
         return symptoms;
@@ -189,23 +161,10 @@ public class OntologyWrapper {
         return patient;
     }
 
-    private Patient getInferredPatient(Patient patient) {
-        reasoner.flush();
-        OWLNamedIndividual patientInd = factory.getOWLNamedIndividual(patient.getID(), prefixManager);
-
-        setPatientInferredObjectProperty(patientInd, properties.symptomProperty, symptoms, patient::getSymptoms, patient::setInferredSymptoms);
-        setPatientInferredObjectProperty(patientInd, properties.diseaseProperty, diseases, patient::getDiseases, patient::setInferredDiseases);
-        setPatientInferredObjectProperty(patientInd, properties.testProperty, tests, patient::getTests, patient::setInferredTests);
-        setPatientInferredObjectProperty(patientInd, properties.treatmentProperty, treatments, patient::getTreatments, patient::setInferredTreatments);
-        setPatientInferredObjectProperty(patientInd, properties.causeProperty, causes, patient::getCauses, patient::setInferredCauses);
-
-        return patient;
-    }
-
     public void addPatient(Patient patient) {
         OWLNamedIndividual patientInd = factory.getOWLNamedIndividual(patient.getID(), prefixManager);
-        // patient class assertion
-        ontologyManager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(properties.patientClass, patientInd));
+
+        setIndClass(properties.patientClass, patientInd);
 
         setPatientIndStringProperty(patientInd, properties.firstNameProperty, patient.getFirstName());
         setPatientIndStringProperty(patientInd, properties.lastNameProperty, patient.getLastName());
@@ -222,11 +181,10 @@ public class OntologyWrapper {
         setPatientIndObjectProperty(patientInd, properties.previousOrCurrentDiseaseProperty, patient.getPreviousAndCurrentDiseases());
     }
 
-    public void addEntity(Entity entity) {
-        OWLNamedIndividual entityInd = factory.getOWLNamedIndividual(entity.getID(), prefixManager);
-        setEntityIndClasses(entityInd, entity.getClasses());
-        setEntityIndProperty(entityInd, factory.getRDFSLabel(), entity.getLabel());
-        setEntityIndProperty(entityInd, factory.getRDFSComment(), entity.getComment());
+    public Patient updatePatient(Patient patient) {
+        deleteEntity(patient);
+        addPatient(patient);
+        return getInferredPatient(patient);
     }
 
     public List<Patient> getPatients() {
@@ -241,6 +199,13 @@ public class OntologyWrapper {
         return patients;
     }
 
+    public void addEntity(Entity entity) {
+        OWLNamedIndividual entityInd = factory.getOWLNamedIndividual(entity.getID(), prefixManager);
+        setEntityIndClasses(entityInd, entity.getClasses());
+        setEntityIndProperty(entityInd, factory.getRDFSLabel(), entity.getLabel());
+        setEntityIndProperty(entityInd, factory.getRDFSComment(), entity.getComment());
+    }
+
     public void deleteEntity(Entity entity) {
         OWLNamedIndividual entityID = factory.getOWLNamedIndividual(entity.getID(), prefixManager);
         entityID.accept(remover);
@@ -251,12 +216,6 @@ public class OntologyWrapper {
     public void deleteEntities(Collection<Entity> entities) {
         for (Entity entity : entities)
             deleteEntity(entity);
-    }
-
-    public Patient updatePatient(Patient patient) {
-        deleteEntity(patient);
-        addPatient(patient);
-        return getInferredPatient(patient);
     }
 
     public void saveOntologyToFile(File file) throws OWLOntologyStorageException {
@@ -280,6 +239,19 @@ public class OntologyWrapper {
                 patients.add(patient);
         }
         return patients;
+    }
+
+    private Patient getInferredPatient(Patient patient) {
+        reasoner.flush();
+        OWLNamedIndividual patientInd = factory.getOWLNamedIndividual(patient.getID(), prefixManager);
+
+        setPatientInferredObjectProperty(patientInd, properties.symptomProperty, symptoms, patient::getSymptoms, patient::setInferredSymptoms);
+        setPatientInferredObjectProperty(patientInd, properties.diseaseProperty, diseases, patient::getDiseases, patient::setInferredDiseases);
+        setPatientInferredObjectProperty(patientInd, properties.testProperty, tests, patient::getTests, patient::setInferredTests);
+        setPatientInferredObjectProperty(patientInd, properties.treatmentProperty, treatments, patient::getTreatments, patient::setInferredTreatments);
+        setPatientInferredObjectProperty(patientInd, properties.causeProperty, causes, patient::getCauses, patient::setInferredCauses);
+
+        return patient;
     }
 
     private Patient generatePatientFromRule(Rule rule) {
@@ -505,7 +477,7 @@ public class OntologyWrapper {
     private void setEntityIndClasses(OWLNamedIndividual entityInd, Collection<Entity> classes) {
         for (Entity cls : classes) {
             OWLClass owlClass = factory.getOWLClass(cls.getID(), prefixManager);
-            ontologyManager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(owlClass, entityInd));
+            setIndClass(owlClass, entityInd);
         }
     }
 
@@ -514,5 +486,15 @@ public class OntologyWrapper {
             ontologyManager.addAxiom(ontology, factory.getOWLAnnotationAssertionAxiom(property,
                     entityInd.getIRI(), new OWLLiteralImplPlain(value, lang)));
         }
+    }
+
+    private void setIndClass(OWLClassExpression classExpression, OWLIndividual individual) {
+        ontologyManager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(classExpression, individual));
+    }
+
+    public static void main(String args[])
+            throws OWLOntologyCreationException, SWRLParseException, SWRLBuiltInException, OWLOntologyStorageException {
+        OntologyWrapper ontology = new OntologyWrapper(new File("res/human_diseases.owl"));
+        System.out.println(ontology.generatePatientsFromRules());
     }
 }

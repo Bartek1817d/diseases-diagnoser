@@ -43,8 +43,8 @@ public class MachineLearning {
 
     private Complex findComplex(Set<Patient> trainingSet, Set<Patient> uncoveredSet) {
         System.out.println("findComplex");
-        Patient positiveSeed = positiveSeed(trainingSet, uncoveredSet);
         Star star = new Star();
+        Patient positiveSeed = positiveSeed(trainingSet, uncoveredSet);
         Patient negativeSeed = negativeSeed(trainingSet, star, positiveSeed);
         while (negativeSeed != null) {
             Collection<Complex> partialStar = partialStar(positiveSeed, negativeSeed);
@@ -78,26 +78,26 @@ public class MachineLearning {
 
     private Patient positiveSeed(Set<Patient> trainingSet, Set<Patient> uncoveredSet) {
         System.out.println("positiveSeed");
+        if (uncoveredSet.isEmpty())
+            return null;
         Set<Patient> coveredSet = Sets.difference(trainingSet, uncoveredSet);
         for (Patient uncovered : uncoveredSet) {
             calculateDistance(uncovered, coveredSet);
         }
-        if (uncoveredSet.isEmpty())
-            return null;
         return Collections.max(uncoveredSet);
     }
 
     private Patient negativeSeed(Collection<Patient> trainingSet, Star star, Patient positiveSeed) {
         System.out.println("negativeSeed");
-        List<Patient> negativeSeeds = new ArrayList<Patient>();
+        List<Patient> negativeSeeds = new ArrayList<>();
         for (Patient patient : trainingSet)
             if (!patient.getDiseases().containsAll(positiveSeed.getDiseases()) && star.isPatientCovered(patient))
                 negativeSeeds.add(patient);
+        if (negativeSeeds.isEmpty())
+            return null;
         Set<Patient> positiveSeedSingleton = Collections.singleton(positiveSeed);
         for (Patient negativeSeed : negativeSeeds)
             calculateDistance(negativeSeed, positiveSeedSingleton);
-        if (negativeSeeds.isEmpty())
-            return null;
         return Collections.min(negativeSeeds);
     }
 
