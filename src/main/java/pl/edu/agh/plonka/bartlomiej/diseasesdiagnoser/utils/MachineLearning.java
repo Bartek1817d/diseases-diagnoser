@@ -5,8 +5,8 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 
 import java.io.File;
@@ -14,8 +14,9 @@ import java.util.*;
 
 public class MachineLearning {
 
+    // 0 for restrictive, 1 for general
+    private static final float epsilon = 0.5f;
     private final Logger LOG = LoggerFactory.getLogger(getClass());
-
     private OntologyWrapper ontology;
     private Random random = new Random();
 
@@ -23,8 +24,11 @@ public class MachineLearning {
         this.ontology = ontology;
     }
 
-    // 0 for restrictive, 1 for general
-    private static final float epsilon = 0.5f;
+    public static void main(String args[]) throws OWLOntologyCreationException {
+        OntologyWrapper ontology = new OntologyWrapper(new File("res/human_diseases.owl"));
+        MachineLearning machineLearning = new MachineLearning(ontology);
+        machineLearning.sequentialCovering(new HashSet<>(ontology.generatePatientsFromRules()));
+    }
 
     public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) {
         Collection<Rule> rules = new HashSet<>();
@@ -73,7 +77,7 @@ public class MachineLearning {
                     voteBox.put(decision, 1);
             }
         }
-        return Collections.max(voteBox.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey();
+        return Collections.max(voteBox.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
     }
 
     private Patient positiveSeed(Set<Patient> trainingSet, Set<Patient> uncoveredSet) {
@@ -209,12 +213,6 @@ public class MachineLearning {
             if (complex.isPatientCovered(p))
                 it.remove();
         }
-    }
-
-    public static void main(String args[]) throws OWLOntologyCreationException {
-        OntologyWrapper ontology = new OntologyWrapper(new File("res/human_diseases.owl"));
-        MachineLearning machineLearning = new MachineLearning(ontology);
-        machineLearning.sequentialCovering(new HashSet<>(ontology.generatePatientsFromRules()));
     }
 
 }

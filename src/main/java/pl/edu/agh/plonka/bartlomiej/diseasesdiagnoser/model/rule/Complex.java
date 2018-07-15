@@ -3,8 +3,8 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 
 import java.util.*;
 
@@ -38,7 +38,7 @@ public class Complex implements Comparable<Complex> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static Selector setSelector(Selector selector1, Selector selector2) {
         if (selector1 != null && selector2 != null)
-            return selector1.conjuction(selector2);
+            return selector1.conjunction(selector2);
         if (selector1 != null)
             return selector1;
         if (selector2 != null)
@@ -47,7 +47,7 @@ public class Complex implements Comparable<Complex> {
     }
 
     public static Collection<Complex> intersection(Collection<Complex> complexes1, Collection<Complex> ccomplexes2) {
-        List<Complex> resultComplexes = new LinkedList<Complex>();
+        List<Complex> resultComplexes = new LinkedList<>();
         for (Complex complex1 : complexes1)
             for (Complex complex2 : ccomplexes2)
                 resultComplexes.add(Complex.conjuction(complex1, complex2));
@@ -55,8 +55,8 @@ public class Complex implements Comparable<Complex> {
     }
 
     public static void main(String args[]) {
-        Collection<Integer> c1 = new LinkedList<Integer>(Arrays.asList(2, 4, 5));
-        Collection<Integer> c2 = new LinkedList<Integer>(Arrays.asList(10));
+        Collection<Integer> c1 = new LinkedList<>(Arrays.asList(2, 4, 5));
+        Collection<Integer> c2 = new LinkedList<>(Arrays.asList(10));
         System.out.println(c1.containsAll(c2));
     }
 
@@ -125,22 +125,23 @@ public class Complex implements Comparable<Complex> {
     }
 
     public boolean contains(Complex complex) {
-        if (symptomSelector != null
-                && ((complex.symptomSelector != null && !symptomSelector.containsAll(complex.symptomSelector))
-                || complex.symptomSelector == null))
+        if (!contains(symptomSelector, complex.symptomSelector))
             return false;
-        if (negativeTestsSelector != null && ((complex.negativeTestsSelector != null
-                && !negativeTestsSelector.containsAll(complex.negativeTestsSelector))
-                || complex.negativeTestsSelector == null))
+        if (!contains(negativeTestsSelector, complex.negativeTestsSelector))
             return false;
-        if (previousDiseasesSelector != null && ((complex.previousDiseasesSelector != null
-                && !previousDiseasesSelector.containsAll(complex.previousDiseasesSelector))
-                || complex.previousDiseasesSelector == null))
+        if (!contains(previousDiseasesSelector, complex.previousDiseasesSelector))
             return false;
-        if (ageSelector != null && ((complex.ageSelector != null && !ageSelector.contains(complex.ageSelector))
-                || complex.ageSelector == null))
+        if (!contains(ageSelector, complex.ageSelector))
             return false;
         return true;
+    }
+
+    private boolean contains(Selector selector1, Selector selector2) {
+        if (selector1 != null) {
+            return selector1.contains(selector2);
+        } else {
+            return selector2 == null;
+        }
     }
 
     public boolean isPatientCovered(Patient patient) {

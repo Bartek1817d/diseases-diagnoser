@@ -5,7 +5,7 @@ import com.google.common.collect.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LinearSelector<T extends Comparable<?>> implements Selector<T> {
+public class LinearSelector<T extends Comparable<?>> implements Selector {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -50,7 +50,7 @@ public class LinearSelector<T extends Comparable<?>> implements Selector<T> {
     public static void main(String[] args) {
         LinearSelector<Integer> s1 = LinearSelector.atLeastSelector(10);
         LinearSelector<Integer> s2 = LinearSelector.lessThanSelector(12);
-        System.out.println(s1.conjuction(s2));
+        System.out.println(s1.conjunction(s2));
         System.out.println(s1);
         System.out.println(s2);
     }
@@ -88,13 +88,24 @@ public class LinearSelector<T extends Comparable<?>> implements Selector<T> {
     }
 
     @Override
+    public boolean contains(Selector selector) {
+        if (selector == null)
+            return true;
+        if (selector instanceof LinearSelector) {
+            LinearSelector<T> linearSelector = (LinearSelector) selector;
+            return contains(linearSelector);
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return range.toString();
     }
 
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public Selector<T> conjuction(Selector<T> selector) {
+    public Selector conjunction(Selector selector) {
         if (!(selector instanceof LinearSelector))
             return null;
         LinearSelector<T> resultSelector = new LinearSelector<T>();
