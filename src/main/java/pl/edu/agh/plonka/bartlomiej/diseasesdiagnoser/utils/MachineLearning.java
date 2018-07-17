@@ -34,9 +34,6 @@ public class MachineLearning {
         Collection<Rule> rules = new HashSet<>();
         Set<Patient> uncoveredSet = new HashSet<>(trainingSet);
         while (!uncoveredSet.isEmpty()) {
-            // System.out.println("Covered " + (float)((trainingSet.size() -
-            // uncoveredSet.size()) / trainingSet.size()));
-//            System.out.println(uncoveredSet.size());
             Complex complex = findComplex(trainingSet, uncoveredSet);
             if (complex == null) return null;
             Collection<Entity> category = category(complex, trainingSet, uncoveredSet);
