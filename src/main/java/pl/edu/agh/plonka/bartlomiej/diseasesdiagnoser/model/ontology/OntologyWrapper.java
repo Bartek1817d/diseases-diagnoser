@@ -25,6 +25,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImplPlain;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -38,18 +39,14 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class OntologyWrapper {
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
-
     private static final Integer MIN_AGE = 0;
     private static final Integer MAX_AGE = 100;
-
     private static final Pattern diseasePattern = Pattern.compile("(?<diseaseID>\\w+)Disease(?<number>\\d+)");
     private static final Random random = new Random();
-
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final OWLObjectRenderer renderer = new DLSyntaxObjectRenderer();
     private final EntitiesLoader entitiesLoader;
     private final RulesLoader rulesLoader;
-    private Map<String, Entity> classes = new HashMap<>();
     private final OWLOntology ontology;
     private final OWLDataFactory factory;
     private final PrefixManager prefixManager;
@@ -59,6 +56,7 @@ public class OntologyWrapper {
     private final SWRLRuleEngine ruleEngine;
     private final SWRLAPIOWLOntology ruleOntology;
     private final SWRLRuleRenderer ruleRenderer;
+    private Map<String, Entity> classes = new HashMap<>();
     private OWLEntityRemover remover;
     private Map<String, Entity> symptoms = new HashMap<>();
     private Map<String, Entity> diseases = new HashMap<>();
@@ -87,10 +85,10 @@ public class OntologyWrapper {
         rulesLoader = new RulesLoader(ruleOntology);
     }
 
-    public OntologyWrapper(File ontologyFile) throws OWLOntologyCreationException {
+    public OntologyWrapper(InputStream inputStream) throws OWLOntologyCreationException {
         ontologyManager = OWLManager.createOWLOntologyManager();
         factory = ontologyManager.getOWLDataFactory();
-        ontology = ontologyManager.loadOntologyFromOntologyDocument(ontologyFile);
+        ontology = ontologyManager.loadOntologyFromOntologyDocument(inputStream);
         ontologyFormat = ontologyManager.getOntologyFormat(ontology);
         prefixManager = ontologyFormat.asPrefixOWLOntologyFormat();
         String baseURL = ontology.getOntologyID().getOntologyIRI().get().toString();
@@ -105,6 +103,32 @@ public class OntologyWrapper {
         entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
         rulesLoader = new RulesLoader(ruleOntology);
         loadData();
+    }
+
+    public OntologyWrapper(File file) throws OWLOntologyCreationException {
+        ontologyManager = OWLManager.createOWLOntologyManager();
+        factory = ontologyManager.getOWLDataFactory();
+        ontology = ontologyManager.loadOntologyFromOntologyDocument(file);
+        ontologyFormat = ontologyManager.getOntologyFormat(ontology);
+        prefixManager = ontologyFormat.asPrefixOWLOntologyFormat();
+        String baseURL = ontology.getOntologyID().getOntologyIRI().get().toString();
+        prefixManager.setDefaultPrefix(baseURL + "#");
+        OWLReasonerFactory reasonerFactory = PelletReasonerFactory.getInstance();
+        reasoner = reasonerFactory.createReasoner(ontology, new SimpleConfiguration());
+        remover = new OWLEntityRemover(Collections.singleton(ontology));
+        ruleEngine = SWRLAPIFactory.createSWRLRuleEngine(ontology);
+        ruleOntology = ruleEngine.getSWRLAPIOWLOntology();
+        ruleRenderer = ruleOntology.createSWRLRuleRenderer();
+        properties = new OntologyProperties(factory, prefixManager);
+        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
+        rulesLoader = new RulesLoader(ruleOntology);
+        loadData();
+    }
+
+    public static void main(String args[])
+            throws OWLOntologyCreationException, SWRLParseException, SWRLBuiltInException, OWLOntologyStorageException {
+        OntologyWrapper ontology = new OntologyWrapper(OntologyWrapper.class.getResourceAsStream("human_diseases.owl"));
+        System.out.println(ontology.generatePatientsFromRules());
     }
 
     private void loadData() {
@@ -490,11 +514,5 @@ public class OntologyWrapper {
 
     private void setIndClass(OWLClassExpression classExpression, OWLIndividual individual) {
         ontologyManager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(classExpression, individual));
-    }
-
-    public static void main(String args[])
-            throws OWLOntologyCreationException, SWRLParseException, SWRLBuiltInException, OWLOntologyStorageException {
-        OntologyWrapper ontology = new OntologyWrapper(new File("res/human_diseases.owl"));
-        System.out.println(ontology.generatePatientsFromRules());
     }
 }

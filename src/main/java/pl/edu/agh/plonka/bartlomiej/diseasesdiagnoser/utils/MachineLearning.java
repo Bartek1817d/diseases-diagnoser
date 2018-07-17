@@ -9,8 +9,8 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 
-import java.io.File;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class MachineLearning {
 
@@ -25,9 +25,9 @@ public class MachineLearning {
     }
 
     public static void main(String args[]) throws OWLOntologyCreationException {
-        OntologyWrapper ontology = new OntologyWrapper(new File("res/human_diseases.owl"));
+        OntologyWrapper ontology = new OntologyWrapper(MachineLearning.class.getResourceAsStream("/human_diseases.owl"));
         MachineLearning machineLearning = new MachineLearning(ontology);
-        machineLearning.sequentialCovering(new HashSet<>(ontology.generatePatientsFromRules()));
+        Collection<Rule> rules = machineLearning.sequentialCovering(new HashSet<>(ontology.generatePatientsFromRules()));
     }
 
     public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) {
@@ -36,24 +36,25 @@ public class MachineLearning {
         while (!uncoveredSet.isEmpty()) {
             // System.out.println("Covered " + (float)((trainingSet.size() -
             // uncoveredSet.size()) / trainingSet.size()));
-            System.out.println(uncoveredSet.size());
+//            System.out.println(uncoveredSet.size());
             Complex complex = findComplex(trainingSet, uncoveredSet);
-            Entity category = category(complex, trainingSet, uncoveredSet);
-            removeCoveredExamplex(uncoveredSet, complex);
-            rules.addAll(complex.generateRules(category, ontology));
+            if (complex == null) return null;
+            Collection<Entity> category = category(complex, trainingSet, uncoveredSet);
+            removeCoveredExamples(uncoveredSet, complex);
+            rules.add(complex.generateRule(category, ontology));
         }
         return rules;
     }
 
     private Complex findComplex(Set<Patient> trainingSet, Set<Patient> uncoveredSet) {
-        System.out.println("findComplex");
+        LOG.debug("findComplex");
         Star star = new Star();
         Patient positiveSeed = positiveSeed(trainingSet, uncoveredSet);
         Patient negativeSeed = negativeSeed(trainingSet, star, positiveSeed);
-        while (negativeSeed != null) {
+        while (positiveSeed != null && negativeSeed != null) {
             Collection<Complex> partialStar = partialStar(positiveSeed, negativeSeed);
             if (partialStar.isEmpty()) {
-                System.out.println("Partial star is empty");
+                LOG.debug("Partial star is empty");
                 return null;
             }
             star.intersection(partialStar);
@@ -65,12 +66,12 @@ public class MachineLearning {
         return star.get(0);
     }
 
-    private Entity category(Complex complex, Collection<Patient> trainingSet, Collection<Patient> uncoveredSet) {
+    private Collection<Entity> category(Complex complex, Collection<Patient> trainingSet, Collection<Patient> uncoveredSet) {
         System.out.println("category");
-        Map<Entity, Integer> voteBox = new HashMap<Entity, Integer>();
+        Map<HashSet<Entity>, Integer> voteBox = new HashMap<>();
         for (Patient trainingSeed : trainingSet) {
             if (complex.isPatientCovered(trainingSeed)) {
-                Entity decision = trainingSeed.getDiseases().iterator().next();
+                HashSet<Entity> decision = new HashSet<>(trainingSeed.getDiseases());
                 if (voteBox.containsKey(decision))
                     voteBox.put(decision, voteBox.get(decision) + 1);
                 else
@@ -95,7 +96,7 @@ public class MachineLearning {
         System.out.println("negativeSeed");
         List<Patient> negativeSeeds = new ArrayList<>();
         for (Patient patient : trainingSet)
-            if (!patient.getDiseases().containsAll(positiveSeed.getDiseases()) && star.isPatientCovered(patient))
+            if (!positiveSeed.getDiseases().containsAll(patient.getDiseases()) && star.isPatientCovered(patient))
                 negativeSeeds.add(patient);
         if (negativeSeeds.isEmpty())
             return null;
@@ -128,59 +129,50 @@ public class MachineLearning {
 
     @SuppressWarnings({"unchecked"})
     private Collection<Complex> partialStar(Patient positivePatient, Patient negativePatient) {
-        System.out.println("partialStar");
-        System.out.println(positivePatient.getID() + " " + negativePatient.getID());
-        System.out.println(negativePatient);
-
         Collection<Complex> resultComplexes = new ArrayList<>();
+        resultComplexes.addAll(createComplexes(positivePatient.getSymptoms(), negativePatient.getSymptoms(), Complex::setSymptomSelector));
+        resultComplexes.addAll(createComplexes(positivePatient.getNegativeTests(), negativePatient.getNegativeTests(), Complex::setNegativeTestsSelector));
+        resultComplexes.addAll(createComplexes(positivePatient.getPreviousAndCurrentDiseases(), negativePatient.getPreviousAndCurrentDiseases(), Complex::setPreviousDiseasesSelector));
+        Complex ageComplex = createAgeComplex(positivePatient, negativePatient);
+        if (ageComplex != null)
+            resultComplexes.add(ageComplex);
 
-        if (!positivePatient.getSymptoms().isEmpty() && !negativePatient.getSymptoms().isEmpty()
-                && !positivePatient.getSymptoms().containsAll(negativePatient.getSymptoms())) {
-            NominalSelector<Entity> symptomsSelector = new NominalSelector<>(ontology.getSymptoms().values());
-            symptomsSelector.removeAll(negativePatient.getSymptoms());
-            if (!Collections.disjoint(symptomsSelector, positivePatient.getSymptoms())) {
-                // if
-                // (symptomsSelector.containsAll(positivePatient.getSymptoms()))
-                // {
-                symptomsSelector.addAll(positivePatient.getSymptoms());
-                Complex symptomsComplex = new Complex();
-                symptomsComplex.setSymptomSelector(symptomsSelector);
-                resultComplexes.add(symptomsComplex);
+        return resultComplexes;
+    }
+
+    private void removeCoveredExamples(Collection<Patient> trainingSet, Complex complex) {
+        System.out.println("removeCoveredExamples");
+        Iterator<Patient> it = trainingSet.iterator();
+        while (it.hasNext()) {
+            Patient p = it.next();
+            if (complex.isPatientCovered(p))
+                it.remove();
+        }
+    }
+
+    private Collection<Complex> createComplexes(Collection<Entity> positiveEntities, Collection<Entity> negativeEntities,
+                                                BiConsumer<Complex, NominalSelector<Entity>> complexSetter) {
+        ArrayList<Complex> complexes = new ArrayList<>();
+        if (!positiveEntities.isEmpty()) {
+            for (Entity entity : positiveEntities) {
+                if (!negativeEntities.contains(entity)) {
+                    Complex complex = createComplex(entity, complexSetter);
+                    complexes.add(complex);
+                }
             }
         }
+        return complexes;
+    }
 
-        if (!positivePatient.getNegativeTests().isEmpty() && !negativePatient.getNegativeTests().isEmpty()
-                && !positivePatient.getNegativeTests().containsAll(negativePatient.getNegativeTests())) {
-            NominalSelector<Entity> negativeTestsSelector = new NominalSelector<>(ontology.getTests().values());
-            negativeTestsSelector.removeAll(negativePatient.getNegativeTests());
-            if (!Collections.disjoint(negativeTestsSelector, positivePatient.getNegativeTests())) {
-                // if
-                // (negativeTestsSelector.containsAll(positivePatient.getNegativeTests()))
-                // {
-                negativeTestsSelector.addAll(positivePatient.getNegativeTests());
-                Complex negativeTestsComplex = new Complex();
-                negativeTestsComplex.setNegativeTestsSelector(negativeTestsSelector);
-                resultComplexes.add(negativeTestsComplex);
-            }
-        }
+    private Complex createComplex(Entity entity, BiConsumer<Complex, NominalSelector<Entity>> complexSetter) {
+        NominalSelector<Entity> selector = new NominalSelector<>();
+        selector.add(entity);
+        Complex complex = new Complex();
+        complexSetter.accept(complex, selector);
+        return complex;
+    }
 
-        if (!positivePatient.getPreviousAndCurrentDiseases().isEmpty()
-                && !negativePatient.getPreviousAndCurrentDiseases().isEmpty() && !positivePatient
-                .getPreviousAndCurrentDiseases().containsAll(negativePatient.getPreviousAndCurrentDiseases())) {
-            NominalSelector<Entity> previousDiseasesSelector = new NominalSelector<>(
-                    ontology.getDiseases().values());
-            previousDiseasesSelector.removeAll(negativePatient.getPreviousAndCurrentDiseases());
-            if (!Collections.disjoint(previousDiseasesSelector, positivePatient.getPreviousAndCurrentDiseases())) {
-                // if
-                // (previousDiseasesSelector.containsAll(positivePatient.getPreviousAndCurrentDiseases()))
-                // {
-                previousDiseasesSelector.addAll(positivePatient.getPreviousAndCurrentDiseases());
-                Complex diseasesComplex = new Complex();
-                diseasesComplex.setPreviousDiseasesSelector(previousDiseasesSelector);
-                resultComplexes.add(diseasesComplex);
-            }
-        }
-
+    private Complex createAgeComplex(Patient positivePatient, Patient negativePatient) {
         int posAge = positivePatient.getAge();
         int negAge = negativePatient.getAge();
         if (posAge >= 0 && negAge >= 0 && posAge != negAge) {
@@ -191,28 +183,15 @@ public class MachineLearning {
                     ageComplex.setAgeSelector(LinearSelector.greaterThanSelector(midAge));
                 else
                     ageComplex.setAgeSelector(LinearSelector.atLeastSelector(midAge));
-                resultComplexes.add(ageComplex);
             } else if (negAge > posAge) {
                 if (midAge == negAge)
                     ageComplex.setAgeSelector(LinearSelector.lessThanSelector(midAge));
                 else
                     ageComplex.setAgeSelector(LinearSelector.atMostSelector(midAge));
-                resultComplexes.add(ageComplex);
             }
+            return ageComplex;
         }
-        for (Complex c : resultComplexes)
-            System.out.println(c);
-        return resultComplexes;
-    }
-
-    private void removeCoveredExamplex(Collection<Patient> trainingSet, Complex complex) {
-        System.out.println("removeCoveredExamples");
-        Iterator<Patient> it = trainingSet.iterator();
-        while (it.hasNext()) {
-            Patient p = it.next();
-            if (complex.isPatientCovered(p))
-                it.remove();
-        }
+        return null;
     }
 
 }

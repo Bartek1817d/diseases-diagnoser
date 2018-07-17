@@ -1,7 +1,13 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
-public interface Selector {
-    Selector conjunction(Selector selector);
+import java.util.Collection;
 
-    boolean contains(Selector selector);
+public interface Selector<T> {
+    Selector<T> conjunction(Selector<T> selector);
+
+    boolean contains(Selector<T> selector);
+
+    boolean covers(Collection<T> entities);
+
+    boolean covers(T entity);
 }

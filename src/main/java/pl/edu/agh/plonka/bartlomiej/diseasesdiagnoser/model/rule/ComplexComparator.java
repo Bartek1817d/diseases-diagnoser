@@ -70,9 +70,9 @@ public class ComplexComparator implements Comparator<Complex> {
             Pair p = coveredPositiveAndNegativeSeeds(learnedConcept, uncoveredSet, complex2);
             complex2.setEvaluation3(p.positive);
         }
-        if (complex1.getEvaluation3() < complex1.getEvaluation3())
+        if (complex1.getEvaluation3() < complex2.getEvaluation3())
             return 1;
-        if (complex1.getEvaluation3() > complex1.getEvaluation3())
+        if (complex1.getEvaluation3() > complex2.getEvaluation3())
             return -1;
 
         return 0;

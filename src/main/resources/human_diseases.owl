@@ -6,7 +6,7 @@
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      ontologyIRI="http://www.agh.edu.pl/bartlomiejplonka/ontologies/human_diseases.owl">
-    <Prefix name="" IRI="http://www.agh.edu.pl/bartlomiejplonka/ontologies/human_diseases.owl#"/>
+    <Prefix name="" IRI="http://www.agh.edu.pl/bartlomiejplonka/ontologies/human_diseases.owl"/>
     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
     <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
@@ -39,6 +39,9 @@
     </Declaration>
     <Declaration>
         <Class IRI="#SkinTesting"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Bartek"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#FastHeartRate"/>
@@ -609,9 +612,6 @@
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Headache"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Bartek"/>
     </Declaration>
     <SubClassOf>
         <Class IRI="#Africa"/>
@@ -2644,6 +2644,182 @@
         </Annotation>
         <Annotation>
             <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">InflammationSymptom1</Literal>
+        </Annotation>
+        <Body>
+            <ClassAtom>
+                <Class IRI="#Patient"/>
+                <Variable IRI="#patient"/>
+            </ClassAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Headache"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#SoreThroat"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Fever"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Rhinitis"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Cough"/>
+            </ObjectPropertyAtom>
+        </Body>
+        <Head>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Inflammation"/>
+            </ObjectPropertyAtom>
+        </Head>
+    </DLSafeRule>
+    <DLSafeRule>
+        <Annotation>
+            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">MyocarditisDisease1</Literal>
+        </Annotation>
+        <Body>
+            <ClassAtom>
+                <Class IRI="#Patient"/>
+                <Variable IRI="#patient"/>
+            </ClassAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Dyspnoea"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#StabbingChestPain"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Palpitations"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Fatigue"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Weakness"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Inflammation"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#negativeTest"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#EKG"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#negativeTest"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#BloodTest"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#negativeTest"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#ChestXRay"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#negativeTest"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Echocardiogram"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#negativeTest"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#MagneticResonance"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#negativeTest"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#HeartBiopsy"/>
+            </ObjectPropertyAtom>
+        </Body>
+        <Head>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasDisease"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Myocarditis"/>
+            </ObjectPropertyAtom>
+        </Head>
+    </DLSafeRule>
+    <DLSafeRule>
+        <Annotation>
+            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">ColdDisease1</Literal>
+        </Annotation>
+        <Body>
+            <ClassAtom>
+                <Class IRI="#Patient"/>
+                <Variable IRI="#patient"/>
+            </ClassAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Inflammation"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#MusclePain"/>
+            </ObjectPropertyAtom>
+        </Body>
+        <Head>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasDisease"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Cold"/>
+            </ObjectPropertyAtom>
+        </Head>
+    </DLSafeRule>
+    <DLSafeRule>
+        <Annotation>
+            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
             <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">LungCancerDisease1</Literal>
         </Annotation>
         <Body>
@@ -3061,145 +3237,6 @@
         </Annotation>
         <Annotation>
             <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">InflammationSymptom1</Literal>
-        </Annotation>
-        <Body>
-            <ClassAtom>
-                <Class IRI="#Patient"/>
-                <Variable IRI="#patient"/>
-            </ClassAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Headache"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#SoreThroat"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Fever"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Rhinitis"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Cough"/>
-            </ObjectPropertyAtom>
-        </Body>
-        <Head>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Inflammation"/>
-            </ObjectPropertyAtom>
-        </Head>
-    </DLSafeRule>
-    <DLSafeRule>
-        <Annotation>
-            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
-        </Annotation>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
-        </Annotation>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">MyocarditisDisease1</Literal>
-        </Annotation>
-        <Body>
-            <ClassAtom>
-                <Class IRI="#Patient"/>
-                <Variable IRI="#patient"/>
-            </ClassAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Dyspnoea"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#StabbingChestPain"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Palpitations"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Fatigue"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Weakness"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Inflammation"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#negativeTest"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#EKG"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#negativeTest"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#BloodTest"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#negativeTest"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#ChestXRay"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#negativeTest"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Echocardiogram"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#negativeTest"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#MagneticResonance"/>
-            </ObjectPropertyAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#negativeTest"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#HeartBiopsy"/>
-            </ObjectPropertyAtom>
-        </Body>
-        <Head>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasDisease"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Myocarditis"/>
-            </ObjectPropertyAtom>
-        </Head>
-    </DLSafeRule>
-    <DLSafeRule>
-        <Annotation>
-            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
-        </Annotation>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
-        </Annotation>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
             <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">BrainTumorDisease1</Literal>
         </Annotation>
         <Body>
@@ -3315,38 +3352,6 @@
                 <ObjectProperty IRI="#hasDisease"/>
                 <Variable IRI="#patient"/>
                 <NamedIndividual IRI="#Atherosclerosis"/>
-            </ObjectPropertyAtom>
-        </Head>
-    </DLSafeRule>
-    <DLSafeRule>
-        <Annotation>
-            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
-        </Annotation>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
-        </Annotation>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">ColdDisease1</Literal>
-        </Annotation>
-        <Body>
-            <ClassAtom>
-                <Class IRI="#Patient"/>
-                <Variable IRI="#patient"/>
-            </ClassAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasSymptom"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Inflammation"/>
-            </ObjectPropertyAtom>
-        </Body>
-        <Head>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#hasDisease"/>
-                <Variable IRI="#patient"/>
-                <NamedIndividual IRI="#Cold"/>
             </ObjectPropertyAtom>
         </Head>
     </DLSafeRule>
@@ -5208,5 +5213,5 @@ There are 99 recognized types of human rhinoviruses that differ according to the
 
 
 
-<!-- Generated by the OWL API (version 4.1.4.20160202-2327) https://github.com/owlcs/owlapi -->
+<!-- Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi -->
 

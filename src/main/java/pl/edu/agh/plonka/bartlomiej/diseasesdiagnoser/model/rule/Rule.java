@@ -1,6 +1,5 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +11,8 @@ public class Rule {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private String name;
-    private Collection<AbstractAtom> bodyAtoms = new HashSet<AbstractAtom>();
-    private Collection<AbstractAtom> headAtoms = new HashSet<AbstractAtom>();
+    private Collection<AbstractAtom> bodyAtoms = new HashSet<>();
+    private Collection<AbstractAtom> headAtoms = new HashSet<>();
 
     public Rule(String name) {
         this.name = name;
@@ -25,7 +24,7 @@ public class Rule {
         this.headAtoms.addAll(headAtoms);
     }
 
-    public static void main(String args[]) throws OWLOntologyCreationException {
+    public static void main(String args[]) {
         Rule r = new Rule("rule1");
         OneArgumentAtom<String> a1 = new OneArgumentAtom<String>("hasSymptom");
         a1.setArgument("yes");
@@ -50,8 +49,12 @@ public class Rule {
         this.bodyAtoms.addAll(bodyAtoms);
     }
 
-    public void addBodyAtom(AbstractAtom imputAtom) {
-        bodyAtoms.add(imputAtom);
+    public void addBodyAtom(AbstractAtom inputAtom) {
+        bodyAtoms.add(inputAtom);
+    }
+
+    public void addBodyAtoms(Collection<AbstractAtom> inputAtoms) {
+        bodyAtoms.addAll(inputAtoms);
     }
 
     public Collection<AbstractAtom> getHeadAtoms() {
@@ -65,6 +68,10 @@ public class Rule {
 
     public void addHeadAtom(AbstractAtom headAtom) {
         headAtoms.add(headAtom);
+    }
+
+    public void addHeadAtoms(Collection<AbstractAtom> headAtoms) {
+        this.headAtoms.addAll(headAtoms);
     }
 
     @Override

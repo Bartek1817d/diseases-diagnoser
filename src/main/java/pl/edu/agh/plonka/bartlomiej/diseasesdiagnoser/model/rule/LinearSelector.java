@@ -5,7 +5,9 @@ import com.google.common.collect.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LinearSelector<T extends Comparable<?>> implements Selector {
+import java.util.Collection;
+
+public class LinearSelector<T extends Comparable<?>> implements Selector<T> {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -113,4 +115,13 @@ public class LinearSelector<T extends Comparable<?>> implements Selector {
         return resultSelector;
     }
 
+    @Override
+    public boolean covers(Collection<T> entities) {
+        return range.containsAll(entities);
+    }
+
+    @Override
+    public boolean covers(T entity) {
+        return entity != null && range.contains(entity);
+    }
 }

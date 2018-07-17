@@ -41,7 +41,7 @@ public class Star extends ArrayList<Complex> {
     }
 
     public void deleteNarrowComplexes() {
-        Collection<Complex> toRemove = new ArrayList<Complex>();
+        Collection<Complex> toRemove = new ArrayList<>();
         for (Complex c1 : this)
             for (Complex c2 : this)
                 if (c1 != c2 && c1.contains(c2))
