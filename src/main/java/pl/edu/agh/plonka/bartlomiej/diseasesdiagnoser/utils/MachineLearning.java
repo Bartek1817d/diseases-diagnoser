@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.PartialStarCreationException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
@@ -35,7 +36,6 @@ public class MachineLearning {
         Set<Patient> uncoveredSet = new HashSet<>(trainingSet);
         while (!uncoveredSet.isEmpty()) {
             Complex complex = findComplex(trainingSet, uncoveredSet);
-            if (complex == null) return null;
             Collection<Entity> category = category(complex, trainingSet, uncoveredSet);
             removeCoveredExamples(uncoveredSet, complex);
             rules.add(complex.generateRule(category, ontology));
@@ -52,7 +52,7 @@ public class MachineLearning {
             Collection<Complex> partialStar = partialStar(positiveSeed, negativeSeed);
             if (partialStar.isEmpty()) {
                 LOG.debug("Partial star is empty");
-                return null;
+                throw new PartialStarCreationException(positiveSeed, negativeSeed);
             }
             star.intersection(partialStar);
             star.deleteNarrowComplexes();
