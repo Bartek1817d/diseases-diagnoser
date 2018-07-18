@@ -27,6 +27,6 @@ public class PositiveIntegerStringBinding extends StringBinding {
 
     @Override
     public ObservableList<ObservableValue<?>> getDependencies() {
-        return FXCollections.<ObservableValue<?>>singletonObservableList(observableValue);
+        return FXCollections.singletonObservableList(observableValue);
     }
 }
