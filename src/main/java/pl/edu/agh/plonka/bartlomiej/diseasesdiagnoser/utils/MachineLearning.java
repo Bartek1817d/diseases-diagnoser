@@ -12,6 +12,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 public class MachineLearning {
 
@@ -38,7 +39,9 @@ public class MachineLearning {
             Complex complex = findComplex(trainingSet, uncoveredSet);
             Collection<Entity> category = category(complex, trainingSet, uncoveredSet);
             removeCoveredExamples(uncoveredSet, complex);
-            rules.add(complex.generateRule(category, ontology));
+            Collection<String> ruleNames = rules.stream().map(Rule::getName).collect(Collectors.toList());
+            Rule rule = complex.generateRule(category, ontology, ruleNames);
+            rules.add(rule);
         }
         return rules;
     }

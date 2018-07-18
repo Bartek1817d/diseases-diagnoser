@@ -11,6 +11,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 
 import java.util.*;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -74,6 +75,18 @@ public class MachineLearningTest {
     public void testSequentialCoveringCreateDifferentRules() {
         Patient patient1 = createPatient("Patient1", singleton(SYMPTOMS.get("Symptom1")), DISEASES.get("Disease1"));
         Patient patient2 = createPatient("Patient2", singleton(SYMPTOMS.get("Symptom2")), DISEASES.get("Disease2"));
+        Patient patient3 = createPatient("Patient3", Arrays.asList(SYMPTOMS.get("Symptom2"), SYMPTOMS.get("Symptom3")), DISEASES.get("Disease2"));
+
+        Collection<Rule> rules = machineLearning.sequentialCovering(new HashSet<>(Arrays.asList(patient1, patient2, patient3)));
+        ArrayList<Rule> ruleList = new ArrayList<>(rules);
+
+        Assert.assertEquals(2, ruleList.size());
+    }
+
+    @Test
+    public void testSequentialCoveringCreateRulesBasedOnAge() {
+        Patient patient1 = createPatient("Patient1", 10, emptyList(), DISEASES.get("Disease1"));
+        Patient patient2 = createPatient("Patient2", 20, emptyList(), DISEASES.get("Disease2"));
 
         Collection<Rule> rules = machineLearning.sequentialCovering(new HashSet<>(Arrays.asList(patient1, patient2)));
         ArrayList<Rule> ruleList = new ArrayList<>(rules);
@@ -82,7 +95,13 @@ public class MachineLearningTest {
     }
 
     private Patient createPatient(String id, Collection<Entity> symptoms, Entity disease) {
+        return createPatient(id, null, symptoms, disease);
+    }
+
+    private Patient createPatient(String id, Integer age, Collection<Entity> symptoms, Entity disease) {
         Patient patient = new Patient(id);
+        if (age != null)
+            patient.setAge(age);
         patient.addSymptoms(symptoms);
         patient.addDisease(disease);
 
