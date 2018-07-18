@@ -11,6 +11,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 
 import java.util.*;
 
+import static java.util.Collections.singleton;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +54,7 @@ public class MachineLearningTest {
     public void testSequentialCoveringGenerateUniversalRule() {
         Patient patient = createPatient("Patient", SYMPTOMS.values(), DISEASES.get("Disease1"));
 
-        Collection<Rule> rules = machineLearning.sequentialCovering(Collections.singleton(patient));
+        Collection<Rule> rules = machineLearning.sequentialCovering(singleton(patient));
 
         Assert.assertNotNull(rules);
         Assert.assertEquals(1, rules.size());
@@ -67,6 +68,17 @@ public class MachineLearningTest {
         Patient patient2 = createPatient("Patient2", SYMPTOMS.values(), DISEASES.get("Disease2"));
 
         machineLearning.sequentialCovering(new HashSet<>(Arrays.asList(patient1, patient2)));
+    }
+
+    @Test
+    public void testSequentialCoveringCreateDifferentRules() {
+        Patient patient1 = createPatient("Patient1", singleton(SYMPTOMS.get("Symptom1")), DISEASES.get("Disease1"));
+        Patient patient2 = createPatient("Patient2", singleton(SYMPTOMS.get("Symptom2")), DISEASES.get("Disease2"));
+
+        Collection<Rule> rules = machineLearning.sequentialCovering(new HashSet<>(Arrays.asList(patient1, patient2)));
+        ArrayList<Rule> ruleList = new ArrayList<>(rules);
+
+        Assert.assertEquals(2, ruleList.size());
     }
 
     private Patient createPatient(String id, Collection<Entity> symptoms, Entity disease) {
