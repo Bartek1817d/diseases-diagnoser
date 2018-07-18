@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NamesUtils;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NameUtils;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 /**
@@ -88,15 +88,15 @@ public class PatientEditDialogController {
             String fn = firstNameField.getText();
             String ln = lastNameField.getText();
             if (patient.getID() == null) {
-                if (patientsService.getOntology().containsID(NamesUtils.generateID(fn, ln))) {
+                if (patientsService.getOntology().containsID(NameUtils.generateName(fn, ln))) {
                     int i = 1;
-                    String newID = NamesUtils.generateID(fn, ln, Integer.toString(i));
+                    String newID = NameUtils.generateName(fn, ln, Integer.toString(i));
                     while (patientsService.getOntology().containsID(newID)) {
-                        newID = NamesUtils.generateID(fn, ln, Integer.toString(++i));
+                        newID = NameUtils.generateName(fn, ln, Integer.toString(++i));
                     }
                     patient.setID(newID);
                 } else
-                    patient.setID(NamesUtils.generateID(fn, ln));
+                    patient.setID(NameUtils.generateName(fn, ln));
             }
             patient.setFirstName(firstNameField.getText());
             patient.setLastName(lastNameField.getText());

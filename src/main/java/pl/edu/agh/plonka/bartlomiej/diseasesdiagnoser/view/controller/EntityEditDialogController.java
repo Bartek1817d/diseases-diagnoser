@@ -8,8 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NamesUtils;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
+
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NameUtils.generateName;
 
 public class EntityEditDialogController {
 
@@ -60,12 +61,12 @@ public class EntityEditDialogController {
         if (isInputValid()) {
             String name = entityName.getText();
             if (entity.getID() == null) {
-                String newID = NamesUtils.generateID(name);
+                String newID = generateName(name);
                 if (patientsService.getOntology().containsID(newID)) {
                     int i = 1;
-                    newID = NamesUtils.generateID(name, Integer.toString(i));
+                    newID = generateName(name, Integer.toString(i));
                     while (patientsService.getOntology().containsID(newID)) {
-                        newID = NamesUtils.generateID(name, Integer.toString(++i));
+                        newID = generateName(name, Integer.toString(++i));
                     }
                     entity.setID(newID);
                 } else
