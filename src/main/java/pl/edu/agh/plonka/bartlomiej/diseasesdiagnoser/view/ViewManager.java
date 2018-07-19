@@ -131,6 +131,25 @@ public class ViewManager {
         }
     }
 
+    public boolean showRulesEditDialog(PatientsService patientsService) {
+        try {
+            FXMLLoader loader = getFXMLLoader("fxml/RulesEditDialog.fxml");
+            AnchorPane page = loader.load();
+
+            Stage dialogStage = createDialogStage(page, "Edit Rules");
+
+            RulesEditDialogController controller = loader.getController();
+            controller.init(dialogStage, patientsService);
+
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void errorDialog(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(primaryStage);

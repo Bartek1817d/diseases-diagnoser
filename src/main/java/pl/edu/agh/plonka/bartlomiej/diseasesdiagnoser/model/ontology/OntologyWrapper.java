@@ -16,9 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.swrlapi.core.SWRLAPIOWLOntology;
 import org.swrlapi.core.SWRLRuleEngine;
 import org.swrlapi.core.SWRLRuleRenderer;
-import org.swrlapi.exceptions.SWRLBuiltInException;
 import org.swrlapi.factory.SWRLAPIFactory;
-import org.swrlapi.parser.SWRLParseException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
@@ -63,7 +61,7 @@ public class OntologyWrapper {
     private Map<String, Entity> tests = new HashMap<>();
     private Map<String, Entity> treatments = new HashMap<>();
     private Map<String, Entity> causes = new HashMap<>();
-    private Map<String, Rule> rules = new HashMap<>();
+    private Collection<Rule> rules = new ArrayList<>();
     private String lang = "en";
     private OntologyProperties properties;
 
@@ -126,7 +124,7 @@ public class OntologyWrapper {
     }
 
     public static void main(String args[])
-            throws OWLOntologyCreationException, SWRLParseException, SWRLBuiltInException, OWLOntologyStorageException {
+            throws OWLOntologyCreationException {
         OntologyWrapper ontology = new OntologyWrapper(OntologyWrapper.class.getResourceAsStream("human_diseases.owl"));
         System.out.println(ontology.generatePatientsFromRules());
     }
@@ -250,14 +248,14 @@ public class OntologyWrapper {
         return ontology.containsEntityInSignature(IRI.create(prefixManager.getDefaultPrefix(), id));
     }
 
-    public Map<String, Rule> getRules() {
+    public Collection<Rule> getRules() {
         return rules;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public Collection<Patient> generatePatientsFromRules() {
         Collection<Patient> patients = new ArrayList<>();
-        for (Rule rule : rules.values()) {
+        for (Rule rule : rules) {
             Patient patient = generatePatientFromRule(rule);
             if (patient != null)
                 patients.add(patient);

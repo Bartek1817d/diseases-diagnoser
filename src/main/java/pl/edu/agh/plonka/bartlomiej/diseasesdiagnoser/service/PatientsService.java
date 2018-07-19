@@ -6,8 +6,9 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 
 import java.io.File;
 
@@ -17,6 +18,7 @@ public class PatientsService {
 
     private OntologyWrapper ontology;
     private ObservableList<Patient> patients = FXCollections.observableArrayList();
+    private ObservableList<Rule> rules = FXCollections.observableArrayList();
 
     public PatientsService(String url) throws OWLOntologyCreationException {
         createKnowledgeBase(url);
@@ -29,11 +31,13 @@ public class PatientsService {
     public void createKnowledgeBase(String url) throws OWLOntologyCreationException {
         ontology = new OntologyWrapper(url);
         patients.clear();
+        rules.clear();
     }
 
     public void createKnowledgeBase(File file) throws OWLOntologyCreationException {
         ontology = new OntologyWrapper(file);
         patients.setAll(ontology.getPatients());
+        rules.setAll(ontology.getRules());
     }
 
     public void saveKnowledgeBase(File file) throws OWLOntologyStorageException {
@@ -52,6 +56,10 @@ public class PatientsService {
     public void deletePatient(Patient patient) {
         patients.remove(patient);
         ontology.deleteEntity(patient);
+    }
+
+    public ObservableList<Rule> getRules() {
+        return rules;
     }
 
     public void editPatient(Patient patient) {

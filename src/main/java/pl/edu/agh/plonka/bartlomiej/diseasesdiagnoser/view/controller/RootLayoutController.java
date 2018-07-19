@@ -113,6 +113,12 @@ public class RootLayoutController {
         }
     }
 
+    @FXML
+    private void handleEditRules() {
+        LOG.info("Handle edit rules.");
+        boolean okClicked = viewManager.showRulesEditDialog(patientsService);
+    }
+
     /**
      * Opens an about dialog.
      */

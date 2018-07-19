@@ -25,7 +25,7 @@ public class EntitiesEditDialogController {
     private boolean okClicked = false;
     private ViewManager viewManager;
     private PatientsService patientsService;
-    private Set<CheckBoxTreeItem<Entity>> entities = new HashSet<CheckBoxTreeItem<Entity>>();
+    private Set<CheckBoxTreeItem<Entity>> entities = new HashSet<>();
     private Collection<Entity> results;
     private Map<String, Entity> allIndividuals;
 
@@ -58,11 +58,11 @@ public class EntitiesEditDialogController {
                 allIndividuals = patientsService.getOntology().getCauses();
                 break;
         }
-        Map<Entity, TreeItem<Entity>> classMap = new HashMap<Entity, TreeItem<Entity>>();
+        Map<Entity, TreeItem<Entity>> classMap = new HashMap<>();
         for (Entity classEntity : classes) {
             TreeItem<Entity> symptomItem = classMap.get(classEntity);
             if (symptomItem == null) {
-                symptomItem = new CheckBoxTreeItem<Entity>(classEntity);
+                symptomItem = new CheckBoxTreeItem<>(classEntity);
                 symptomItem.setExpanded(false);
                 classMap.put(classEntity, symptomItem);
             }

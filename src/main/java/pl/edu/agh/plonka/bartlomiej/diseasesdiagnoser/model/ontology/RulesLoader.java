@@ -7,7 +7,8 @@ import org.swrlapi.core.SWRLAPIRule;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,20 +21,20 @@ public class RulesLoader {
         this.ruleOntology = ruleOntology;
     }
 
-    Map<String, Rule> loadRules(Map<String, Entity> classes,
-                                Map<String, Entity> symptoms,
-                                Map<String, Entity> diseases,
-                                Map<String, Entity> tests,
-                                Map<String, Entity> treatments,
-                                Map<String, Entity> causes) {
-        Map<String, Rule> rules = new HashMap<>();
+    Collection<Rule> loadRules(Map<String, Entity> classes,
+                               Map<String, Entity> symptoms,
+                               Map<String, Entity> diseases,
+                               Map<String, Entity> tests,
+                               Map<String, Entity> treatments,
+                               Map<String, Entity> causes) {
+        Collection<Rule> rules = new ArrayList<>();
         for (SWRLAPIRule swrlRule : ruleOntology.getSWRLRules()) {
             Rule rule = new Rule(swrlRule.getRuleName());
             for (SWRLAtom atom : swrlRule.getBody())
                 rule.addBodyAtom(parseSWRLAtom(atom, classes, symptoms, diseases, tests, treatments, causes));
             for (SWRLAtom atom : swrlRule.getHead())
                 rule.addHeadAtom(parseSWRLAtom(atom, classes, symptoms, diseases, tests, treatments, causes));
-            rules.put(rule.getName(), rule);
+            rules.add(rule);
         }
         return rules;
     }
