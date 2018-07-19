@@ -4,6 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.semanticweb.owlapi.model.SWRLAtom;
 import org.swrlapi.core.SWRLAPIOWLOntology;
 import org.swrlapi.core.SWRLAPIRule;
+import org.swrlapi.exceptions.SWRLBuiltInException;
+import org.swrlapi.parser.SWRLParseException;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 
@@ -13,12 +16,20 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RulesLoader {
+public class RulesManager {
 
     private final SWRLAPIOWLOntology ruleOntology;
 
-    RulesLoader(SWRLAPIOWLOntology ruleOntology) {
+    RulesManager(SWRLAPIOWLOntology ruleOntology) {
         this.ruleOntology = ruleOntology;
+    }
+
+    public void addRule(Rule rule) throws CreateRuleException {
+        try {
+            ruleOntology.createSWRLRule(rule.getName(), rule.toString());
+        } catch (SWRLParseException | SWRLBuiltInException e) {
+            throw new CreateRuleException(rule, e);
+        }
     }
 
     Collection<Rule> loadRules(Map<String, Entity> classes,

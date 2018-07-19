@@ -64,11 +64,8 @@ public class Variable {
             return false;
         Variable other = (Variable) obj;
         if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
+            return other.name == null;
+        } else return name.equals(other.name);
     }
 
 }

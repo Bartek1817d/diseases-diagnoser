@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxWidth="510.0" minHeight="200.0" minWidth="200.0" prefHeight="442.0"
+            prefWidth="500.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.RuleEditDialogController">
+    <children>
+        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <right>
+                <VBox prefHeight="402.0" prefWidth="110.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#handleAddSymptoms" prefHeight="25.0"
+                                prefWidth="120.0" text="New symptom">
+                            <VBox.margin>
+                                <Insets bottom="3.0" left="5.0" right="5.0" top="5.0"/>
+                            </VBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#handleAddDiseases" prefHeight="25.0"
+                                prefWidth="120.0" text="New disease">
+                            <VBox.margin>
+                                <Insets bottom="3.0" left="5.0" right="5.0" top="3.0"/>
+                            </VBox.margin>
+                        </Button>
+                    </children>
+                </VBox>
+            </right>
+            <bottom>
+                <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="429.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#handleOK" prefHeight="25.0" prefWidth="70.0"
+                                text="OK">
+                            <HBox.margin>
+                                <Insets bottom="5.0" left="5.0" right="3.0" top="5.0"/>
+                            </HBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#handleCancel" prefHeight="25.0" prefWidth="70.0"
+                                text="Cancel">
+                            <HBox.margin>
+                                <Insets bottom="5.0" left="3.0" right="5.0" top="5.0"/>
+                            </HBox.margin>
+                        </Button>
+                    </children>
+                </HBox>
+            </bottom>
+            <center>
+                <TextArea fx:id="textArea" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>

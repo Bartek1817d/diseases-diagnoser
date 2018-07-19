@@ -6,6 +6,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
@@ -49,8 +50,8 @@ public class PatientsService {
     }
 
     public void addPatient(Patient patient) {
-        patients.add(patient);
         ontology.addPatient(patient);
+        patients.add(patient);
     }
 
     public void deletePatient(Patient patient) {
@@ -60,6 +61,11 @@ public class PatientsService {
 
     public ObservableList<Rule> getRules() {
         return rules;
+    }
+
+    public void addRule(Rule rule) throws CreateRuleException {
+        ontology.addRule(rule);
+        rules.add(rule);
     }
 
     public void editPatient(Patient patient) {

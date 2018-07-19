@@ -14,6 +14,9 @@ public class Rule {
     private Collection<AbstractAtom> bodyAtoms = new HashSet<>();
     private Collection<AbstractAtom> headAtoms = new HashSet<>();
 
+    public Rule() {
+    }
+
     public Rule(String name) {
         this.name = name;
     }

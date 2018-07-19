@@ -72,7 +72,7 @@ public class EntitiesEditDialogController {
                 for (Entity parentClass : classEntity.getClasses()) {
                     TreeItem<Entity> symptomItemParent = classMap.get(parentClass);
                     if (symptomItemParent == null) {
-                        symptomItemParent = new CheckBoxTreeItem<Entity>(parentClass);
+                        symptomItemParent = new CheckBoxTreeItem<>(parentClass);
                         symptomItemParent.setExpanded(false);
                         classMap.put(parentClass, symptomItemParent);
                     }
@@ -83,7 +83,7 @@ public class EntitiesEditDialogController {
         entitiesTree.setCellFactory(CheckBoxTreeCell.forTreeView());
 
         for (Entity individual : allIndividuals.values()) {
-            CheckBoxTreeItem<Entity> individualItem = new CheckBoxTreeItem<Entity>(individual);
+            CheckBoxTreeItem<Entity> individualItem = new CheckBoxTreeItem<>(individual);
             if (currentIndividuals.contains(individual))
                 individualItem.setSelected(true);
 
@@ -133,7 +133,7 @@ public class EntitiesEditDialogController {
             boolean okClicked = viewManager.showEntityEditDialog(newEntity, patientsService);
             if (okClicked) {
                 newEntity.addClass(treeItem.getValue());
-                CheckBoxTreeItem<Entity> newTreeItem = new CheckBoxTreeItem<Entity>(newEntity);
+                CheckBoxTreeItem<Entity> newTreeItem = new CheckBoxTreeItem<>(newEntity);
                 entities.add(newTreeItem);
                 treeItem.getChildren().add(newTreeItem);
                 patientsService.getOntology().addEntity(newEntity);

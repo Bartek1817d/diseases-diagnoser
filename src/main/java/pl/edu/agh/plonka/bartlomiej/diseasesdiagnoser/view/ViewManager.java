@@ -136,10 +136,29 @@ public class ViewManager {
             FXMLLoader loader = getFXMLLoader("fxml/RulesEditDialog.fxml");
             AnchorPane page = loader.load();
 
-            Stage dialogStage = createDialogStage(page, "Edit Rules");
+            Stage dialogStage = createDialogStage(page, "Create/Edit Rules");
 
             RulesEditDialogController controller = loader.getController();
-            controller.init(dialogStage, patientsService);
+            controller.init(this, dialogStage, patientsService);
+
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean showRuleEditDialog(PatientsService patientsService) {
+        try {
+            FXMLLoader loader = getFXMLLoader("fxml/RuleEditDialog.fxml");
+            AnchorPane page = loader.load();
+
+            Stage dialogStage = createDialogStage(page, "Create/Edit Rules");
+
+            RuleEditDialogController controller = loader.getController();
+            controller.init(this, dialogStage, patientsService);
 
             dialogStage.showAndWait();
 

@@ -17,6 +17,7 @@ import org.swrlapi.core.SWRLAPIOWLOntology;
 import org.swrlapi.core.SWRLRuleEngine;
 import org.swrlapi.core.SWRLRuleRenderer;
 import org.swrlapi.factory.SWRLAPIFactory;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
@@ -44,7 +45,7 @@ public class OntologyWrapper {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final OWLObjectRenderer renderer = new DLSyntaxObjectRenderer();
     private final EntitiesLoader entitiesLoader;
-    private final RulesLoader rulesLoader;
+    private final RulesManager rulesManager;
     private final OWLOntology ontology;
     private final OWLDataFactory factory;
     private final PrefixManager prefixManager;
@@ -80,7 +81,7 @@ public class OntologyWrapper {
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
         entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
-        rulesLoader = new RulesLoader(ruleOntology);
+        rulesManager = new RulesManager(ruleOntology);
     }
 
     public OntologyWrapper(InputStream inputStream) throws OWLOntologyCreationException {
@@ -99,7 +100,7 @@ public class OntologyWrapper {
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
         entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
-        rulesLoader = new RulesLoader(ruleOntology);
+        rulesManager = new RulesManager(ruleOntology);
         loadData();
     }
 
@@ -119,7 +120,7 @@ public class OntologyWrapper {
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
         entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
-        rulesLoader = new RulesLoader(ruleOntology);
+        rulesManager = new RulesManager(ruleOntology);
         loadData();
     }
 
@@ -136,7 +137,7 @@ public class OntologyWrapper {
         tests = entitiesLoader.loadInstances(properties.testingClass, classes);
         treatments = entitiesLoader.loadInstances(properties.treatmentClass, classes);
         causes = entitiesLoader.loadInstances(properties.causeClass, classes);
-        rules = rulesLoader.loadRules(classes, symptoms, diseases, tests, treatments, causes);
+        rules = rulesManager.loadRules(classes, symptoms, diseases, tests, treatments, causes);
     }
 
     public Map<String, Entity> getClasses() {
@@ -250,6 +251,10 @@ public class OntologyWrapper {
 
     public Collection<Rule> getRules() {
         return rules;
+    }
+
+    public void addRule(Rule rule) throws CreateRuleException {
+        rulesManager.addRule(rule);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
