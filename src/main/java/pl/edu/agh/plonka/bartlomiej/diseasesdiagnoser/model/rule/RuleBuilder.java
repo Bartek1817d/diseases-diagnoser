@@ -26,7 +26,7 @@ public class RuleBuilder {
     public RuleBuilder(Entity patientClass) {
         this.patientVariable = new Variable("patient", patientClass);
         this.ageVariable = new Variable("_age");
-//        this.rule.addBodyAtom(new ClassDeclarationAtom<>(patientClass, patientVariable));
+        this.bodyAtoms.add(new ClassDeclarationAtom<>(patientClass, patientVariable));
     }
 
     public RuleBuilder withName(String name) {

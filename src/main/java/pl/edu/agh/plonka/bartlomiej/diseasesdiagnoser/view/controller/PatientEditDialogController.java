@@ -119,33 +119,33 @@ public class PatientEditDialogController {
     /**
      * Validates the user input in the text fields.
      *
-     * @return true if the input is valid
+     * @return true if the input is okClicked
      */
     private boolean isInputValid() {
         String errorMessage = "";
 
         if (firstNameField.getText() == null || firstNameField.getText().length() == 0) {
-            errorMessage += "No valid first name!\n";
+            errorMessage += "No okClicked first name!\n";
         }
         if (lastNameField.getText() == null || lastNameField.getText().length() == 0) {
-            errorMessage += "No valid last name!\n";
+            errorMessage += "No okClicked last name!\n";
         }
         if (ageField.getText() == null || ageField.getText().length() == 0) {
-            errorMessage += "No valid age!\n";
+            errorMessage += "No okClicked age!\n";
         } else {
             try {
                 Integer.parseInt(ageField.getText());
             } catch (NumberFormatException e) {
-                errorMessage += "No valid age (must be an integer)!\n";
+                errorMessage += "No okClicked age (must be an integer)!\n";
             }
         }
         if (heightField.getText() == null || heightField.getText().length() == 0) {
-            errorMessage += "No valid height!\n";
+            errorMessage += "No okClicked height!\n";
         } else {
             try {
                 Integer.parseInt(heightField.getText());
             } catch (NumberFormatException e) {
-                errorMessage += "No valid height (must be an integer)!\n";
+                errorMessage += "No okClicked height (must be an integer)!\n";
             }
         }
         if (weightField.getText() == null || weightField.getText().length() == 0) {
@@ -154,7 +154,7 @@ public class PatientEditDialogController {
             try {
                 Integer.parseInt(weightField.getText());
             } catch (NumberFormatException e) {
-                errorMessage += "No valid weight (must be an integer)!\n";
+                errorMessage += "No okClicked weight (must be an integer)!\n";
             }
         }
 

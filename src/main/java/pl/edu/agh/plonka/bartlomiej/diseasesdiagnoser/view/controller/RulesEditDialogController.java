@@ -5,8 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Response;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 public class RulesEditDialogController {
@@ -70,7 +72,15 @@ public class RulesEditDialogController {
 
     @FXML
     public void handleNewRule() {
-        boolean okClicked = viewManager.showRuleEditDialog(patientsService);
+        Response<Rule> response = viewManager.showRuleEditDialog(patientsService);
+        if (response.okClicked) {
+            Rule rule = response.content;
+            try {
+                patientsService.addRule(rule);
+            } catch (CreateRuleException e) {
+                viewManager.errorExceptionDialog("Failed to create rule", null, "Couldn't create rule " + rule, e);
+            }
+        }
     }
 
 }

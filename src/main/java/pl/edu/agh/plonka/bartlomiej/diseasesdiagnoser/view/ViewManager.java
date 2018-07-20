@@ -17,7 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Response;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller.*;
 
@@ -150,7 +152,8 @@ public class ViewManager {
         }
     }
 
-    public boolean showRuleEditDialog(PatientsService patientsService) {
+    public Response<Rule> showRuleEditDialog(PatientsService patientsService) {
+        Response<Rule> response = new Response<>();
         try {
             FXMLLoader loader = getFXMLLoader("fxml/RuleEditDialog.fxml");
             AnchorPane page = loader.load();
@@ -158,14 +161,14 @@ public class ViewManager {
             Stage dialogStage = createDialogStage(page, "Create/Edit Rules");
 
             RuleEditDialogController controller = loader.getController();
-            controller.init(this, dialogStage, patientsService);
+            controller.init(this, dialogStage, patientsService, response);
 
             dialogStage.showAndWait();
 
-            return controller.isOkClicked();
+            return response;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return response;
         }
     }
 

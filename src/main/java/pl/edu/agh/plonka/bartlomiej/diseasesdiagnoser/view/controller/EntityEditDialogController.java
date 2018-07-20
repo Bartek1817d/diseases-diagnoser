@@ -86,7 +86,7 @@ public class EntityEditDialogController {
 
     private boolean isInputValid() {
         if (entityName.getText() == null || entityName.getText().length() == 0) {
-            viewManager.errorDialog("Error creating entity", null, "No valid name!\n");
+            viewManager.errorDialog("Error creating entity", null, "No okClicked name!\n");
             return false;
         } else
             return true;
