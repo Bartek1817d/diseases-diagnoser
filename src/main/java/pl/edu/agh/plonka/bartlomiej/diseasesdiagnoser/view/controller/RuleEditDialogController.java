@@ -3,7 +3,9 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.RuleBuilder;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
@@ -37,8 +39,16 @@ public class RuleEditDialogController {
 
     @FXML
     private void handleOK() {
-        okClicked = true;
-        dialogStage.close();
+        Rule rule = null;
+        try {
+            rule = ruleBuilder.build();
+            patientsService.addRule(ruleBuilder.build());
+        } catch (CreateRuleException e) {
+            viewManager.errorExceptionDialog("Failed to create rule", null, "Couldn't create rule " + rule, e);
+        } finally {
+            okClicked = true;
+            dialogStage.close();
+        }
     }
 
     /**
