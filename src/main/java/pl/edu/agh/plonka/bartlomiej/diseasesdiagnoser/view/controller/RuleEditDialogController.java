@@ -2,6 +2,7 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
@@ -18,7 +19,9 @@ import static java.util.Collections.emptyList;
 public class RuleEditDialogController {
 
     @FXML
-    private TextArea textArea;
+    private TextField ruleNameField;
+    @FXML
+    private TextArea ruleViewArea;
 
     private RuleBuilder ruleBuilder;
     private PatientsService patientsService;
@@ -39,9 +42,18 @@ public class RuleEditDialogController {
 
     @FXML
     private void handleOK() {
+        if (ruleNameField.getText().trim().isEmpty()) {
+            viewManager.errorDialog("Failed to create rule", null, "Cannot create rule with empty name!");
+            return;
+        }
+        if (ruleViewArea.getText().trim().isEmpty()) {
+            viewManager.errorDialog("Failed to create rule", null, "Cannot create empty rule!");
+            return;
+        }
+
         Rule rule = null;
         try {
-            rule = ruleBuilder.build();
+            rule = ruleBuilder.withName(ruleNameField.getText().trim()).build();
             patientsService.addRule(ruleBuilder.build());
         } catch (CreateRuleException e) {
             viewManager.errorExceptionDialog("Failed to create rule", null, "Couldn't create rule " + rule, e);
@@ -66,7 +78,7 @@ public class RuleEditDialogController {
                 emptyList(), symptoms, patientsService);
         if (okClicked) {
             ruleBuilder.withSymptoms(symptoms);
-            textArea.setText(ruleBuilder.build().toString());
+            ruleViewArea.setText(ruleBuilder.build().toString());
         }
     }
 
@@ -77,7 +89,7 @@ public class RuleEditDialogController {
                 emptyList(), diseases, patientsService);
         if (okClicked) {
             ruleBuilder.withDiseases(diseases);
-            textArea.setText(ruleBuilder.build().toString());
+            ruleViewArea.setText(ruleBuilder.build().toString());
         }
     }
 }

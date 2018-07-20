@@ -52,7 +52,8 @@
                         </Button>
                     </children>
                 </HBox>
-                <TextArea fx:id="textArea" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+                <TextArea fx:id="ruleViewArea" editable="false" prefHeight="200.0" prefWidth="200.0"
+                          GridPane.rowIndex="2">
                     <GridPane.margin>
                         <Insets bottom="2.0" left="4.0" right="5.0" top="2.0"/>
                     </GridPane.margin>
@@ -62,7 +63,7 @@
                         <Insets bottom="2.0" left="10.0" right="5.0" top="2.0"/>
                     </GridPane.margin>
                 </Label>
-                <TextField GridPane.rowIndex="1">
+                <TextField fx:id="ruleNameField" GridPane.rowIndex="1">
                     <GridPane.margin>
                         <Insets bottom="2.0" left="4.0" right="5.0" top="2.0"/>
                     </GridPane.margin>
