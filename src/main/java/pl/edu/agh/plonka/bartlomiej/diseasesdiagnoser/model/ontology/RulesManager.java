@@ -32,6 +32,10 @@ public class RulesManager {
         }
     }
 
+    public void deleteRules(Collection<Rule> rules) {
+        rules.forEach(rule -> ruleOntology.deleteSWRLRule(rule.getName()));
+    }
+
     Collection<Rule> loadRules(Map<String, Entity> classes,
                                Map<String, Entity> symptoms,
                                Map<String, Entity> diseases,

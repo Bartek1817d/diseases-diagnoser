@@ -257,6 +257,10 @@ public class OntologyWrapper {
         rulesManager.addRule(rule);
     }
 
+    public void deleteRules(Collection<Rule> rules) {
+        rulesManager.deleteRules(rules);
+    }
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     public Collection<Patient> generatePatientsFromRules() {
         Collection<Patient> patients = new ArrayList<>();

@@ -11,12 +11,16 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Response;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
+import java.util.Collection;
+
+import static javafx.scene.control.SelectionMode.MULTIPLE;
+
 public class RulesEditDialogController {
 
     private static Float RULE_NAME_COLUMN_WIDTH = 200.0f;
 
     @FXML
-    private TableView<Rule> rulesView;
+    private TableView<Rule> rulesTable;
     @FXML
     private TableColumn<Rule, String> ruleNameColumn;
     @FXML
@@ -33,14 +37,15 @@ public class RulesEditDialogController {
         this.dialogStage = dialogStage;
         this.patientsService = patientsService;
 
-        rulesView.setItems(patientsService.getRules());
+        rulesTable.setItems(patientsService.getRules());
     }
 
     @FXML
     private void initialize() {
-        rulesView.widthProperty().addListener((observable, oldValue, newValue) -> {
+        rulesTable.getSelectionModel().setSelectionMode(MULTIPLE);
+        rulesTable.widthProperty().addListener((observable, oldValue, newValue) -> {
             ruleNameColumn.setPrefWidth(RULE_NAME_COLUMN_WIDTH);
-            ruleContentColumn.setPrefWidth(rulesView.getWidth() - RULE_NAME_COLUMN_WIDTH);
+            ruleContentColumn.setPrefWidth(rulesTable.getWidth() - RULE_NAME_COLUMN_WIDTH);
         });
 
         ruleNameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getName()));
@@ -80,6 +85,17 @@ public class RulesEditDialogController {
             } catch (CreateRuleException e) {
                 viewManager.errorExceptionDialog("Failed to create rule", null, "Couldn't create rule " + rule, e);
             }
+        }
+    }
+
+    @FXML
+    public void handleDeleteRules() {
+        Collection<Rule> selectedRules = rulesTable.getSelectionModel().getSelectedItems();
+        if (!selectedRules.isEmpty()) {
+            patientsService.deleteRules(selectedRules);
+        } else {
+            viewManager.warningDialog("No Selection", "No Rule Selected",
+                    "Please select a rule in the table.");
         }
     }
 

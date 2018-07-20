@@ -12,6 +12,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWra
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 
 import java.io.File;
+import java.util.Collection;
 
 public class PatientsService {
 
@@ -66,6 +67,11 @@ public class PatientsService {
     public void addRule(Rule rule) throws CreateRuleException {
         ontology.addRule(rule);
         rules.add(rule);
+    }
+
+    public void deleteRules(Collection<Rule> rules) {
+        this.ontology.deleteRules(rules);
+        this.rules.removeAll(rules);
     }
 
     public void editPatient(Patient patient) {
