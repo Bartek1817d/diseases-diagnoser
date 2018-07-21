@@ -152,7 +152,7 @@ public class ViewManager {
         }
     }
 
-    public Response<Rule> showRuleEditDialog(PatientsService patientsService) {
+    public Response<Rule> showRuleEditDialog(Rule rule, PatientsService patientsService) {
         Response<Rule> response = new Response<>();
         try {
             FXMLLoader loader = getFXMLLoader("fxml/RuleEditDialog.fxml");
@@ -161,7 +161,7 @@ public class ViewManager {
             Stage dialogStage = createDialogStage(page, "Create/Edit Rules");
 
             RuleEditDialogController controller = loader.getController();
-            controller.init(this, dialogStage, patientsService, response);
+            controller.init(this, dialogStage, patientsService, rule, response);
 
             dialogStage.showAndWait();
 
@@ -169,6 +169,22 @@ public class ViewManager {
         } catch (IOException e) {
             e.printStackTrace();
             return response;
+        }
+    }
+
+    public void showRangeSelectorDialog() {
+        try {
+            FXMLLoader loader = getFXMLLoader("fxml/RangeSelectorDialog.fxml");
+            AnchorPane page = loader.load();
+
+            Stage dialogStage = createDialogStage(page, "Select range");
+
+            RangeSelectorController controller = loader.getController();
+
+            dialogStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

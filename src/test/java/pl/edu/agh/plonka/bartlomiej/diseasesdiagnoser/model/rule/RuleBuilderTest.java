@@ -27,5 +27,9 @@ public class RuleBuilderTest {
                 .build();
 
         System.out.println(rule);
+
+        ruleBuilder = new RuleBuilder(rule);
+
+        System.out.println(ruleBuilder.build());
     }
 }

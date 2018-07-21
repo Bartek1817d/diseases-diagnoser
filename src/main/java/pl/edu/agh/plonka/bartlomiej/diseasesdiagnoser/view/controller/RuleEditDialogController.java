@@ -30,7 +30,7 @@ public class RuleEditDialogController {
     private boolean okClicked = false;
     private Response<Rule> response;
 
-    public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService, Response<Rule> response) {
+    public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService, Rule rule, Response<Rule> response) {
         this.viewManager = viewManager;
         this.dialogStage = dialogStage;
         this.patientsService = patientsService;
@@ -92,5 +92,10 @@ public class RuleEditDialogController {
             ruleBuilder.withDiseases(diseases);
             ruleViewArea.setText(ruleBuilder.build().toString());
         }
+    }
+
+    @FXML
+    private void handleAddAge() {
+        viewManager.showRangeSelectorDialog();
     }
 }

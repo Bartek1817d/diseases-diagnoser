@@ -77,7 +77,7 @@ public class RulesEditDialogController {
 
     @FXML
     public void handleNewRule() {
-        Response<Rule> response = viewManager.showRuleEditDialog(patientsService);
+        Response<Rule> response = viewManager.showRuleEditDialog(null, patientsService);
         if (response.okClicked) {
             Rule rule = response.content;
             try {
@@ -86,6 +86,12 @@ public class RulesEditDialogController {
                 viewManager.errorExceptionDialog("Failed to create rule", null, "Couldn't create rule " + rule, e);
             }
         }
+    }
+
+    @FXML
+    public void handleEditRule() {
+        Rule selectedRule = rulesTable.getSelectionModel().getSelectedItem();
+
     }
 
     @FXML
