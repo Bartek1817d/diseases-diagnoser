@@ -10,13 +10,15 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Response;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.PositiveIntegerStringBinding;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 import java.util.function.Function;
+
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
 public class PatientOverviewController {
 
@@ -194,11 +196,10 @@ public class PatientOverviewController {
     private void handleAddSymptoms() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> symptoms = new HashSet<>();
-            boolean okClicked = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Symptom"),
-                    selectedPatient.getSymptoms(), symptoms, patientsService);
-            if (okClicked) {
-                selectedPatient.setSymptoms(symptoms);
+            Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(SYMPTOM_CLASS),
+                    selectedPatient.getSymptoms(), patientsService);
+            if (response.okClicked) {
+                selectedPatient.setSymptoms(response.content);
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
@@ -229,11 +230,10 @@ public class PatientOverviewController {
     private void handleAddDiseases() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> diseases = new HashSet<>();
-            boolean okClicked = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Disease"),
-                    selectedPatient.getDiseases(), diseases, patientsService);
-            if (okClicked) {
-                selectedPatient.setDiseases(diseases);
+            Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(DISEASE_CLASS),
+                    selectedPatient.getDiseases(), patientsService);
+            if (response.okClicked) {
+                selectedPatient.setDiseases(response.content);
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
@@ -264,11 +264,10 @@ public class PatientOverviewController {
     private void handleAddTests() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> tests = new HashSet<>();
-            boolean okClicked = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Testing"),
-                    selectedPatient.getTests(), tests, patientsService);
-            if (okClicked) {
-                selectedPatient.setTests(tests);
+            Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(TESTING_CLASS),
+                    selectedPatient.getTests(), patientsService);
+            if (response.okClicked) {
+                selectedPatient.setTests(response.content);
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
@@ -299,11 +298,10 @@ public class PatientOverviewController {
     private void handleAddTreatments() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> treatments = new HashSet<>();
-            boolean okClicked = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Treatment"),
-                    selectedPatient.getTreatments(), treatments, patientsService);
-            if (okClicked) {
-                selectedPatient.setTreatments(treatments);
+            Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(TREATMENT_CLASS),
+                    selectedPatient.getTreatments(), patientsService);
+            if (response.okClicked) {
+                selectedPatient.setTreatments(response.content);
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
@@ -334,11 +332,10 @@ public class PatientOverviewController {
     private void handleAddCauses() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> causes = new HashSet<>();
-            boolean okClicked = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Cause"),
-                    selectedPatient.getCauses(), causes, patientsService);
-            if (okClicked) {
-                selectedPatient.setCauses(causes);
+            Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(CAUSE_CLASS),
+                    selectedPatient.getCauses(), patientsService);
+            if (response.okClicked) {
+                selectedPatient.setCauses(response.content);
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
@@ -369,11 +366,10 @@ public class PatientOverviewController {
     private void handleAddNegativeTests() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> tests = new HashSet<>();
-            boolean okClicked = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Testing"),
-                    selectedPatient.getNegativeTests(), tests, patientsService);
-            if (okClicked) {
-                selectedPatient.setNegativeTests(tests);
+            Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(TESTING_CLASS),
+                    selectedPatient.getNegativeTests(), patientsService);
+            if (response.okClicked) {
+                selectedPatient.setNegativeTests(response.content);
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
@@ -404,11 +400,10 @@ public class PatientOverviewController {
     private void handleAddPreviousAndCurrentDiseases() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            Set<Entity> diseases = new HashSet<>();
-            boolean okClicked = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Testing"),
-                    selectedPatient.getPreviousAndCurrentDiseases(), diseases, patientsService);
-            if (okClicked) {
-                selectedPatient.setPreviousAndCurrentDiseases(diseases);
+            Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(DISEASE_CLASS),
+                    selectedPatient.getPreviousAndCurrentDiseases(), patientsService);
+            if (response.okClicked) {
+                selectedPatient.setPreviousAndCurrentDiseases(response.content);
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {

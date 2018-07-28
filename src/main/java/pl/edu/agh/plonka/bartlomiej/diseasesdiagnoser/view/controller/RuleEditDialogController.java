@@ -13,9 +13,10 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Response;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 import static java.util.Collections.emptyList;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.DISEASE_CLASS;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.SYMPTOM_CLASS;
 
 public class RuleEditDialogController implements ResponseController<Rule> {
 
@@ -67,22 +68,20 @@ public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
     private void handleAddSymptoms() {
-        Collection<Entity> symptoms = new HashSet<>();
-        boolean okClicked = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Symptom"),
-                emptyList(), symptoms, patientsService);
-        if (okClicked) {
-            ruleBuilder.withSymptoms(symptoms);
+        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(SYMPTOM_CLASS),
+                emptyList(), patientsService);
+        if (response.okClicked) {
+            ruleBuilder.withSymptoms(response.content);
             ruleViewArea.setText(ruleBuilder.build().toString());
         }
     }
 
     @FXML
     private void handleAddDiseases() {
-        Collection<Entity> diseases = new HashSet<>();
-        boolean okClicked = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get("Disease"),
-                emptyList(), diseases, patientsService);
-        if (okClicked) {
-            ruleBuilder.withDiseases(diseases);
+        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(DISEASE_CLASS),
+                emptyList(), patientsService);
+        if (response.okClicked) {
+            ruleBuilder.withDiseases(response.content);
             ruleViewArea.setText(ruleBuilder.build().toString());
         }
     }

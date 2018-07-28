@@ -10,11 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Response;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.util.*;
 
-public class EntitiesEditDialogController {
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
+
+public class EntitiesEditDialogController implements ResponseController<Collection<Entity>> {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -26,7 +29,7 @@ public class EntitiesEditDialogController {
     private ViewManager viewManager;
     private PatientsService patientsService;
     private Set<CheckBoxTreeItem<Entity>> entities = new HashSet<>();
-    private Collection<Entity> results;
+    private Collection<Entity> results = new HashSet<>();
     private Map<String, Entity> allIndividuals;
 
     public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService) {
@@ -35,26 +38,22 @@ public class EntitiesEditDialogController {
         this.patientsService = patientsService;
     }
 
-    public void setResultsContainer(Collection<Entity> results) {
-        this.results = results;
-    }
-
     public void setEntities(Entity rootEntity, Collection<Entity> currentIndividuals) {
         Collection<Entity> classes = patientsService.getOntology().getClasses().values();
         switch (rootEntity.getID()) {
-            case "Symptom":
+            case SYMPTOM_CLASS:
                 allIndividuals = patientsService.getOntology().getSymptoms();
                 break;
-            case "Disease":
+            case DISEASE_CLASS:
                 allIndividuals = patientsService.getOntology().getDiseases();
                 break;
-            case "Testing":
+            case TESTING_CLASS:
                 allIndividuals = patientsService.getOntology().getTests();
                 break;
-            case "Treatment":
+            case TREATMENT_CLASS:
                 allIndividuals = patientsService.getOntology().getTreatments();
                 break;
-            case "Cause":
+            case CAUSE_CLASS:
                 allIndividuals = patientsService.getOntology().getCauses();
                 break;
         }
@@ -104,6 +103,11 @@ public class EntitiesEditDialogController {
      */
     public boolean isOkClicked() {
         return okClicked;
+    }
+
+    @Override
+    public Response<Collection<Entity>> getResponse() {
+        return new Response<>(okClicked, results);
     }
 
     @FXML

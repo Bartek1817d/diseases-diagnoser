@@ -113,24 +113,22 @@ public class ViewManager {
         return controller.isOkClicked();
     }
 
-    public boolean showEntitiesEditDialog(Entity rootEntity, Collection<Entity> currentEntities, Collection<Entity> results, PatientsService patientsService) {
+    public Response<Collection<Entity>> showEntitiesEditDialog(Entity rootEntity, Collection<Entity> currentEntities, PatientsService patientsService) {
         try {
             FXMLLoader loader = getFXMLLoader("fxml/EntitiesEditDialog.fxml");
             AnchorPane page = loader.load();
 
-            Stage dialogStage = createDialogStage(page, "Edit Patient");
-
             EntitiesEditDialogController controller = loader.getController();
+
+            ResponseStage<Collection<Entity>> dialogStage = createDialogStage(page, "Edit Patient", controller);
+
             controller.init(this, dialogStage, patientsService);
-            controller.setResultsContainer(results);
             controller.setEntities(rootEntity, currentEntities);
 
-            dialogStage.showAndWait();
-
-            return controller.isOkClicked();
+            return dialogStage.showAndWaitForResponse();
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return new Response<>(false);
         }
     }
 

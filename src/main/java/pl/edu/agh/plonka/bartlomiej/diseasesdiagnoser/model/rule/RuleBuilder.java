@@ -164,17 +164,17 @@ public class RuleBuilder {
     private Collection<AbstractAtom> getAgeAtoms() {
         Collection<AbstractAtom> ageAtoms = new ArrayList<>();
         if (ageRange.hasLowerBound()) {
-            switch(ageRange.lowerBoundType()) {
+            switch (ageRange.lowerBoundType()) {
                 case OPEN:
                     ageAtoms.add(new TwoArgumentsAtom<>(GREATER_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.lowerEndpoint()));
-                break;
+                    break;
                 case CLOSED:
                     ageAtoms.add(new TwoArgumentsAtom<>(GREATER_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.lowerEndpoint()));
-                   break;
+                    break;
             }
         }
         if (ageRange.hasUpperBound()) {
-            switch(ageRange.upperBoundType()) {
+            switch (ageRange.upperBoundType()) {
                 case OPEN:
                     ageAtoms.add(new TwoArgumentsAtom<>(LESS_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.upperEndpoint()));
                     break;
@@ -185,11 +185,5 @@ public class RuleBuilder {
         }
 
         return ageAtoms;
-    }
-
-    public enum NumberProperty {
-        AGE,
-        HEIGHT,
-        WEIGHT
     }
 }
