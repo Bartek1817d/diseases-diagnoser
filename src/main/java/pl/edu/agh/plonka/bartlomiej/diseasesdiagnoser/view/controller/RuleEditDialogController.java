@@ -1,5 +1,6 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
+import com.google.common.collect.Range;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -16,7 +17,7 @@ import java.util.HashSet;
 
 import static java.util.Collections.emptyList;
 
-public class RuleEditDialogController {
+public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
     private TextField ruleNameField;
@@ -27,19 +28,18 @@ public class RuleEditDialogController {
     private PatientsService patientsService;
     private ViewManager viewManager;
     private Stage dialogStage;
-    private boolean okClicked = false;
-    private Response<Rule> response;
+    private boolean okClicked;
 
-    public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService, Rule rule, Response<Rule> response) {
+    public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService, Rule rule) {
         this.viewManager = viewManager;
         this.dialogStage = dialogStage;
         this.patientsService = patientsService;
         this.ruleBuilder = new RuleBuilder(patientsService.getOntology().getClasses().get("Patient"));
-        this.response = response;
     }
 
-    public boolean isOkClicked() {
-        return okClicked;
+    @Override
+    public Response<Rule> getResponse() {
+        return new Response<>(okClicked, ruleBuilder.withName(ruleNameField.getText().trim()).build());
     }
 
     @FXML
@@ -52,16 +52,8 @@ public class RuleEditDialogController {
             viewManager.errorDialog("Failed to create rule", null, "Cannot create empty rule!");
             return;
         }
-
-//        try {
-        response.okClicked = true;
-        response.content = ruleBuilder.withName(ruleNameField.getText().trim()).build();
-//        } catch (CreateRuleException e) {
-//            viewManager.errorExceptionDialog("Failed to create rule", null, "Couldn't create rule " + rule, e);
-//        } finally {
         okClicked = true;
         dialogStage.close();
-//        }
     }
 
     /**
@@ -69,6 +61,7 @@ public class RuleEditDialogController {
      */
     @FXML
     private void handleCancel() {
+        okClicked = false;
         dialogStage.close();
     }
 
@@ -96,6 +89,10 @@ public class RuleEditDialogController {
 
     @FXML
     private void handleAddAge() {
-        viewManager.showRangeSelectorDialog();
+        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog("Select age range", 0, 100);
+        if (response.okClicked) {
+            ruleBuilder.withAge(response.content);
+            ruleViewArea.setText(ruleBuilder.build().toString());
+        }
     }
 }

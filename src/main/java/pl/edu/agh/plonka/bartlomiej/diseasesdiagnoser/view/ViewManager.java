@@ -1,5 +1,6 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view;
 
+import com.google.common.collect.Range;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -153,38 +154,39 @@ public class ViewManager {
     }
 
     public Response<Rule> showRuleEditDialog(Rule rule, PatientsService patientsService) {
-        Response<Rule> response = new Response<>();
         try {
             FXMLLoader loader = getFXMLLoader("fxml/RuleEditDialog.fxml");
             AnchorPane page = loader.load();
 
-            Stage dialogStage = createDialogStage(page, "Create/Edit Rules");
-
             RuleEditDialogController controller = loader.getController();
-            controller.init(this, dialogStage, patientsService, rule, response);
 
-            dialogStage.showAndWait();
+            ResponseStage<Rule> dialogStage = createDialogStage(page, "Create/Edit Rules", controller);
+            controller.init(this, dialogStage, patientsService, rule);
 
-            return response;
+            return dialogStage.showAndWaitForResponse();
         } catch (IOException e) {
             e.printStackTrace();
-            return response;
+            return new Response<>(false);
         }
     }
 
-    public void showRangeSelectorDialog() {
+    public Response<Range<Integer>> showRangeSelectorDialog(String title, Integer minValue, Integer maxValue) {
         try {
             FXMLLoader loader = getFXMLLoader("fxml/RangeSelectorDialog.fxml");
             AnchorPane page = loader.load();
 
-            Stage dialogStage = createDialogStage(page, "Select range");
-
             RangeSelectorController controller = loader.getController();
+            controller.setMinValue(minValue);
+            controller.setMaxValue(maxValue);
 
-            dialogStage.showAndWait();
+            ResponseStage<Range<Integer>> dialogStage = createDialogStage(page, title, controller);
+            dialogStage.setResizable(false);
+            controller.init(dialogStage);
 
+            return dialogStage.showAndWaitForResponse();
         } catch (IOException e) {
             e.printStackTrace();
+            return new Response<>(false);
         }
     }
 
@@ -295,6 +297,17 @@ public class ViewManager {
 
     private Stage createDialogStage(Parent parent, String title) {
         Stage dialogStage = new Stage();
+        dialogStage.setTitle(title);
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(parent);
+        dialogStage.setScene(scene);
+
+        return dialogStage;
+    }
+
+    private <T> ResponseStage<T> createDialogStage(Parent parent, String title, ResponseController<T> controller) {
+        ResponseStage<T> dialogStage = new ResponseStage<>(controller);
         dialogStage.setTitle(title);
         dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(primaryStage);

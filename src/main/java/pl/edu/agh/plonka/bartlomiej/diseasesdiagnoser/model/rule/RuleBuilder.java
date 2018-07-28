@@ -1,7 +1,9 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
+import com.google.common.collect.Range;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,11 +26,7 @@ public class RuleBuilder {
     private AbstractAtom patientDeclarationAtom;
     private AbstractAtom ageAtom;
 
-    private AbstractAtom ageEqual;
-    private AbstractAtom ageGreaterThan;
-    private AbstractAtom ageGreaterThanOrEqual;
-    private AbstractAtom ageLessThan;
-    private AbstractAtom ageLessThanOrEqual;
+    private Range<Integer> ageRange;
 
     public RuleBuilder() {
         this.patientVariable = new Variable("patient");
@@ -94,16 +92,11 @@ public class RuleBuilder {
     }
 
     public RuleBuilder withSymptom(Entity symptom) {
-//        this.symptoms = singleton(new TwoArgumentsAtom<>(HAS_SYMPTOM_PROPERTY, patientVariable, symptom));
         this.symptoms = singleton(symptom);
         return this;
     }
 
     public RuleBuilder withSymptoms(Collection<Entity> symptoms) {
-//        this.symptoms = symptoms
-//                .stream()
-//                .map(symptom -> new TwoArgumentsAtom<>(HAS_SYMPTOM_PROPERTY, patientVariable, symptom))
-//                .collect(toSet());
         this.symptoms = new HashSet<>(symptoms);
         return this;
     }
@@ -113,16 +106,11 @@ public class RuleBuilder {
     }
 
     public RuleBuilder withNegativeTest(Entity negativeTest) {
-//        this.negativeTests = singleton(new TwoArgumentsAtom<>(NEGATIVE_TEST_PROPERTY, patientVariable, negativeTest));
         this.negativeTests = singleton(negativeTest);
         return this;
     }
 
     public RuleBuilder withNegativeTests(Collection<Entity> negativeTests) {
-//        this.negativeTests = negativeTests
-//                .stream()
-//                .map(negativeTest -> new TwoArgumentsAtom<>(NEGATIVE_TEST_PROPERTY, patientVariable, negativeTest))
-//                .collect(toSet());
         this.negativeTests = new HashSet<>(negativeTests);
         return this;
     }
@@ -132,16 +120,11 @@ public class RuleBuilder {
     }
 
     public RuleBuilder withDisease(Entity disease) {
-//        this.diseases = singleton(new TwoArgumentsAtom<>(HAS_DISEASE_PROPERTY, patientVariable, disease));
         this.diseases = singleton(disease);
         return this;
     }
 
     public RuleBuilder withDiseases(Collection<Entity> diseases) {
-//        this.diseases = diseases
-//                .stream()
-//                .map(disease -> new TwoArgumentsAtom<>(HAS_DISEASE_PROPERTY, patientVariable, disease))
-//                .collect(toSet());
         this.diseases = new HashSet<>(diseases);
         return this;
     }
@@ -150,29 +133,8 @@ public class RuleBuilder {
         return diseases;
     }
 
-    public RuleBuilder withEqual(NumberProperty property, Integer value) {
-//        switch
-//        ageEqual = new TwoArgumentsAtom<>(EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, age);
-        return this;
-    }
-
-    public RuleBuilder withAgeGreaterThan(Integer age) {
-        ageGreaterThan = new TwoArgumentsAtom<>(GREATER_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, age);
-        return this;
-    }
-
-    public RuleBuilder withAgeGreaterThanOrEqual(Integer age) {
-        ageGreaterThanOrEqual = new TwoArgumentsAtom<>(GREATER_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, age);
-        return this;
-    }
-
-    public RuleBuilder withAgeLessThan(Integer age) {
-        ageLessThan = new TwoArgumentsAtom<>(LESS_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, age);
-        return this;
-    }
-
-    public RuleBuilder withAgeLessThanOrEqual(Integer age) {
-        ageLessThanOrEqual = new TwoArgumentsAtom<>(LESS_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, age);
+    public RuleBuilder withAge(Range<Integer> ageRange) {
+        this.ageRange = ageRange;
         return this;
     }
 
@@ -191,27 +153,38 @@ public class RuleBuilder {
         headAtoms.addAll(diseases.stream()
                 .map(disease -> new TwoArgumentsAtom<>(HAS_DISEASE_PROPERTY, patientVariable, disease))
                 .collect(toSet()));
-        if (ageEqual != null) {
-            bodyAtoms.add(ageEqual);
+        if (ageRange != null) {
             bodyAtoms.add(ageAtom);
+            bodyAtoms.addAll(getAgeAtoms());
         }
-        if (ageGreaterThan != null) {
-            bodyAtoms.add(ageGreaterThan);
-            bodyAtoms.add(ageAtom);
-        }
-        if (ageGreaterThanOrEqual != null) {
-            bodyAtoms.add(ageGreaterThanOrEqual);
-            bodyAtoms.add(ageAtom);
-        }
-        if (ageLessThan != null) {
-            bodyAtoms.add(ageLessThan);
-            bodyAtoms.add(ageAtom);
-        }
-        if (ageLessThanOrEqual != null) {
-            bodyAtoms.add(ageLessThanOrEqual);
-            bodyAtoms.add(ageAtom);
-        }
+
         return new Rule(name, bodyAtoms, headAtoms);
+    }
+
+    private Collection<AbstractAtom> getAgeAtoms() {
+        Collection<AbstractAtom> ageAtoms = new ArrayList<>();
+        if (ageRange.hasLowerBound()) {
+            switch(ageRange.lowerBoundType()) {
+                case OPEN:
+                    ageAtoms.add(new TwoArgumentsAtom<>(GREATER_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.lowerEndpoint()));
+                break;
+                case CLOSED:
+                    ageAtoms.add(new TwoArgumentsAtom<>(GREATER_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.lowerEndpoint()));
+                   break;
+            }
+        }
+        if (ageRange.hasUpperBound()) {
+            switch(ageRange.upperBoundType()) {
+                case OPEN:
+                    ageAtoms.add(new TwoArgumentsAtom<>(LESS_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.upperEndpoint()));
+                    break;
+                case CLOSED:
+                    ageAtoms.add(new TwoArgumentsAtom<>(LESS_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.upperEndpoint()));
+                    break;
+            }
+        }
+
+        return ageAtoms;
     }
 
     public enum NumberProperty {
