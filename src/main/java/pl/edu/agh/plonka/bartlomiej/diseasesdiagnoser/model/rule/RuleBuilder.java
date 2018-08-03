@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.google.common.collect.Range.*;
 import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toSet;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
@@ -26,7 +27,7 @@ public class RuleBuilder {
     private AbstractAtom patientDeclarationAtom;
     private AbstractAtom ageAtom;
 
-    private Range<Integer> ageRange;
+    private Range<Integer> ageRange = Range.all();
 
     public RuleBuilder() {
         this.patientVariable = new Variable("patient");
@@ -42,20 +43,31 @@ public class RuleBuilder {
     }
 
     public RuleBuilder(Rule rule) {
-        Collection<AbstractAtom> bodyAtoms = rule.getBodyAtoms();
-        Collection<AbstractAtom> headAtoms = rule.getHeadAtoms();
-        for (AbstractAtom bodyAtom : bodyAtoms) {
-            if (bodyAtom instanceof ClassDeclarationAtom) {
-                ClassDeclarationAtom classDeclarationAtom = (ClassDeclarationAtom) bodyAtom;
+        for (AbstractAtom declarationAtom : rule.getDeclarationAtoms()) {
+            if (declarationAtom instanceof ClassDeclarationAtom) {
+                ClassDeclarationAtom classDeclarationAtom = (ClassDeclarationAtom) declarationAtom;
                 Object argument = classDeclarationAtom.getArgument();
                 if (argument instanceof Variable) {
                     Variable variable = (Variable) argument;
                     if (variable.getName().equals("patient")) {
-                        patientDeclarationAtom = bodyAtom;
+                        patientDeclarationAtom = declarationAtom;
                         patientVariable = variable;
                     }
                 }
             }
+            if (declarationAtom instanceof TwoArgumentsAtom) {
+                TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) declarationAtom;
+                String predicate = declarationAtom.predicate;
+                switch (predicate) {
+                    case AGE_PROPERTY:
+                        ageVariable = (Variable) twoArgumentsAtom.getArgument2();
+                        ageAtom = twoArgumentsAtom;
+                        ageRange = alignRange(ageVariable, rule.getBodyAtoms(), ageRange);
+                        break;
+                }
+            }
+        }
+        for (AbstractAtom bodyAtom : rule.getBodyAtoms()) {
             if (bodyAtom instanceof TwoArgumentsAtom) {
                 TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) bodyAtom;
                 String predicate = bodyAtom.predicate;
@@ -73,7 +85,7 @@ public class RuleBuilder {
                 }
             }
         }
-        for (AbstractAtom headAtom : headAtoms) {
+        for (AbstractAtom headAtom : rule.getHeadAtoms()) {
             if (headAtom instanceof TwoArgumentsAtom) {
                 TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) headAtom;
                 String predicate = headAtom.predicate;
@@ -139,11 +151,12 @@ public class RuleBuilder {
     }
 
     public Rule build() {
+        Set<AbstractAtom> declarationAtoms = new HashSet<>();
         Set<AbstractAtom> headAtoms = new HashSet<>();
         Set<AbstractAtom> bodyAtoms = new HashSet<>();
 
         if (patientDeclarationAtom != null)
-            bodyAtoms.add(patientDeclarationAtom);
+            declarationAtoms.add(patientDeclarationAtom);
         bodyAtoms.addAll(symptoms.stream()
                 .map(symptom -> new TwoArgumentsAtom<>(HAS_SYMPTOM_PROPERTY, patientVariable, symptom))
                 .collect(toSet()));
@@ -154,11 +167,11 @@ public class RuleBuilder {
                 .map(disease -> new TwoArgumentsAtom<>(HAS_DISEASE_PROPERTY, patientVariable, disease))
                 .collect(toSet()));
         if (ageRange != null) {
-            bodyAtoms.add(ageAtom);
+            declarationAtoms.add(ageAtom);
             bodyAtoms.addAll(getAgeAtoms());
         }
 
-        return new Rule(name, bodyAtoms, headAtoms);
+        return new Rule(name, declarationAtoms, bodyAtoms, headAtoms);
     }
 
     private Collection<AbstractAtom> getAgeAtoms() {
@@ -185,5 +198,35 @@ public class RuleBuilder {
         }
 
         return ageAtoms;
+    }
+
+    private Range<Integer> alignRange(Variable variable, Collection<AbstractAtom> atoms, Range<Integer> range) {
+        for (AbstractAtom atom : atoms) {
+            if (atom instanceof TwoArgumentsAtom) {
+                TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) atom;
+                if (twoArgumentsAtom.getArgument1().equals(variable)) {
+                    String predicate = twoArgumentsAtom.getPredicate();
+                    int value = (int) twoArgumentsAtom.getArgument2();
+                    switch (predicate) {
+                        case LESS_THAN_PROPERTY:
+                            range = range.intersection(lessThan(value));
+                            break;
+                        case LESS_THAN_OR_EQUAL_PROPERTY:
+                            range = range.intersection(atMost(value));
+                            break;
+                        case GREATER_THAN_PROPERTY:
+                            range = range.intersection(greaterThan(value));
+                            break;
+                        case GREATER_THAN_OR_EQUAL_PROPERTY:
+                            range = range.intersection(atLeast(value));
+                            break;
+                        case EQUAL_PROPERTY:
+                            range = range.intersection(Range.singleton(value));
+                            break;
+                    }
+                }
+            }
+        }
+        return range;
     }
 }

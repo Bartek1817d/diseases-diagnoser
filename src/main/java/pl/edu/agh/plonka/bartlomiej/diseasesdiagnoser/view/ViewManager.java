@@ -159,7 +159,11 @@ public class ViewManager {
             RuleEditDialogController controller = loader.getController();
 
             ResponseStage<Rule> dialogStage = createDialogStage(page, "Create/Edit Rules", controller);
-            controller.init(this, dialogStage, patientsService, rule);
+            if (rule == null)
+                controller.init(this, dialogStage, patientsService);
+            else
+                controller.init(this, dialogStage, patientsService, rule);
+
 
             return dialogStage.showAndWaitForResponse();
         } catch (IOException e) {

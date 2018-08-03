@@ -45,10 +45,16 @@ public class RulesManager {
         Collection<Rule> rules = new ArrayList<>();
         for (SWRLAPIRule swrlRule : ruleOntology.getSWRLRules()) {
             Rule rule = new Rule(swrlRule.getRuleName());
-            for (SWRLAtom atom : swrlRule.getBody())
-                rule.addBodyAtom(parseSWRLAtom(atom, classes, symptoms, diseases, tests, treatments, causes));
-            for (SWRLAtom atom : swrlRule.getHead())
+            for (SWRLAtom atom : swrlRule.getBody()) {
+                AbstractAtom bodyAtom = parseSWRLAtom(atom, classes, symptoms, diseases, tests, treatments, causes);
+                if (isDeclarationAtom(bodyAtom))
+                    rule.addDeclarationAtom(bodyAtom);
+                else
+                    rule.addBodyAtom(bodyAtom);
+            }
+            for (SWRLAtom atom : swrlRule.getHead()) {
                 rule.addHeadAtom(parseSWRLAtom(atom, classes, symptoms, diseases, tests, treatments, causes));
+            }
             rules.add(rule);
         }
         return rules;
@@ -180,5 +186,18 @@ public class RulesManager {
             return causes.get(argumentID);
         else
             return null;
+    }
+
+    private boolean isDeclarationAtom(AbstractAtom atom) {
+        if (atom instanceof ClassDeclarationAtom) {
+            return true;
+        }
+        if (atom instanceof TwoArgumentsAtom) {
+            TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) atom;
+            if (twoArgumentsAtom.getArgument1() instanceof Variable && twoArgumentsAtom.getArgument2() instanceof Variable) {
+                return true;
+            }
+        }
+        return false;
     }
 }

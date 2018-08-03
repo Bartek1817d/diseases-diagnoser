@@ -15,8 +15,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 import java.util.Collection;
 
 import static java.util.Collections.emptyList;
-import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.DISEASE_CLASS;
-import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.SYMPTOM_CLASS;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
 public class RuleEditDialogController implements ResponseController<Rule> {
 
@@ -31,11 +30,21 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     private Stage dialogStage;
     private boolean okClicked;
 
+    public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService) {
+        this.viewManager = viewManager;
+        this.dialogStage = dialogStage;
+        this.patientsService = patientsService;
+        this.ruleBuilder = new RuleBuilder(patientsService.getOntology().getClasses().get(PATIENT_CLASS));
+    }
+
     public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService, Rule rule) {
         this.viewManager = viewManager;
         this.dialogStage = dialogStage;
         this.patientsService = patientsService;
-        this.ruleBuilder = new RuleBuilder(patientsService.getOntology().getClasses().get("Patient"));
+        this.ruleBuilder = new RuleBuilder(rule);
+
+        ruleNameField.setText(rule.getName());
+        ruleViewArea.setText(ruleBuilder.build().toString());
     }
 
     @Override

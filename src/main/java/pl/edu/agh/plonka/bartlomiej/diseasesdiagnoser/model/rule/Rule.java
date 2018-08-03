@@ -3,6 +3,7 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -11,6 +12,7 @@ public class Rule {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private String name;
+    private Collection<AbstractAtom> declarationAtoms = new HashSet<>();
     private Collection<AbstractAtom> bodyAtoms = new HashSet<>();
     private Collection<AbstractAtom> headAtoms = new HashSet<>();
 
@@ -21,8 +23,9 @@ public class Rule {
         this.name = name;
     }
 
-    public Rule(String name, Collection<AbstractAtom> bodyAtoms, Collection<AbstractAtom> headAtoms) {
+    public Rule(String name, Collection<AbstractAtom> declarationAtoms, Collection<AbstractAtom> bodyAtoms, Collection<AbstractAtom> headAtoms) {
         this.name = name;
+        this.declarationAtoms.addAll(declarationAtoms);
         this.bodyAtoms.addAll(bodyAtoms);
         this.headAtoms.addAll(headAtoms);
     }
@@ -41,6 +44,19 @@ public class Rule {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Collection<AbstractAtom> getDeclarationAtoms() {
+        return declarationAtoms;
+    }
+
+    public void setDeclarationAtoms(Collection<AbstractAtom> declarationAtoms) {
+        this.declarationAtoms.clear();
+        this.declarationAtoms.addAll(declarationAtoms);
+    }
+
+    public void addDeclarationAtom(AbstractAtom declarationAtom) {
+        declarationAtoms.add(declarationAtom);
     }
 
     public Collection<AbstractAtom> getBodyAtoms() {
@@ -105,6 +121,8 @@ public class Rule {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
+        Collection<AbstractAtom> bodyAtoms = new ArrayList<>(this.declarationAtoms);
+        bodyAtoms.addAll(this.bodyAtoms);
         for (AbstractAtom atom : bodyAtoms) {
             str.append(atom);
             str.append(" ^ ");

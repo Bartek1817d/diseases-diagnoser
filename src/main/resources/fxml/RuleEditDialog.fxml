@@ -58,7 +58,7 @@
                         </Button>
                     </children>
                 </HBox>
-                <TextArea fx:id="ruleViewArea" editable="false" prefHeight="200.0" prefWidth="200.0"
+                <TextArea fx:id="ruleViewArea" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true"
                           GridPane.rowIndex="2">
                     <GridPane.margin>
                         <Insets bottom="2.0" left="4.0" right="5.0" top="2.0"/>

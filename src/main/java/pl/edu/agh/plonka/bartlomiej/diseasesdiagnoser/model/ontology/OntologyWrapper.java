@@ -302,7 +302,7 @@ public class OntologyWrapper {
 
     private Patient parseVariables(Rule rule, String diseaseID, String number, Map<String, Entity> variables) {
         Patient patient = null;
-        for (AbstractAtom atom : rule.getBodyAtoms()) {
+        for (AbstractAtom atom : rule.getDeclarationAtoms()) {
             if (atom instanceof ClassDeclarationAtom
                     && ((ClassDeclarationAtom) atom).getArgument() instanceof Variable) {
                 Variable var = (Variable) (((ClassDeclarationAtom) atom).getArgument());
@@ -339,12 +339,20 @@ public class OntologyWrapper {
                         addEntityToPatient(twoArgumentsAtom, variables, "addDisease");
                         break;
                     }
+                }
+
+            }
+        }
+        for (AbstractAtom atom : rule.getDeclarationAtoms()) {
+            if (atom instanceof TwoArgumentsAtom) {
+                TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) atom;
+                String predicate = twoArgumentsAtom.getPredicate();
+                switch (predicate) {
                     case "age": {
                         setPatientAge(rule, twoArgumentsAtom, variables);
                         break;
                     }
                 }
-
             }
         }
     }
