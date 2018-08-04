@@ -21,7 +21,6 @@ public class MachineLearning {
     private static final float epsilon = 0.5f;
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private OntologyWrapper ontology;
-    private Random random = new Random();
 
     public MachineLearning(OntologyWrapper ontology) {
         this.ontology = ontology;
@@ -60,7 +59,7 @@ public class MachineLearning {
             }
             star.intersection(partialStar);
             star.deleteNarrowComplexes();
-            Collections.sort(star, new ComplexComparator(trainingSet, uncoveredSet, positiveSeed));
+            star.sort(new ComplexComparator(trainingSet, uncoveredSet, positiveSeed));
             star.leaveFirstElements(5);
             negativeSeed = negativeSeed(trainingSet, star, positiveSeed);
         }
@@ -143,12 +142,7 @@ public class MachineLearning {
 
     private void removeCoveredExamples(Collection<Patient> trainingSet, Complex complex) {
         System.out.println("removeCoveredExamples");
-        Iterator<Patient> it = trainingSet.iterator();
-        while (it.hasNext()) {
-            Patient p = it.next();
-            if (complex.isPatientCovered(p))
-                it.remove();
-        }
+        trainingSet.removeIf(complex::isPatientCovered);
     }
 
     private Collection<Complex> createComplexes(Collection<Entity> positiveEntities, Collection<Entity> negativeEntities,
@@ -184,7 +178,7 @@ public class MachineLearning {
                     ageComplex.setAgeSelector(LinearSelector.greaterThanSelector(midAge));
                 else
                     ageComplex.setAgeSelector(LinearSelector.atLeastSelector(midAge));
-            } else if (negAge > posAge) {
+            } else {
                 if (midAge == negAge)
                     ageComplex.setAgeSelector(LinearSelector.lessThanSelector(midAge));
                 else
