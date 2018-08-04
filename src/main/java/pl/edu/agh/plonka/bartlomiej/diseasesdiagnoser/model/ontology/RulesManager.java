@@ -32,6 +32,10 @@ public class RulesManager {
         }
     }
 
+    public void deleteRule(Rule rule) {
+        ruleOntology.deleteSWRLRule(rule.getName());
+    }
+
     public void deleteRules(Collection<Rule> rules) {
         rules.forEach(rule -> ruleOntology.deleteSWRLRule(rule.getName()));
     }

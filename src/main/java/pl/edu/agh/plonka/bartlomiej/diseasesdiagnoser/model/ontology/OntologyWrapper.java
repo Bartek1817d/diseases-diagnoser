@@ -257,6 +257,10 @@ public class OntologyWrapper {
         rulesManager.addRule(rule);
     }
 
+    public void deleteRule(Rule rule) {
+        rulesManager.deleteRule(rule);
+    }
+
     public void deleteRules(Collection<Rule> rules) {
         rulesManager.deleteRules(rules);
     }

@@ -65,8 +65,15 @@ public class PatientsService {
     }
 
     public void addRule(Rule rule) throws CreateRuleException {
+        if (rules.contains(rule))
+            deleteRule(rule);
         ontology.addRule(rule);
         rules.add(rule);
+    }
+
+    public void deleteRule(Rule rule) {
+        this.ontology.deleteRule(rule);
+        this.rules.remove(rule);
     }
 
     public void deleteRules(Collection<Rule> rules) {
