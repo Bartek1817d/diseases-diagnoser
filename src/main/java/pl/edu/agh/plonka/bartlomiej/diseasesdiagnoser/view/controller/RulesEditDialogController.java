@@ -6,6 +6,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.RuleAlreadyExistsException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Response;
@@ -82,8 +83,8 @@ public class RulesEditDialogController {
             Rule rule = response.content;
             try {
                 patientsService.addRule(rule);
-            } catch (CreateRuleException e) {
-                viewManager.errorExceptionDialog("Failed to create rule", null, "Couldn't create rule " + rule, e);
+            } catch (CreateRuleException | RuleAlreadyExistsException e) {
+                viewManager.errorExceptionDialog("Failed to create rule", e.getMessage(), "Couldn't create rule " + rule.getName(), e);
             }
         }
     }
@@ -93,11 +94,12 @@ public class RulesEditDialogController {
         Rule selectedRule = rulesTable.getSelectionModel().getSelectedItem();
         Response<Rule> response = viewManager.showRuleEditDialog(selectedRule, patientsService);
         if (response.okClicked) {
-            Rule rule = response.content;
+            Rule newRule = response.content;
             try {
-                patientsService.addRule(rule);
-            } catch (CreateRuleException e) {
-                viewManager.errorExceptionDialog("Failed to create rule", null, "Couldn't create rule " + rule, e);
+                patientsService.deleteRule(selectedRule);
+                patientsService.addRule(newRule);
+            } catch (CreateRuleException | RuleAlreadyExistsException e) {
+                viewManager.errorExceptionDialog("Failed to create rule", e.getMessage(), "Couldn't create rule " + newRule.getName(), e);
             }
         }
     }

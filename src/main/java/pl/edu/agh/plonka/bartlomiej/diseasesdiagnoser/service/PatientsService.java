@@ -7,6 +7,7 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.RuleAlreadyExistsException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
@@ -64,9 +65,9 @@ public class PatientsService {
         return rules;
     }
 
-    public void addRule(Rule rule) throws CreateRuleException {
+    public void addRule(Rule rule) throws RuleAlreadyExistsException, CreateRuleException {
         if (rules.contains(rule))
-            deleteRule(rule);
+            throw new RuleAlreadyExistsException(rule);
         ontology.addRule(rule);
         rules.add(rule);
     }
