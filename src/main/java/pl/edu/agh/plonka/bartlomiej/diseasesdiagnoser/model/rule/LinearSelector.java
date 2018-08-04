@@ -48,15 +48,6 @@ public class LinearSelector<T extends Comparable<?>> implements Selector<T> {
         return selector;
     }
 
-    @SuppressWarnings("unchecked")
-    public static void main(String[] args) {
-        LinearSelector<Integer> s1 = LinearSelector.atLeastSelector(10);
-        LinearSelector<Integer> s2 = LinearSelector.lessThanSelector(12);
-        System.out.println(s1.conjunction(s2));
-        System.out.println(s1);
-        System.out.println(s2);
-    }
-
     public boolean contains(T value) {
         return range.contains(value);
     }

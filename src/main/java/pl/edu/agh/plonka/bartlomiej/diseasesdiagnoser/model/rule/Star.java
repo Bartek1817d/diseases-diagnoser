@@ -6,8 +6,6 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 public class Star extends ArrayList<Complex> {
 
@@ -15,13 +13,6 @@ public class Star extends ArrayList<Complex> {
 
     public Star() {
         add(new Complex());
-    }
-
-    public static void main(String[] args) {
-        List<Integer> l = new ArrayList<Integer>();
-        Collections.sort(l);
-        l.subList(Math.min(l.size(), 3), l.size()).clear();
-        System.out.println(l);
     }
 
     public boolean isPatientCovered(Patient patient) {

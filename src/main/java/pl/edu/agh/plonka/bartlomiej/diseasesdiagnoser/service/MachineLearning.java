@@ -1,7 +1,6 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service;
 
 import com.google.common.collect.Sets;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.PartialStarCreationException;
@@ -24,12 +23,6 @@ public class MachineLearning {
 
     public MachineLearning(OntologyWrapper ontology) {
         this.ontology = ontology;
-    }
-
-    public static void main(String args[]) throws OWLOntologyCreationException {
-        OntologyWrapper ontology = new OntologyWrapper(MachineLearning.class.getResourceAsStream("/human_diseases.owl"));
-        MachineLearning machineLearning = new MachineLearning(ontology);
-        Collection<Rule> rules = machineLearning.sequentialCovering(new HashSet<>(ontology.generatePatientsFromRules()));
     }
 
     public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) {

@@ -30,14 +30,6 @@ public class Rule {
         this.headAtoms.addAll(headAtoms);
     }
 
-    public static void main(String args[]) {
-        Rule r = new Rule("rule1");
-        OneArgumentAtom<String> a1 = new OneArgumentAtom<String>("hasSymptom");
-        a1.setArgument("yes");
-        r.addBodyAtom(a1);
-        System.out.println(r);
-    }
-
     public String getName() {
         return name;
     }

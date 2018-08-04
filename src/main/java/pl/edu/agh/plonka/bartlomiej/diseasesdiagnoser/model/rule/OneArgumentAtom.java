@@ -26,15 +26,6 @@ public class OneArgumentAtom<T> extends AbstractAtom {
         this.argument = argument;
     }
 
-    public static void main(String[] args) {
-        Entity e = new Entity("entity");
-        AbstractAtom a = new OneArgumentAtom<Entity>("predicate", e);
-
-        Entity e2 = new Entity("entity");
-        AbstractAtom a2 = new OneArgumentAtom<Entity>("predicate", e2);
-        System.out.println(a.equals(a2));
-    }
-
     public T getArgument() {
         return argument;
     }

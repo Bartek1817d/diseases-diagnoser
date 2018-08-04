@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -19,14 +18,6 @@ public class NominalSelector<T> extends HashSet<T> implements Selector<T> {
 
     public NominalSelector(Collection<T> collection) {
         super(collection);
-    }
-
-    public static void main(String[] args) {
-        Selector s1 = new NominalSelector<>(Arrays.asList(4, 6, 2, 7, 2));
-        Selector s2 = new NominalSelector<>(Arrays.asList(4, 6, 2));
-        System.out.println(s1.conjunction(s2));
-        System.out.println(s1);
-        System.out.println(s2);
     }
 
     @Override

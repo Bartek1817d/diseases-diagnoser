@@ -25,17 +25,6 @@ public class ClassDeclarationAtom<T> extends OneArgumentAtom<T> {
         this.argument = argument;
     }
 
-    public static void main(String[] args) {
-        Entity e1 = new Entity("Entity");
-        Entity c1 = new Entity("Class");
-        AbstractAtom a1 = new ClassDeclarationAtom<Entity>(c1, e1);
-        Entity e2 = new Entity("Entity");
-        Entity c2 = new Entity("Class");
-        //AbstractAtom a2 = new ClassDeclarationAtom<Entity>(c2, e2);
-
-        System.out.println(a1);
-    }
-
     public Entity getClassEntity() {
         return classEntity;
     }

@@ -55,12 +55,6 @@ public class Complex implements Comparable<Complex> {
         return resultComplexes;
     }
 
-    public static void main(String args[]) {
-        Collection<Integer> c1 = new LinkedList<>(Arrays.asList(2, 4, 5));
-        Collection<Integer> c2 = new LinkedList<>(Collections.singletonList(10));
-        System.out.println(c1.containsAll(c2));
-    }
-
     public NominalSelector<Entity> getPreviousDiseasesSelector() {
         return previousDiseasesSelector;
     }

@@ -20,11 +20,6 @@ public class Variable {
         this.parentClass = parentClass;
     }
 
-    public static void main(String args[]) {
-        Variable var = new Variable("patient");
-        System.out.println(var);
-    }
-
     public String getName() {
         return name;
     }

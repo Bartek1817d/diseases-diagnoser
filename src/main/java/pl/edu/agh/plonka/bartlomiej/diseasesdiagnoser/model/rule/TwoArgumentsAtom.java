@@ -31,13 +31,6 @@ public class TwoArgumentsAtom<T1, T2> extends AbstractAtom {
         this.argument2 = argument2;
     }
 
-    public static void main(String[] args) {
-        Entity e = new Entity("Entity");
-        Variable v = new Variable("var");
-        AbstractAtom a = new TwoArgumentsAtom<Variable, Entity>("predicate", v, e);
-        System.out.println(a);
-    }
-
     public T1 getArgument1() {
         return argument1;
     }

@@ -124,12 +124,6 @@ public class OntologyWrapper {
         loadData();
     }
 
-    public static void main(String args[])
-            throws OWLOntologyCreationException {
-        OntologyWrapper ontology = new OntologyWrapper(OntologyWrapper.class.getResourceAsStream("human_diseases.owl"));
-        System.out.println(ontology.generatePatientsFromRules());
-    }
-
     private void loadData() {
         classes = entitiesLoader.loadClasses();
         symptoms = entitiesLoader.loadInstances(properties.symptomClass, classes);
