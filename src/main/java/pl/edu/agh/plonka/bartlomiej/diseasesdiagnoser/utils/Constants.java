@@ -31,4 +31,6 @@ public class Constants {
     public static final String SYMPTOM_CLASS = "Symptom";
     public static final String TESTING_CLASS = "Testing";
     public static final String TREATMENT_CLASS = "Treatment";
+
+    public static final String GENERATED_RULE_PREFIX = "Generated_";
 }

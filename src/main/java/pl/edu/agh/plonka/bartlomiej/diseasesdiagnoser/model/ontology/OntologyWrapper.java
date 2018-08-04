@@ -218,7 +218,7 @@ public class OntologyWrapper {
             patient = getInferredPatient(patient);
             patients.add(patient);
         }
-        patients.addAll(generatePatientsFromRules());
+//        patients.addAll(generatePatientsFromRules());
         return patients;
     }
 

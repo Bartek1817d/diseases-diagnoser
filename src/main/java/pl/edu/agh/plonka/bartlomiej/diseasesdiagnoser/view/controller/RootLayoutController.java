@@ -5,12 +5,22 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.RuleAlreadyExistsException;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.MachineLearning;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.GENERATED_RULE_PREFIX;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultDirectoryFile;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultOntologyFile;
 
@@ -26,14 +36,16 @@ public class RootLayoutController {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private PatientsService patientsService;
+    private MachineLearning machineLearning;
     private String ontologyUrl;
     private ViewManager viewManager;
 
     /**
      * Is called by the main application to give a reference back to itself.
      */
-    public void init(ViewManager viewManager, PatientsService patientsService, String ontologyUrl) {
+    public void init(ViewManager viewManager, PatientsService patientsService, MachineLearning machineLearning, String ontologyUrl) {
         this.patientsService = patientsService;
+        this.machineLearning = machineLearning;
         this.ontologyUrl = ontologyUrl;
         this.viewManager = viewManager;
     }
@@ -119,6 +131,24 @@ public class RootLayoutController {
         boolean okClicked = viewManager.showRulesEditDialog(patientsService);
     }
 
+    @FXML
+    private void handleRunMachineLearning() {
+        LOG.info("Handle run machine learning algorithm");
+        Collection<Patient> patients = patientsService.getPatients();
+        Collection<Rule> newGeneratedRules = machineLearning.sequentialCovering(new HashSet<>(patients));
+        try {
+            Set<Rule> oldGeneratedRules = patientsService.getRules()
+                    .stream()
+                    .filter(this::isGeneratedRule)
+                    .collect(toSet());
+            patientsService.deleteRules(oldGeneratedRules);
+            patientsService.addRules(newGeneratedRules);
+        } catch (CreateRuleException | RuleAlreadyExistsException e) {
+            viewManager.errorExceptionDialog("Error generating rules", e.getMessage(),
+                    "Couldn't save generated rules", e);
+        }
+    }
+
     /**
      * Opens an about dialog.
      */
@@ -136,4 +166,9 @@ public class RootLayoutController {
         LOG.info("Close application.");
         System.exit(0);
     }
+
+    private boolean isGeneratedRule(Rule rule) {
+        return rule.getName().trim().startsWith(GENERATED_RULE_PREFIX);
+    }
+
 }

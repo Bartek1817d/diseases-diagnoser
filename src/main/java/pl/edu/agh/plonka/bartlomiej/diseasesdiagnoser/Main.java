@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.MachineLearning;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
@@ -15,14 +16,17 @@ import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefault
 
 public class Main extends Application {
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
-
     private static final String BASE_URL = "http://www.agh.edu.pl/plonka/bartlomiej/ontologies/human_diseases.owl";
-
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
     private ViewManager viewManager;
     private PatientsService patientsService;
+    private MachineLearning machineLearning;
 
     public Main() {
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override
@@ -30,7 +34,7 @@ public class Main extends Application {
         LOG.info("Starting application");
         viewManager = new ViewManager(primaryStage);
         initOntology();
-        viewManager.initRootLayout(patientsService, BASE_URL);
+        viewManager.initRootLayout(patientsService, machineLearning, BASE_URL);
         viewManager.showPatientOverview(patientsService);
     }
 
@@ -53,9 +57,9 @@ public class Main extends Application {
         }
     }
 
-
     private void loadOntologyFromFile(File file) throws OWLOntologyCreationException {
         patientsService = new PatientsService(file);
+        machineLearning = new MachineLearning(patientsService.getOntology());
         setDefaultOntologyFile(file);
         setDefaultDirectoryFile(file.getParentFile());
         viewManager.setTitle("Diseases Diagnoser - " + file.getName());
@@ -63,10 +67,7 @@ public class Main extends Application {
 
     private void createNewOntology() throws OWLOntologyCreationException {
         patientsService = new PatientsService(BASE_URL);
+        machineLearning = new MachineLearning(patientsService.getOntology());
         viewManager.setTitle("Diseases Diagnoser");
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

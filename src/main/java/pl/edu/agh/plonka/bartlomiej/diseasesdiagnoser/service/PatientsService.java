@@ -72,6 +72,11 @@ public class PatientsService {
         rules.add(rule);
     }
 
+    public void addRules(Collection<Rule> rules) throws RuleAlreadyExistsException, CreateRuleException {
+        for (Rule rule : rules)
+            addRule(rule);
+    }
+
     public void deleteRule(Rule rule) {
         this.ontology.deleteRule(rule);
         this.rules.remove(rule);

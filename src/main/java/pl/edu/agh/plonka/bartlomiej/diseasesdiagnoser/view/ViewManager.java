@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.MachineLearning;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Response;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults;
@@ -44,7 +45,7 @@ public class ViewManager {
     /**
      * Initializes the root layout.
      */
-    public void initRootLayout(PatientsService patientsService, String baseUrl) throws IOException {
+    public void initRootLayout(PatientsService patientsService, MachineLearning machineLearning, String baseUrl) throws IOException {
         LOG.info("Loading root layout from FXML file");
         FXMLLoader loader = getFXMLLoader("fxml/RootLayout.fxml");
         rootLayout = loader.load();
@@ -53,7 +54,7 @@ public class ViewManager {
         primaryStage.setScene(scene);
 
         RootLayoutController controller = loader.getController();
-        controller.init(this, patientsService, baseUrl);
+        controller.init(this, patientsService, machineLearning, baseUrl);
 
         primaryStage.show();
     }

@@ -1,4 +1,4 @@
-package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils;
+package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service;
 
 import com.google.common.collect.Sets;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -12,7 +12,8 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
+
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.GENERATED_RULE_PREFIX;
 
 public class MachineLearning {
 
@@ -35,12 +36,12 @@ public class MachineLearning {
     public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) {
         Collection<Rule> rules = new HashSet<>();
         Set<Patient> uncoveredSet = new HashSet<>(trainingSet);
+        int ruleIdx = 1;
         while (!uncoveredSet.isEmpty()) {
             Complex complex = findComplex(trainingSet, uncoveredSet);
             Collection<Entity> category = category(complex, trainingSet, uncoveredSet);
             removeCoveredExamples(uncoveredSet, complex);
-            Collection<String> ruleNames = rules.stream().map(Rule::getName).collect(Collectors.toList());
-            Rule rule = complex.generateRule(category, ontology, ruleNames);
+            Rule rule = complex.generateRule(GENERATED_RULE_PREFIX + ruleIdx++, category, ontology);
             rules.add(rule);
         }
         return rules;

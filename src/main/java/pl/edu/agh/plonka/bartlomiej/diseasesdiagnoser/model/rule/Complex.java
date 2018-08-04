@@ -169,8 +169,8 @@ public class Complex implements Comparable<Complex> {
         return selector == null || selector.covers(entity);
     }
 
-    public Rule generateRule(Collection<Entity> learnedConcepts, OntologyWrapper ontology, Collection<String> ruleNames) {
-        Rule rule = new Rule(generateRuleName(learnedConcepts, ruleNames));
+    public Rule generateRule(String ruleName, Collection<Entity> learnedConcepts, OntologyWrapper ontology) {
+        Rule rule = new Rule(ruleName);
         Variable patientVariable = new Variable("patient", ontology.getClasses().get("Patient"));
         rule.addBodyAtom(new ClassDeclarationAtom<>(ontology.getClasses().get("Patient"), patientVariable));
         if (ageSelector != null) {
@@ -231,23 +231,6 @@ public class Complex implements Comparable<Complex> {
             }
         }
         return atoms;
-    }
-
-    private String generateRuleName(Collection<Entity> diseases, Collection<String> ruleNames) {
-        String ruleNameBase = diseases
-                .stream()
-                .map(Entity::getID)
-                .filter(Objects::nonNull)
-                .reduce(String::concat)
-                .orElse("");
-
-        int i = 1;
-        String ruleName;
-        do {
-            ruleName = "Generated" + ruleNameBase + "Disease" + i++;
-        } while (ruleNames.contains(ruleName));
-
-        return ruleName;
     }
 
     @Override
