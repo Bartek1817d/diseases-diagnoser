@@ -103,4 +103,62 @@ public class RuleEditDialogController implements ResponseController<Rule> {
             ruleViewArea.setText(ruleBuilder.build().toString());
         }
     }
+
+    @FXML
+    private void handleAddHeight() {
+        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog("Select height range", 0, 300);
+        if (response.okClicked) {
+            ruleBuilder.withHeight(response.content);
+            ruleViewArea.setText(ruleBuilder.build().toString());
+        }
+    }
+
+    @FXML
+    private void handleAddWeight() {
+        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog("Select weight range", 0, 200);
+        if (response.okClicked) {
+            ruleBuilder.withWeight(response.content);
+            ruleViewArea.setText(ruleBuilder.build().toString());
+        }
+    }
+
+    @FXML
+    private void handleAddTreatments() {
+        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(TREATMENT_CLASS),
+                emptyList(), patientsService);
+        if (response.okClicked) {
+            ruleBuilder.withTreatments(response.content);
+            ruleViewArea.setText(ruleBuilder.build().toString());
+        }
+    }
+
+    @FXML
+    private void handleAddTests() {
+        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(TESTING_CLASS),
+                emptyList(), patientsService);
+        if (response.okClicked) {
+            ruleBuilder.withTests(response.content);
+            ruleViewArea.setText(ruleBuilder.build().toString());
+        }
+    }
+
+    @FXML
+    private void handleAddNegativeTests() {
+        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(TESTING_CLASS),
+                emptyList(), patientsService);
+        if (response.okClicked) {
+            ruleBuilder.withNegativeTests(response.content);
+            ruleViewArea.setText(ruleBuilder.build().toString());
+        }
+    }
+
+    @FXML
+    private void handleAddPreviousDiseases() {
+        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(DISEASE_CLASS),
+                emptyList(), patientsService);
+        if (response.okClicked) {
+            ruleBuilder.withPreviousDiseases(response.content);
+            ruleViewArea.setText(ruleBuilder.build().toString());
+        }
+    }
 }

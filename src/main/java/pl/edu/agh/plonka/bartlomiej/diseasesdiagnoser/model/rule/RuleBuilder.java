@@ -17,29 +17,50 @@ public class RuleBuilder {
 
     private Variable patientVariable;
     private Variable ageVariable;
+    private Variable heightVariable;
+    private Variable weightVariable;
 
     private String name;
 
     private Set<Entity> symptoms = new HashSet<>();
     private Set<Entity> negativeTests = new HashSet<>();
+    private Set<Entity> previousDiseases = new HashSet<>();
     private Set<Entity> diseases = new HashSet<>();
+    private Set<Entity> treatments = new HashSet<>();
+    private Set<Entity> tests = new HashSet<>();
+
 
     private AbstractAtom patientDeclarationAtom;
     private AbstractAtom ageAtom;
+    private AbstractAtom heightAtom;
+    private AbstractAtom weightAtom;
+
 
     private Range<Integer> ageRange = Range.all();
+    private Range<Integer> heightRange = Range.all();
+    private Range<Integer> weightRange = Range.all();
+
 
     public RuleBuilder() {
         this.patientVariable = new Variable("patient");
         this.ageVariable = new Variable("_age");
+        this.heightVariable = new Variable("_height");
+        this.weightVariable = new Variable("_weight");
         this.ageAtom = new TwoArgumentsAtom<>(AGE_PROPERTY, patientVariable, ageVariable);
+        this.heightAtom = new TwoArgumentsAtom<>(HEIGHT_PROPERTY, patientVariable, heightVariable);
+        this.weightAtom = new TwoArgumentsAtom<>(WEIGHT_PROPERTY, patientVariable, weightVariable);
+
     }
 
     public RuleBuilder(Entity patientClass) {
         this.patientVariable = new Variable("patient", patientClass);
         this.ageVariable = new Variable("_age");
+        this.heightVariable = new Variable("_height");
+        this.weightVariable = new Variable("_weight");
         this.patientDeclarationAtom = new ClassDeclarationAtom<>(patientClass, patientVariable);
         this.ageAtom = new TwoArgumentsAtom<>(AGE_PROPERTY, patientVariable, ageVariable);
+        this.heightAtom = new TwoArgumentsAtom<>(HEIGHT_PROPERTY, patientVariable, heightVariable);
+        this.weightAtom = new TwoArgumentsAtom<>(WEIGHT_PROPERTY, patientVariable, weightVariable);
     }
 
     public RuleBuilder(Rule rule) {
@@ -64,6 +85,16 @@ public class RuleBuilder {
                         ageAtom = twoArgumentsAtom;
                         ageRange = alignRange(ageVariable, rule.getBodyAtoms(), ageRange);
                         break;
+                    case HEIGHT_PROPERTY:
+                        heightVariable = (Variable) twoArgumentsAtom.getArgument2();
+                        heightAtom = twoArgumentsAtom;
+                        heightRange = alignRange(heightVariable, rule.getBodyAtoms(), ageRange);
+                        break;
+                    case WEIGHT_PROPERTY:
+                        weightVariable = (Variable) twoArgumentsAtom.getArgument2();
+                        weightAtom = twoArgumentsAtom;
+                        weightRange = alignRange(weightVariable, rule.getBodyAtoms(), ageRange);
+                        break;
                 }
             }
         }
@@ -72,15 +103,14 @@ public class RuleBuilder {
                 TwoArgumentsAtom twoArgumentsAtom = (TwoArgumentsAtom) bodyAtom;
                 String predicate = bodyAtom.predicate;
                 switch (predicate) {
-                    case AGE_PROPERTY:
-                        ageVariable = (Variable) twoArgumentsAtom.getArgument2();
-                        ageAtom = twoArgumentsAtom;
-                        break;
                     case HAS_SYMPTOM_PROPERTY:
                         symptoms.add((Entity) twoArgumentsAtom.getArgument2());
                         break;
                     case NEGATIVE_TEST_PROPERTY:
                         negativeTests.add((Entity) twoArgumentsAtom.getArgument2());
+                        break;
+                    case PREVOIUS_DISEASE_PROPERTY:
+                        previousDiseases.add((Entity) twoArgumentsAtom.getArgument2());
                         break;
                 }
             }
@@ -92,6 +122,12 @@ public class RuleBuilder {
                 switch (predicate) {
                     case HAS_DISEASE_PROPERTY:
                         diseases.add((Entity) twoArgumentsAtom.getArgument2());
+                        break;
+                    case SHOULD_BE_TREATED_WITH_PROPERTY:
+                        treatments.add((Entity) twoArgumentsAtom.getArgument2());
+                        break;
+                    case SHOULD_MAKE_TEST_PROPERTY:
+                        tests.add((Entity) twoArgumentsAtom.getArgument2());
                         break;
                 }
             }
@@ -141,12 +177,37 @@ public class RuleBuilder {
         return this;
     }
 
+    public RuleBuilder withPreviousDiseases(Collection<Entity> previousDiseases) {
+        this.previousDiseases = new HashSet<>(previousDiseases);
+        return this;
+    }
+
     public Collection<Entity> getDiseases() {
         return diseases;
     }
 
     public RuleBuilder withAge(Range<Integer> ageRange) {
-        this.ageRange = ageRange;
+        this.ageRange = this.ageRange.intersection(ageRange);
+        return this;
+    }
+
+    public RuleBuilder withHeight(Range<Integer> heightRange) {
+        this.heightRange = this.heightRange.intersection(heightRange);
+        return this;
+    }
+
+    public RuleBuilder withWeight(Range<Integer> weightRange) {
+        this.weightRange = this.weightRange.intersection(weightRange);
+        return this;
+    }
+
+    public RuleBuilder withTreatments(Collection<Entity> treatments) {
+        this.treatments = new HashSet<>(treatments);
+        return this;
+    }
+
+    public RuleBuilder withTests(Collection<Entity> tests) {
+        this.tests = new HashSet<>(tests);
         return this;
     }
 
@@ -157,42 +218,63 @@ public class RuleBuilder {
 
         if (patientDeclarationAtom != null)
             declarationAtoms.add(patientDeclarationAtom);
+
         bodyAtoms.addAll(symptoms.stream()
                 .map(symptom -> new TwoArgumentsAtom<>(HAS_SYMPTOM_PROPERTY, patientVariable, symptom))
                 .collect(toSet()));
         bodyAtoms.addAll(negativeTests.stream()
                 .map(negativeTest -> new TwoArgumentsAtom<>(NEGATIVE_TEST_PROPERTY, patientVariable, negativeTest))
                 .collect(toSet()));
+        bodyAtoms.addAll(previousDiseases.stream()
+                .map(previousDisease -> new TwoArgumentsAtom<>(PREVOIUS_DISEASE_PROPERTY, patientVariable, previousDisease))
+                .collect(toSet()));
+
+
         headAtoms.addAll(diseases.stream()
                 .map(disease -> new TwoArgumentsAtom<>(HAS_DISEASE_PROPERTY, patientVariable, disease))
                 .collect(toSet()));
-        if (ageRange != null) {
+        headAtoms.addAll(treatments.stream()
+                .map(treatment -> new TwoArgumentsAtom<>(SHOULD_BE_TREATED_WITH_PROPERTY, patientVariable, treatment))
+                .collect(toSet()));
+        headAtoms.addAll(tests.stream()
+                .map(test -> new TwoArgumentsAtom<>(SHOULD_MAKE_TEST_PROPERTY, patientVariable, test))
+                .collect(toSet()));
+
+        if (!isRangeUniversal(ageRange)) {
             declarationAtoms.add(ageAtom);
-            bodyAtoms.addAll(getAgeAtoms());
+            bodyAtoms.addAll(getLinearAtoms(ageRange, ageVariable));
+        }
+        if (!isRangeUniversal(heightRange)) {
+            declarationAtoms.add(heightAtom);
+            bodyAtoms.addAll(getLinearAtoms(heightRange, heightVariable));
+        }
+        if (!isRangeUniversal(weightRange)) {
+            declarationAtoms.add(weightAtom);
+            bodyAtoms.addAll(getLinearAtoms(weightRange, weightVariable));
         }
 
         return new Rule(name, declarationAtoms, bodyAtoms, headAtoms);
     }
 
-    private Collection<AbstractAtom> getAgeAtoms() {
+    private Collection<AbstractAtom> getLinearAtoms(Range<Integer> range, Variable variable) {
         Collection<AbstractAtom> ageAtoms = new ArrayList<>();
-        if (ageRange.hasLowerBound()) {
-            switch (ageRange.lowerBoundType()) {
+        if (range.hasLowerBound()) {
+            switch (range.lowerBoundType()) {
                 case OPEN:
-                    ageAtoms.add(new TwoArgumentsAtom<>(GREATER_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.lowerEndpoint()));
+                    ageAtoms.add(new TwoArgumentsAtom<>(GREATER_THAN_PROPERTY, SWRLB_PREFIX, variable, range.lowerEndpoint()));
                     break;
                 case CLOSED:
-                    ageAtoms.add(new TwoArgumentsAtom<>(GREATER_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.lowerEndpoint()));
+                    ageAtoms.add(new TwoArgumentsAtom<>(GREATER_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, variable, range.lowerEndpoint()));
                     break;
             }
         }
-        if (ageRange.hasUpperBound()) {
-            switch (ageRange.upperBoundType()) {
+        if (range.hasUpperBound()) {
+            switch (range.upperBoundType()) {
                 case OPEN:
-                    ageAtoms.add(new TwoArgumentsAtom<>(LESS_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.upperEndpoint()));
+                    ageAtoms.add(new TwoArgumentsAtom<>(LESS_THAN_PROPERTY, SWRLB_PREFIX, variable, range.upperEndpoint()));
                     break;
                 case CLOSED:
-                    ageAtoms.add(new TwoArgumentsAtom<>(LESS_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageRange.upperEndpoint()));
+                    ageAtoms.add(new TwoArgumentsAtom<>(LESS_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, variable, range.upperEndpoint()));
                     break;
             }
         }
@@ -228,5 +310,9 @@ public class RuleBuilder {
             }
         }
         return range;
+    }
+
+    private boolean isRangeUniversal(Range range) {
+        return !range.hasLowerBound() && !range.hasUpperBound();
     }
 }
