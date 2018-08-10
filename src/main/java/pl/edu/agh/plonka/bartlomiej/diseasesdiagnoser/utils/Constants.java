@@ -35,4 +35,12 @@ public class Constants {
     public static final String TREATMENT_CLASS = "Treatment";
 
     public static final String GENERATED_RULE_PREFIX = "Generated_";
+
+    //constraints
+    public static final int PATIENT_MIN_AGE = 0;
+    public static final int PATIENT_MAX_AGE = 100;
+    public static final int PATIENT_MIN_HEIGHT = 50;
+    public static final int PATIENT_MAX_HEIGHT = 220;
+    public static final int PATIENT_MIN_WEIGHT = 10;
+    public static final int PATIENT_MAX_WEIGHT = 200;
 }

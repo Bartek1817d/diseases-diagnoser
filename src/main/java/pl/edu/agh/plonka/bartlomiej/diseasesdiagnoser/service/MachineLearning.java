@@ -11,8 +11,9 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
-import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.GENERATED_RULE_PREFIX;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
 public class MachineLearning {
 
@@ -43,7 +44,7 @@ public class MachineLearning {
         LOG.debug("findComplex");
         Star star = new Star();
         Patient positiveSeed = positiveSeed(trainingSet, uncoveredSet);
-        Patient negativeSeed = negativeSeed(trainingSet, star, positiveSeed);
+        Patient negativeSeed = negativeSeed(trainingSet, star, positiveSeed, Patient::getDiseases);
         while (positiveSeed != null && negativeSeed != null) {
             Collection<Complex> partialStar = partialStar(positiveSeed, negativeSeed);
             if (partialStar.isEmpty()) {
@@ -54,13 +55,13 @@ public class MachineLearning {
             star.deleteNarrowComplexes();
             star.sort(new ComplexComparator(trainingSet, uncoveredSet, positiveSeed));
             star.leaveFirstElements(5);
-            negativeSeed = negativeSeed(trainingSet, star, positiveSeed);
+            negativeSeed = negativeSeed(trainingSet, star, positiveSeed, Patient::getDiseases);
         }
         return star.get(0);
     }
 
     private Collection<Entity> category(Complex complex, Collection<Patient> trainingSet, Collection<Patient> uncoveredSet) {
-        System.out.println("category");
+        LOG.debug("category");
         Map<HashSet<Entity>, Integer> voteBox = new HashMap<>();
         for (Patient trainingSeed : trainingSet) {
             if (complex.isPatientCovered(trainingSeed)) {
@@ -75,7 +76,7 @@ public class MachineLearning {
     }
 
     private Patient positiveSeed(Set<Patient> trainingSet, Set<Patient> uncoveredSet) {
-        System.out.println("positiveSeed");
+        LOG.debug("positiveSeed");
         if (uncoveredSet.isEmpty())
             return null;
         Set<Patient> coveredSet = Sets.difference(trainingSet, uncoveredSet);
@@ -85,12 +86,14 @@ public class MachineLearning {
         return Collections.max(uncoveredSet);
     }
 
-    private Patient negativeSeed(Collection<Patient> trainingSet, Star star, Patient positiveSeed) {
-        System.out.println("negativeSeed");
+    private Patient negativeSeed(Collection<Patient> trainingSet, Star star, Patient positiveSeed,
+                                 Function<Patient, Collection<Entity>> resultProducer) {
+        LOG.debug("negativeSeed");
         List<Patient> negativeSeeds = new ArrayList<>();
-        for (Patient patient : trainingSet)
-            if (!positiveSeed.getDiseases().containsAll(patient.getDiseases()) && star.isPatientCovered(patient))
+        for (Patient patient : trainingSet) {
+            if (!resultProducer.apply(positiveSeed).containsAll(resultProducer.apply(patient)) && star.isPatientCovered(patient))
                 negativeSeeds.add(patient);
+        }
         if (negativeSeeds.isEmpty())
             return null;
         Set<Patient> positiveSeedSingleton = Collections.singleton(positiveSeed);
@@ -100,11 +103,13 @@ public class MachineLearning {
     }
 
     private void calculateDistance(Patient patient, Collection<Patient> otherPatients) {
-        System.out.println("calculateDistance");
+        LOG.debug("calculateDistance");
         int symptomDiff = 0;
         int negTestDiff = 0;
         int disDiff = 0;
         int ageDiff = 0;
+        int heightDiff = 0;
+        int weightDiff = 0;
         for (Patient otherPatient : otherPatients) {
             symptomDiff += Sets.symmetricDifference(new HashSet<>(patient.getSymptoms()), new HashSet<>(otherPatient.getSymptoms())).size();
             negTestDiff += Sets.symmetricDifference(new HashSet<>(patient.getNegativeTests()), new HashSet<>(otherPatient.getNegativeTests())).size();
@@ -112,12 +117,19 @@ public class MachineLearning {
                     new HashSet<>(otherPatient.getPreviousAndCurrentDiseases())).size();
             if (patient.getAge() >= 0 && otherPatient.getAge() >= 0)
                 ageDiff += Math.abs(patient.getAge() - otherPatient.getAge());
+            if (patient.getHeight() >= 0 && otherPatient.getHeight() >= 0)
+                heightDiff += Math.abs(patient.getHeight() - otherPatient.getHeight());
+            if (patient.getWeight() >= 0 && otherPatient.getWeight() >= 0)
+                weightDiff += Math.abs(patient.getWeight() - otherPatient.getWeight());
         }
         float symptomEv = (float) symptomDiff / (otherPatients.size() * ontology.getSymptoms().size());
         float negTestEv = (float) negTestDiff / (otherPatients.size() * ontology.getTests().size());
         float disEv = (float) disDiff / (otherPatients.size() * ontology.getDiseases().size());
-        float ageEv = (float) ageDiff / (otherPatients.size() * 100);
-        patient.setEvaluation(symptomEv + negTestEv + disEv + ageEv);
+        float ageEv = (float) ageDiff / (otherPatients.size() * (PATIENT_MAX_AGE - PATIENT_MIN_AGE));
+        float heightEv = (float) heightDiff / (otherPatients.size() * (PATIENT_MAX_HEIGHT - PATIENT_MIN_HEIGHT));
+        float weightEv = (float) weightDiff / (otherPatients.size() * (PATIENT_MAX_WEIGHT - PATIENT_MIN_WEIGHT));
+
+        patient.setEvaluation(symptomEv + negTestEv + disEv + ageEv + heightEv + weightEv);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -134,7 +146,7 @@ public class MachineLearning {
     }
 
     private void removeCoveredExamples(Collection<Patient> trainingSet, Complex complex) {
-        System.out.println("removeCoveredExamples");
+        LOG.debug("removeCoveredExamples");
         trainingSet.removeIf(complex::isPatientCovered);
     }
 
