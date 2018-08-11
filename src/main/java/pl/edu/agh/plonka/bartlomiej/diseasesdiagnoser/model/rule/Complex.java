@@ -9,6 +9,8 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWra
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
+
 public class Complex implements Comparable<Complex> {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -163,19 +165,21 @@ public class Complex implements Comparable<Complex> {
         return selector == null || selector.covers(entity);
     }
 
-    public Rule generateRule(String ruleName, Collection<Entity> learnedConcepts, OntologyWrapper ontology) {
+    public Rule generateRule(String ruleName, Concepts concepts, OntologyWrapper ontology) {
         Rule rule = new Rule(ruleName);
-        Variable patientVariable = new Variable("patient", ontology.getClasses().get("Patient"));
-        rule.addBodyAtom(new ClassDeclarationAtom<>(ontology.getClasses().get("Patient"), patientVariable));
+        Variable patientVariable = new Variable("patient", ontology.getClasses().get(PATIENT_CLASS));
+        rule.addBodyAtom(new ClassDeclarationAtom<>(ontology.getClasses().get(PATIENT_CLASS), patientVariable));
         if (ageSelector != null) {
             Variable ageVariable = new Variable("_age");
-            rule.addBodyAtom(new TwoArgumentsAtom<>("age", patientVariable, ageVariable));
+            rule.addBodyAtom(new TwoArgumentsAtom<>(AGE_PROPERTY, patientVariable, ageVariable));
             rule.addBodyAtoms(createAgeAtoms(ageVariable));
         }
-        rule.addBodyAtoms(createEntityAtoms(patientVariable, "hasSymptom", symptomSelector));
-        rule.addBodyAtoms(createEntityAtoms(patientVariable, "hadOrHasDisease", previousDiseasesSelector));
-        rule.addBodyAtoms(createEntityAtoms(patientVariable, "negativeTest", negativeTestsSelector));
-        rule.addHeadAtoms(createEntityAtoms(patientVariable, "hasDisease", learnedConcepts));
+        rule.addBodyAtoms(createEntityAtoms(patientVariable, HAS_SYMPTOM_PROPERTY, symptomSelector));
+        rule.addBodyAtoms(createEntityAtoms(patientVariable, PREVIOUS_DISEASE_PROPERTY, previousDiseasesSelector));
+        rule.addBodyAtoms(createEntityAtoms(patientVariable, NEGATIVE_TEST_PROPERTY, negativeTestsSelector));
+        rule.addHeadAtoms(createEntityAtoms(patientVariable, HAS_DISEASE_PROPERTY, concepts.diseases));
+        rule.addHeadAtoms(createEntityAtoms(patientVariable, SHOULD_MAKE_TEST_PROPERTY, concepts.tests));
+        rule.addHeadAtoms(createEntityAtoms(patientVariable, SHOULD_BE_TREATED_WITH_PROPERTY, concepts.treatments));
 
         return rule;
     }
@@ -192,19 +196,19 @@ public class Complex implements Comparable<Complex> {
         if (ageSelector.hasLowerBound() && ageSelector.hasUpperBound()
                 && ageSelector.lowerEndpoint().equals(ageSelector.upperEndpoint())) {
             TwoArgumentsAtom<Variable, Integer> equalAtom = new TwoArgumentsAtom<>(
-                    "equal", "swrlb", ageVariable, ageSelector.lowerEndpoint());
+                    EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageSelector.lowerEndpoint());
             atoms.add(equalAtom);
         } else {
             if (ageSelector.hasLowerBound()) {
                 switch (ageSelector.lowerBoundType()) {
                     case OPEN:
                         TwoArgumentsAtom<Variable, Integer> greaterThanAtom = new TwoArgumentsAtom<>(
-                                "greaterThan", "swrlb", ageVariable, ageSelector.lowerEndpoint());
+                                GREATER_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, ageSelector.lowerEndpoint());
                         atoms.add(greaterThanAtom);
                         break;
                     case CLOSED:
                         TwoArgumentsAtom<Variable, Integer> atLeastAtom = new TwoArgumentsAtom<>(
-                                "greaterThanOrEqual", "swrlb", ageVariable, ageSelector.lowerEndpoint());
+                                GREATER_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageSelector.lowerEndpoint());
                         atoms.add(atLeastAtom);
                         break;
                 }
@@ -213,12 +217,12 @@ public class Complex implements Comparable<Complex> {
                 switch (ageSelector.upperBoundType()) {
                     case OPEN:
                         TwoArgumentsAtom<Variable, Integer> lessThanAtom = new TwoArgumentsAtom<>(
-                                "lessThan", "swrlb", ageVariable, ageSelector.upperEndpoint());
+                                LESS_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, ageSelector.upperEndpoint());
                         atoms.add(lessThanAtom);
                         break;
                     case CLOSED:
                         TwoArgumentsAtom<Variable, Integer> atMostAtom = new TwoArgumentsAtom<>(
-                                "lessThanOrEqual", "swrlb", ageVariable, ageSelector.upperEndpoint());
+                                LESS_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageSelector.upperEndpoint());
                         atoms.add(atMostAtom);
                         break;
                 }

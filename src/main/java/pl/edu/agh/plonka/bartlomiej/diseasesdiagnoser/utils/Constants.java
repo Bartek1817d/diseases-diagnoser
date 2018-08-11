@@ -20,7 +20,7 @@ public class Constants {
     public static final String HAS_SYMPTOM_PROPERTY = "hasSymptom";
     public static final String HAS_DISEASE_PROPERTY = "hasDisease";
     public static final String NEGATIVE_TEST_PROPERTY = "negativeTest";
-    public static final String PREVOIUS_DISEASE_PROPERTY = "previousDisease";
+    public static final String PREVIOUS_DISEASE_PROPERTY = "previousDisease";
     public static final String SHOULD_MAKE_TEST_PROPERTY = "shouldMakeTest";
     public static final String SHOULD_BE_TREATED_WITH_PROPERTY = "shouldBeTreatedWith";
 

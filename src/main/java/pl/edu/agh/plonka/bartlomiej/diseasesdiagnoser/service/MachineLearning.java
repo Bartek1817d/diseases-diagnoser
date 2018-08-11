@@ -12,6 +12,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
@@ -19,6 +20,7 @@ public class MachineLearning {
 
     // 0 for restrictive, 1 for general
     private static final float epsilon = 0.5f;
+    private static final float decisionVotesPercent = 0.5f;
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private OntologyWrapper ontology;
 
@@ -32,9 +34,9 @@ public class MachineLearning {
         int ruleIdx = 1;
         while (!uncoveredSet.isEmpty()) {
             Complex complex = findComplex(trainingSet, uncoveredSet);
-            Collection<Entity> category = category(complex, trainingSet, uncoveredSet);
+            Concepts concepts = categories(complex, trainingSet, uncoveredSet);
             removeCoveredExamples(uncoveredSet, complex);
-            Rule rule = complex.generateRule(GENERATED_RULE_PREFIX + ruleIdx++, category, ontology);
+            Rule rule = complex.generateRule(GENERATED_RULE_PREFIX + ruleIdx++, concepts, ontology);
             rules.add(rule);
         }
         return rules;
@@ -60,20 +62,31 @@ public class MachineLearning {
         return star.get(0);
     }
 
-    private Collection<Entity> category(Complex complex, Collection<Patient> trainingSet, Collection<Patient> uncoveredSet) {
-        LOG.debug("category");
-        Map<HashSet<Entity>, Integer> voteBox = new HashMap<>();
+    private Concepts categories(Complex complex, Collection<Patient> trainingSet, Collection<Patient> uncoveredSet) {
+        LOG.debug("categories");
+
+        Concepts concepts = new Concepts();
+        int patientsCovered = 0;
+        HashMap<Entity, Integer> diseasesVoteBox = new HashMap<>();
+        HashMap<Entity, Integer> testsVoteBox = new HashMap<>();
+        HashMap<Entity, Integer> treatmentsVoteBox = new HashMap<>();
+
         for (Patient trainingSeed : trainingSet) {
             if (complex.isPatientCovered(trainingSeed)) {
-                HashSet<Entity> decision = new HashSet<>(trainingSeed.getDiseases());
-                if (voteBox.containsKey(decision))
-                    voteBox.put(decision, voteBox.get(decision) + 1);
-                else
-                    voteBox.put(decision, 1);
+                patientsCovered++;
+                trainingSeed.getDiseases().forEach(e -> addVote(diseasesVoteBox, e));
+                trainingSeed.getTests().forEach(e -> addVote(testsVoteBox, e));
+                trainingSeed.getTreatments().forEach(e -> addVote(treatmentsVoteBox, e));
             }
         }
-        return Collections.max(voteBox.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+
+        concepts.diseases = countVotes(diseasesVoteBox, patientsCovered);
+        concepts.tests = countVotes(testsVoteBox, patientsCovered);
+        concepts.treatments = countVotes(treatmentsVoteBox, patientsCovered);
+
+        return concepts;
     }
+
 
     private Patient positiveSeed(Set<Patient> trainingSet, Set<Patient> uncoveredSet) {
         LOG.debug("positiveSeed");
@@ -192,6 +205,21 @@ public class MachineLearning {
             return ageComplex;
         }
         return null;
+    }
+
+    private void addVote(Map<Entity, Integer> voteBox, Entity entity) {
+        if (voteBox.containsKey(entity))
+            voteBox.put(entity, voteBox.get(entity) + 1);
+        else
+            voteBox.put(entity, 1);
+    }
+
+    private Collection<Entity> countVotes(Map<Entity, Integer> voteBox, int allVotesNumber) {
+        return voteBox.entrySet()
+                .stream()
+                .filter(e -> (float) e.getValue() / allVotesNumber >= decisionVotesPercent)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 
 }

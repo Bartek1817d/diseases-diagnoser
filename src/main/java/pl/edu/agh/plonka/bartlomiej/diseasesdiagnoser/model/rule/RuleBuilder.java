@@ -109,7 +109,7 @@ public class RuleBuilder {
                     case NEGATIVE_TEST_PROPERTY:
                         negativeTests.add((Entity) twoArgumentsAtom.getArgument2());
                         break;
-                    case PREVOIUS_DISEASE_PROPERTY:
+                    case PREVIOUS_DISEASE_PROPERTY:
                         previousDiseases.add((Entity) twoArgumentsAtom.getArgument2());
                         break;
                 }
@@ -226,7 +226,7 @@ public class RuleBuilder {
                 .map(negativeTest -> new TwoArgumentsAtom<>(NEGATIVE_TEST_PROPERTY, patientVariable, negativeTest))
                 .collect(toSet()));
         bodyAtoms.addAll(previousDiseases.stream()
-                .map(previousDisease -> new TwoArgumentsAtom<>(PREVOIUS_DISEASE_PROPERTY, patientVariable, previousDisease))
+                .map(previousDisease -> new TwoArgumentsAtom<>(PREVIOUS_DISEASE_PROPERTY, patientVariable, previousDisease))
                 .collect(toSet()));
 
 
