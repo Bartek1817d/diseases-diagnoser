@@ -11,7 +11,6 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
@@ -28,7 +27,7 @@ public class MachineLearning {
         this.ontology = ontology;
     }
 
-    public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) {
+    public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) throws PartialStarCreationException {
         Collection<Rule> rules = new HashSet<>();
         Set<Patient> uncoveredSet = new HashSet<>(trainingSet);
         int ruleIdx = 1;
@@ -42,11 +41,11 @@ public class MachineLearning {
         return rules;
     }
 
-    private Complex findComplex(Set<Patient> trainingSet, Set<Patient> uncoveredSet) {
+    private Complex findComplex(Set<Patient> trainingSet, Set<Patient> uncoveredSet) throws PartialStarCreationException {
         LOG.debug("findComplex");
         Star star = new Star();
         Patient positiveSeed = positiveSeed(trainingSet, uncoveredSet);
-        Patient negativeSeed = negativeSeed(trainingSet, star, positiveSeed, Patient::getDiseases);
+        Patient negativeSeed = negativeSeed(trainingSet, star, positiveSeed);
         while (positiveSeed != null && negativeSeed != null) {
             Collection<Complex> partialStar = partialStar(positiveSeed, negativeSeed);
             if (partialStar.isEmpty()) {
@@ -57,7 +56,7 @@ public class MachineLearning {
             star.deleteNarrowComplexes();
             star.sort(new ComplexComparator(trainingSet, uncoveredSet, positiveSeed));
             star.leaveFirstElements(5);
-            negativeSeed = negativeSeed(trainingSet, star, positiveSeed, Patient::getDiseases);
+            negativeSeed = negativeSeed(trainingSet, star, positiveSeed);
         }
         return star.get(0);
     }
@@ -99,13 +98,14 @@ public class MachineLearning {
         return Collections.max(uncoveredSet);
     }
 
-    private Patient negativeSeed(Collection<Patient> trainingSet, Star star, Patient positiveSeed,
-                                 Function<Patient, Collection<Entity>> resultProducer) {
+    private Patient negativeSeed(Collection<Patient> trainingSet, Star star, Patient positiveSeed) {
         LOG.debug("negativeSeed");
         List<Patient> negativeSeeds = new ArrayList<>();
         for (Patient patient : trainingSet) {
-            if (!resultProducer.apply(positiveSeed).containsAll(resultProducer.apply(patient)) && star.isPatientCovered(patient))
+            if (star.isPatientCovered(patient) && (!positiveSeed.getDiseases().containsAll(patient.getDiseases()) ||
+                    !positiveSeed.getTests().containsAll(patient.getTests()) || !positiveSeed.getTreatments().containsAll(patient.getTreatments()))) {
                 negativeSeeds.add(patient);
+            }
         }
         if (negativeSeeds.isEmpty())
             return null;

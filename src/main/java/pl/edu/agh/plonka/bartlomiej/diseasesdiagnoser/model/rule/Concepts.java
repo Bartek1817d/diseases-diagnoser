@@ -1,6 +1,7 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 
 import java.util.Collection;
 
@@ -9,5 +10,18 @@ public class Concepts {
     public Collection<Entity> diseases;
     public Collection<Entity> tests;
     public Collection<Entity> treatments;
+
+    public Concepts() {
+    }
+
+    public Concepts(Patient patient) {
+        diseases = patient.getDiseases();
+        tests = patient.getTests();
+        treatments = patient.getTreatments();
+    }
+
+    public boolean covers(Patient patient) {
+        return diseases.containsAll(patient.getDiseases()) && tests.containsAll(patient.getTests()) && treatments.containsAll(patient.getTreatments());
+    }
 
 }

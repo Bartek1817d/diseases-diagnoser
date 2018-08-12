@@ -6,6 +6,7 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.PartialStarCreationException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.RuleAlreadyExistsException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
@@ -135,14 +136,17 @@ public class RootLayoutController {
     private void handleRunMachineLearning() {
         LOG.info("Handle run machine learning algorithm");
         Collection<Patient> patients = patientsService.getPatients();
-        Collection<Rule> newGeneratedRules = machineLearning.sequentialCovering(new HashSet<>(patients));
         try {
+            Collection<Rule> newGeneratedRules = machineLearning.sequentialCovering(new HashSet<>(patients));
             Set<Rule> oldGeneratedRules = patientsService.getRules()
                     .stream()
                     .filter(this::isGeneratedRule)
                     .collect(toSet());
             patientsService.deleteRules(oldGeneratedRules);
             patientsService.addRules(newGeneratedRules);
+        } catch (PartialStarCreationException e) {
+            viewManager.errorExceptionDialog("Error generating rules", e.getMessage(),
+                    "Couldn't create partial star", e);
         } catch (CreateRuleException | RuleAlreadyExistsException e) {
             viewManager.errorExceptionDialog("Error generating rules", e.getMessage(),
                     "Couldn't save generated rules", e);
