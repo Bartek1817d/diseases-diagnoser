@@ -13,12 +13,14 @@ import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
 public class Complex implements Comparable<Complex> {
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private static final Logger LOG = LoggerFactory.getLogger(Complex.class);
 
     private NominalSelector<Entity> previousDiseasesSelector;
     private NominalSelector<Entity> symptomSelector;
-    private LinearSelector<Integer> ageSelector;
     private NominalSelector<Entity> negativeTestsSelector;
+    private LinearSelector<Integer> ageSelector;
+    private LinearSelector<Integer> heightSelector;
+    private LinearSelector<Integer> weightSelector;
 
     private Integer evaluation1;
     private Integer evaluation2;
@@ -32,9 +34,12 @@ public class Complex implements Comparable<Complex> {
                 complex1.previousDiseasesSelector, complex2.previousDiseasesSelector);
         resultComplex.symptomSelector = (NominalSelector<Entity>) setSelector(complex1.symptomSelector,
                 complex2.symptomSelector);
-        resultComplex.ageSelector = (LinearSelector<Integer>) setSelector(complex1.ageSelector, complex2.ageSelector);
         resultComplex.negativeTestsSelector = (NominalSelector<Entity>) setSelector(complex1.negativeTestsSelector,
                 complex2.negativeTestsSelector);
+        resultComplex.ageSelector = (LinearSelector<Integer>) setSelector(complex1.ageSelector, complex2.ageSelector);
+        resultComplex.heightSelector = (LinearSelector<Integer>) setSelector(complex1.heightSelector, complex2.heightSelector);
+        resultComplex.weightSelector = (LinearSelector<Integer>) setSelector(complex1.weightSelector, complex2.weightSelector);
+
         return resultComplex;
     }
 
@@ -89,6 +94,22 @@ public class Complex implements Comparable<Complex> {
         this.negativeTestsSelector = negativeTestsSelector;
     }
 
+    public LinearSelector<Integer> getHeightSelector() {
+        return heightSelector;
+    }
+
+    public void setHeightSelector(LinearSelector<Integer> heightSelector) {
+        this.heightSelector = heightSelector;
+    }
+
+    public LinearSelector<Integer> getWeightSelector() {
+        return weightSelector;
+    }
+
+    public void setWeightSelector(LinearSelector<Integer> weightSelector) {
+        this.weightSelector = weightSelector;
+    }
+
     public Integer getEvaluation1() {
         return evaluation1;
     }
@@ -130,6 +151,10 @@ public class Complex implements Comparable<Complex> {
             return false;
         if (!contains(ageSelector, complex.ageSelector))
             return false;
+        if (!contains(heightSelector, complex.heightSelector))
+            return false;
+        if (!contains(weightSelector, complex.weightSelector))
+            return false;
         return true;
     }
 
@@ -154,6 +179,12 @@ public class Complex implements Comparable<Complex> {
         if (!covers(ageSelector, patient.getAge())) {
             return false;
         }
+        if (!covers(heightSelector, patient.getHeight())) {
+            return false;
+        }
+        if (!covers(weightSelector, patient.getWeight())) {
+            return false;
+        }
         return true;
     }
 
@@ -168,15 +199,19 @@ public class Complex implements Comparable<Complex> {
     public Rule generateRule(String ruleName, Concepts concepts, OntologyWrapper ontology) {
         Rule rule = new Rule(ruleName);
         Variable patientVariable = new Variable("patient", ontology.getClasses().get(PATIENT_CLASS));
+        Variable ageVariable = new Variable("_age");
+        Variable heightVariable = new Variable("_height");
+        Variable weightVariable = new Variable("_weight");
+
         rule.addBodyAtom(new ClassDeclarationAtom<>(ontology.getClasses().get(PATIENT_CLASS), patientVariable));
-        if (ageSelector != null) {
-            Variable ageVariable = new Variable("_age");
-            rule.addBodyAtom(new TwoArgumentsAtom<>(AGE_PROPERTY, patientVariable, ageVariable));
-            rule.addBodyAtoms(createAgeAtoms(ageVariable));
-        }
+
+        rule.addBodyAtoms(createLinearAtoms(ageVariable, patientVariable, AGE_PROPERTY, ageSelector));
+        rule.addBodyAtoms(createLinearAtoms(heightVariable, patientVariable, HEIGHT_PROPERTY, heightSelector));
+        rule.addBodyAtoms(createLinearAtoms(weightVariable, patientVariable, WEIGHT_PROPERTY, weightSelector));
         rule.addBodyAtoms(createEntityAtoms(patientVariable, HAS_SYMPTOM_PROPERTY, symptomSelector));
         rule.addBodyAtoms(createEntityAtoms(patientVariable, PREVIOUS_DISEASE_PROPERTY, previousDiseasesSelector));
         rule.addBodyAtoms(createEntityAtoms(patientVariable, NEGATIVE_TEST_PROPERTY, negativeTestsSelector));
+
         rule.addHeadAtoms(createEntityAtoms(patientVariable, HAS_DISEASE_PROPERTY, concepts.diseases));
         rule.addHeadAtoms(createEntityAtoms(patientVariable, SHOULD_MAKE_TEST_PROPERTY, concepts.tests));
         rule.addHeadAtoms(createEntityAtoms(patientVariable, SHOULD_BE_TREATED_WITH_PROPERTY, concepts.treatments));
@@ -184,45 +219,57 @@ public class Complex implements Comparable<Complex> {
         return rule;
     }
 
-    private Collection<AbstractAtom> createEntityAtoms(Variable variable, String predicate, Collection<Entity> entities) {
+    private static Collection<AbstractAtom> createEntityAtoms(Variable variable, String predicate, Collection<Entity> entities) {
         if (entities == null)
             return Collections.emptyList();
         else
             return entities.stream().map(e -> new TwoArgumentsAtom<>(predicate, variable, e)).collect(Collectors.toList());
     }
 
-    private Collection<AbstractAtom> createAgeAtoms(Variable ageVariable) {
+    private static Collection<AbstractAtom> createLinearAtoms(Variable linearVariable, Variable patientVariable, String propertyName,
+                                                       LinearSelector<Integer> linearSelector) {
+        if (linearSelector == null)
+            return Collections.emptyList();
+
+        Collection<AbstractAtom> atoms = new ArrayList<>();
+        atoms.add(new TwoArgumentsAtom<>(propertyName, patientVariable, linearVariable));
+        atoms.addAll(createLinearAtoms(linearVariable, linearSelector));
+
+        return atoms;
+    }
+
+    private static Collection<AbstractAtom> createLinearAtoms(Variable linearVariable, LinearSelector<Integer> linearSelector) {
         ArrayList<AbstractAtom> atoms = new ArrayList<>();
-        if (ageSelector.hasLowerBound() && ageSelector.hasUpperBound()
-                && ageSelector.lowerEndpoint().equals(ageSelector.upperEndpoint())) {
+        if (linearSelector.hasLowerBound() && linearSelector.hasUpperBound()
+                && linearSelector.lowerEndpoint().equals(linearSelector.upperEndpoint())) {
             TwoArgumentsAtom<Variable, Integer> equalAtom = new TwoArgumentsAtom<>(
-                    EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageSelector.lowerEndpoint());
+                    EQUAL_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.lowerEndpoint());
             atoms.add(equalAtom);
         } else {
-            if (ageSelector.hasLowerBound()) {
-                switch (ageSelector.lowerBoundType()) {
+            if (linearSelector.hasLowerBound()) {
+                switch (linearSelector.lowerBoundType()) {
                     case OPEN:
                         TwoArgumentsAtom<Variable, Integer> greaterThanAtom = new TwoArgumentsAtom<>(
-                                GREATER_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, ageSelector.lowerEndpoint());
+                                GREATER_THAN_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.lowerEndpoint());
                         atoms.add(greaterThanAtom);
                         break;
                     case CLOSED:
                         TwoArgumentsAtom<Variable, Integer> atLeastAtom = new TwoArgumentsAtom<>(
-                                GREATER_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageSelector.lowerEndpoint());
+                                GREATER_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.lowerEndpoint());
                         atoms.add(atLeastAtom);
                         break;
                 }
             }
-            if (ageSelector.hasUpperBound()) {
-                switch (ageSelector.upperBoundType()) {
+            if (linearSelector.hasUpperBound()) {
+                switch (linearSelector.upperBoundType()) {
                     case OPEN:
                         TwoArgumentsAtom<Variable, Integer> lessThanAtom = new TwoArgumentsAtom<>(
-                                LESS_THAN_PROPERTY, SWRLB_PREFIX, ageVariable, ageSelector.upperEndpoint());
+                                LESS_THAN_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.upperEndpoint());
                         atoms.add(lessThanAtom);
                         break;
                     case CLOSED:
                         TwoArgumentsAtom<Variable, Integer> atMostAtom = new TwoArgumentsAtom<>(
-                                LESS_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, ageVariable, ageSelector.upperEndpoint());
+                                LESS_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.upperEndpoint());
                         atoms.add(atMostAtom);
                         break;
                 }
@@ -242,6 +289,10 @@ public class Complex implements Comparable<Complex> {
         str.append(negativeTestsSelector);
         str.append("\nAge: ");
         str.append(ageSelector);
+        str.append("\nHeight: ");
+        str.append(heightSelector);
+        str.append("\nWeight: ");
+        str.append(weightSelector);
         return str.toString();
     }
 

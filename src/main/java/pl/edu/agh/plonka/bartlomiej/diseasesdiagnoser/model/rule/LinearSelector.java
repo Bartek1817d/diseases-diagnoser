@@ -82,7 +82,7 @@ public class LinearSelector<T extends Comparable<?>> implements Selector<T> {
 
     @Override
     public boolean contains(Selector selector) {
-        if (selector == null)
+        if (selector == null && !range.hasUpperBound() && !range.hasLowerBound())
             return true;
         if (selector instanceof LinearSelector) {
             LinearSelector<T> linearSelector = (LinearSelector) selector;

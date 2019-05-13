@@ -117,6 +117,11 @@ public class MachineLearning {
 
     private void calculateDistance(Patient patient, Collection<Patient> otherPatients) {
         LOG.debug("calculateDistance");
+        if (otherPatients.isEmpty()) {
+            LOG.debug("No other patients. Set patient distance to 0");
+            patient.setEvaluation(0);
+            return;
+        }
         int symptomDiff = 0;
         int negTestDiff = 0;
         int disDiff = 0;
@@ -145,15 +150,19 @@ public class MachineLearning {
         patient.setEvaluation(symptomEv + negTestEv + disEv + ageEv + heightEv + weightEv);
     }
 
-    @SuppressWarnings({"unchecked"})
     private Collection<Complex> partialStar(Patient positivePatient, Patient negativePatient) {
         Collection<Complex> resultComplexes = new ArrayList<>();
         resultComplexes.addAll(createComplexes(positivePatient.getSymptoms(), negativePatient.getSymptoms(), Complex::setSymptomSelector));
         resultComplexes.addAll(createComplexes(positivePatient.getNegativeTests(), negativePatient.getNegativeTests(), Complex::setNegativeTestsSelector));
         resultComplexes.addAll(createComplexes(positivePatient.getPreviousAndCurrentDiseases(), negativePatient.getPreviousAndCurrentDiseases(), Complex::setPreviousDiseasesSelector));
-        Complex ageComplex = createAgeComplex(positivePatient, negativePatient);
-        if (ageComplex != null)
-            resultComplexes.add(ageComplex);
+
+        Complex ageComplex = createLinearComplex(positivePatient.getAge(), negativePatient.getAge(), Complex::setAgeSelector);
+        Complex heightComplex = createLinearComplex(positivePatient.getHeight(), negativePatient.getHeight(), Complex::setHeightSelector);
+        Complex weightComplex = createLinearComplex(positivePatient.getWeight(), negativePatient.getWeight(), Complex::setWeightSelector);
+
+        if (ageComplex != null) resultComplexes.add(ageComplex);
+        if (heightComplex != null) resultComplexes.add(heightComplex);
+        if (weightComplex != null) resultComplexes.add(weightComplex);
 
         return resultComplexes;
     }
@@ -185,24 +194,30 @@ public class MachineLearning {
         return complex;
     }
 
-    private Complex createAgeComplex(Patient positivePatient, Patient negativePatient) {
-        int posAge = positivePatient.getAge();
-        int negAge = negativePatient.getAge();
-        if (posAge >= 0 && negAge >= 0 && posAge != negAge) {
-            Complex ageComplex = new Complex();
-            int midAge = Math.round(posAge + (negAge - posAge) * epsilon);
-            if (negAge < posAge) {
-                if (midAge == negAge)
-                    ageComplex.setAgeSelector(LinearSelector.greaterThanSelector(midAge));
+    private Complex createLinearComplex(int posVal, int negVal, BiConsumer<Complex, LinearSelector<Integer>> complexSetter) {
+        LinearSelector<Integer> selector = createLinearSelector(posVal, negVal);
+        if (selector != null) {
+            Complex complex = new Complex();
+            complexSetter.accept(complex, selector);
+            return complex;
+        }
+        return null;
+    }
+
+    private LinearSelector createLinearSelector(int posValue, int negValue) {
+        if (posValue >= 0 && negValue >= 0 && posValue != negValue) {
+            int midValue = Math.round(posValue + (negValue - posValue) * epsilon);
+            if (negValue < posValue) {
+                if (midValue == negValue)
+                    return LinearSelector.greaterThanSelector(midValue);
                 else
-                    ageComplex.setAgeSelector(LinearSelector.atLeastSelector(midAge));
+                    return LinearSelector.atLeastSelector(midValue);
             } else {
-                if (midAge == negAge)
-                    ageComplex.setAgeSelector(LinearSelector.lessThanSelector(midAge));
+                if (midValue == negValue)
+                    return LinearSelector.lessThanSelector(midValue);
                 else
-                    ageComplex.setAgeSelector(LinearSelector.atMostSelector(midAge));
+                    return LinearSelector.atMostSelector(midValue);
             }
-            return ageComplex;
         }
         return null;
     }
