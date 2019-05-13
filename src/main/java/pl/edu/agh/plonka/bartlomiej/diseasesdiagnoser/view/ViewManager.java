@@ -35,11 +35,16 @@ public class ViewManager {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
+    private static final double MIN_HEIGHT = 400;
+    private static final double MIN_WIDTH = 600;
+
     private Stage primaryStage;
     private BorderPane rootLayout;
 
     public ViewManager(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        primaryStage.setMinHeight(MIN_HEIGHT);
+        primaryStage.setMinWidth(MIN_WIDTH);
     }
 
     /**
