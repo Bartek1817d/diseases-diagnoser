@@ -3,8 +3,11 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
@@ -19,6 +22,7 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import static javafx.scene.control.SelectionMode.MULTIPLE;
+import static javafx.scene.input.KeyCode.DELETE;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
 public class PatientOverviewController {
@@ -114,6 +118,7 @@ public class PatientOverviewController {
 
         addDescriptionListeners();
         enableMultipleSelection();
+        addListKeyBindings();
     }
 
     /**
@@ -397,10 +402,9 @@ public class PatientOverviewController {
     private void handleDeletePreviousAndCurrentDiseases() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
-            ObservableList<Entity> negativeTests = negativeTestsList.getSelectionModel().getSelectedItems();
-            if (!negativeTests.isEmpty()) {
-                selectedPatient.getNegativeTests().removeAll(negativeTests);
-                selectedPatient.getTests().removeAll(negativeTests);
+            ObservableList<Entity> previousAndCurrentDiseases = previousAndCurrentDiseasesList.getSelectionModel().getSelectedItems();
+            if (!previousAndCurrentDiseases.isEmpty()) {
+                selectedPatient.getPreviousAndCurrentDiseases().removeAll(previousAndCurrentDiseases);
                 patientsService.getOntology().updatePatient(selectedPatient);
             } else {
                 viewManager.warningDialog("No Selection", "No Negative Tests Selected",
@@ -499,5 +503,27 @@ public class PatientOverviewController {
         inferredCausesList.getSelectionModel().setSelectionMode(MULTIPLE);
         negativeTestsList.getSelectionModel().setSelectionMode(MULTIPLE);
         previousAndCurrentDiseasesList.getSelectionModel().setSelectionMode(MULTIPLE);
+    }
+
+    private void addListKeyBindings() {
+        symptomsList.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteSymptoms));
+        diseasesList.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteDiseases));
+        testsList.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteTests));
+        treatmentsList.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteTreatments));
+        causesList.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteCauses));
+        negativeTestsList.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteNegativeTests));
+        previousAndCurrentDiseasesList.setOnKeyPressed(createDeleteEventHandler(this::handleDeletePreviousAndCurrentDiseases));
+    }
+
+    private static EventHandler<? super KeyEvent> createDeleteEventHandler(Runnable action) {
+        return createEventHandler(DELETE, action);
+    }
+
+    private static EventHandler<? super KeyEvent> createEventHandler(KeyCode keyCode, Runnable action) {
+        return keyEvent -> {
+            if (keyEvent.getCode() == keyCode) {
+                action.run();
+            }
+        };
     }
 }
