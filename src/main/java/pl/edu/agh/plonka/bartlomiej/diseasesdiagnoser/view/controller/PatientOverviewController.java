@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.function.Function;
 
+import static javafx.scene.control.SelectionMode.MULTIPLE;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
 public class PatientOverviewController {
@@ -111,28 +112,8 @@ public class PatientOverviewController {
             }
         });
 
-
-        Function<TextArea, ChangeListener<Entity>> listenerGenerator = textArea -> (observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                textArea.textProperty().bind(newValue.getObservableComment());
-            } else {
-                textArea.textProperty().unbind();
-                textArea.setText("");
-            }
-
-        };
-        symptomsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(symptomDescription));
-        inferredSymptomsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(symptomDescription));
-        diseasesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(diseaseDescription));
-        inferredDiseasesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(diseaseDescription));
-        testsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(testDescription));
-        inferredTestsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(testDescription));
-        treatmentsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(treatmentDescription));
-        inferredTreatmentsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(treatmentDescription));
-        causesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(causeDescription));
-        inferredCausesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(causeDescription));
-        negativeTestsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(negativeTestDescription));
-        previousAndCurrentDiseasesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(previousAndCurrentDiseasesDescription));
+        addDescriptionListeners();
+        enableMultipleSelection();
     }
 
     /**
@@ -479,5 +460,44 @@ public class PatientOverviewController {
         ageLabel.setText("");
         heightLabel.setText("");
         weightLabel.setText("");
+    }
+
+    private void addDescriptionListeners() {
+        Function<TextArea, ChangeListener<Entity>> listenerGenerator = textArea -> (observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                textArea.textProperty().bind(newValue.getObservableComment());
+            } else {
+                textArea.textProperty().unbind();
+                textArea.setText("");
+            }
+
+        };
+        symptomsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(symptomDescription));
+        inferredSymptomsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(symptomDescription));
+        diseasesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(diseaseDescription));
+        inferredDiseasesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(diseaseDescription));
+        testsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(testDescription));
+        inferredTestsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(testDescription));
+        treatmentsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(treatmentDescription));
+        inferredTreatmentsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(treatmentDescription));
+        causesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(causeDescription));
+        inferredCausesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(causeDescription));
+        negativeTestsList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(negativeTestDescription));
+        previousAndCurrentDiseasesList.getSelectionModel().selectedItemProperty().addListener(listenerGenerator.apply(previousAndCurrentDiseasesDescription));
+    }
+
+    private void enableMultipleSelection() {
+        symptomsList.getSelectionModel().setSelectionMode(MULTIPLE);
+        inferredSymptomsList.getSelectionModel().setSelectionMode(MULTIPLE);
+        diseasesList.getSelectionModel().setSelectionMode(MULTIPLE);
+        inferredDiseasesList.getSelectionModel().setSelectionMode(MULTIPLE);
+        testsList.getSelectionModel().setSelectionMode(MULTIPLE);
+        inferredTestsList.getSelectionModel().setSelectionMode(MULTIPLE);
+        treatmentsList.getSelectionModel().setSelectionMode(MULTIPLE);
+        inferredTreatmentsList.getSelectionModel().setSelectionMode(MULTIPLE);
+        causesList.getSelectionModel().setSelectionMode(MULTIPLE);
+        inferredCausesList.getSelectionModel().setSelectionMode(MULTIPLE);
+        negativeTestsList.getSelectionModel().setSelectionMode(MULTIPLE);
+        previousAndCurrentDiseasesList.getSelectionModel().setSelectionMode(MULTIPLE);
     }
 }
