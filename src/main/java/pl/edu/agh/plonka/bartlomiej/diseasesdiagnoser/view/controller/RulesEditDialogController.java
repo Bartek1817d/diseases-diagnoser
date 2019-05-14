@@ -15,6 +15,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 import java.util.Collection;
 
 import static javafx.scene.control.SelectionMode.MULTIPLE;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.ControllerUtils.createDeleteEventHandler;
 
 public class RulesEditDialogController {
 
@@ -27,7 +28,6 @@ public class RulesEditDialogController {
     @FXML
     private TableColumn<Rule, String> ruleContentColumn;
 
-
     private ViewManager viewManager;
     private Stage dialogStage;
     private boolean okClicked = false;
@@ -39,6 +39,7 @@ public class RulesEditDialogController {
         this.patientsService = patientsService;
 
         rulesTable.setItems(patientsService.getRules());
+        rulesTable.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteRules));
     }
 
     @FXML

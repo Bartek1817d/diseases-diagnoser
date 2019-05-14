@@ -45,6 +45,7 @@ public class ViewManager {
         this.primaryStage = primaryStage;
         primaryStage.setMinHeight(MIN_HEIGHT);
         primaryStage.setMinWidth(MIN_WIDTH);
+        primaryStage.setMaximized(true);
     }
 
     /**
@@ -310,6 +311,7 @@ public class ViewManager {
         dialogStage.initOwner(primaryStage);
         Scene scene = new Scene(parent);
         dialogStage.setScene(scene);
+        dialogStage.setMaximized(true);
 
         return dialogStage;
     }
