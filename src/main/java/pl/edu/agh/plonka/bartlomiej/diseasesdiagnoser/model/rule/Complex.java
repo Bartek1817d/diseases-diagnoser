@@ -215,6 +215,7 @@ public class Complex implements Comparable<Complex> {
         rule.addHeadAtoms(createEntityAtoms(patientVariable, HAS_DISEASE_PROPERTY, concepts.diseases));
         rule.addHeadAtoms(createEntityAtoms(patientVariable, SHOULD_MAKE_TEST_PROPERTY, concepts.tests));
         rule.addHeadAtoms(createEntityAtoms(patientVariable, SHOULD_BE_TREATED_WITH_PROPERTY, concepts.treatments));
+        rule.addHeadAtoms(createEntityAtoms(patientVariable, CAUSE_OF_DISEASE_PROPERTY, concepts.causes));
 
         return rule;
     }

@@ -69,6 +69,7 @@ public class MachineLearning {
         HashMap<Entity, Integer> diseasesVoteBox = new HashMap<>();
         HashMap<Entity, Integer> testsVoteBox = new HashMap<>();
         HashMap<Entity, Integer> treatmentsVoteBox = new HashMap<>();
+        HashMap<Entity, Integer> causesVoteBox = new HashMap<>();
 
         for (Patient trainingSeed : trainingSet) {
             if (complex.isPatientCovered(trainingSeed)) {
@@ -76,12 +77,14 @@ public class MachineLearning {
                 trainingSeed.getDiseases().forEach(e -> addVote(diseasesVoteBox, e));
                 trainingSeed.getTests().forEach(e -> addVote(testsVoteBox, e));
                 trainingSeed.getTreatments().forEach(e -> addVote(treatmentsVoteBox, e));
+                trainingSeed.getCauses().forEach(e -> addVote(causesVoteBox, e));
             }
         }
 
         concepts.diseases = countVotes(diseasesVoteBox, patientsCovered);
         concepts.tests = countVotes(testsVoteBox, patientsCovered);
         concepts.treatments = countVotes(treatmentsVoteBox, patientsCovered);
+        concepts.causes = countVotes(causesVoteBox, patientsCovered);
 
         return concepts;
     }

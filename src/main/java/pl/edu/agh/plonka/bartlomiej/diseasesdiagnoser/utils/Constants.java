@@ -23,6 +23,7 @@ public class Constants {
     public static final String PREVIOUS_DISEASE_PROPERTY = "previousDisease";
     public static final String SHOULD_MAKE_TEST_PROPERTY = "shouldMakeTest";
     public static final String SHOULD_BE_TREATED_WITH_PROPERTY = "shouldBeTreatedWith";
+    public static final String CAUSE_OF_DISEASE_PROPERTY = "causeOfDisease";
 
     //classes
     public static final String CAUSE_CLASS = "Cause";
