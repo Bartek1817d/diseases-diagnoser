@@ -27,6 +27,7 @@ public class Star extends ArrayList<Complex> {
         if (isEmpty())
             addAll(otherComplexes);
         Collection<Complex> newComplexes = Complex.intersection(this, otherComplexes);
+        //TODO check if it's ok
         clear();
         addAll(newComplexes);
     }

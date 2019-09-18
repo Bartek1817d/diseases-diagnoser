@@ -3,6 +3,7 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -42,6 +43,8 @@ public class NominalSelector<T> extends HashSet<T> implements Selector<T> {
 
     @Override
     public boolean covers(Collection<T> entities) {
+        if (isEmpty())
+            return true;
         if (CollectionUtils.isEmpty(entities))
             return false;
         return entities.containsAll(this);
@@ -49,9 +52,6 @@ public class NominalSelector<T> extends HashSet<T> implements Selector<T> {
 
     @Override
     public boolean covers(T entity) {
-        if (entity == null) {
-            return true;
-        }
-        return contains(entity);
+        throw new NotImplementedException();
     }
 }

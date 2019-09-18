@@ -22,19 +22,10 @@
                         <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                    </items>
-                </Menu>
                 <Menu mnemonicParsing="false" text="Rules">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleEditRules" text="Edit" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Machine learning">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleRunMachineLearning" text="Run" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleRunMachineLearning" text="Learn" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">

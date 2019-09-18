@@ -134,7 +134,7 @@ public class EntitiesEditDialogController implements ResponseController<Collecti
         TreeItem<Entity> treeItem = entitiesTree.getSelectionModel().getSelectedItem();
         if (treeItem != null && !entities.contains(treeItem)) {
             Entity newEntity = new Entity();
-            boolean okClicked = viewManager.showEntityEditDialog(newEntity, patientsService);
+            boolean okClicked = viewManager.showEntityEditDialog("New " + treeItem.getValue().getLabel().toLowerCase(), newEntity, patientsService);
             if (okClicked) {
                 newEntity.addClass(treeItem.getValue());
                 CheckBoxTreeItem<Entity> newTreeItem = new CheckBoxTreeItem<>(newEntity);

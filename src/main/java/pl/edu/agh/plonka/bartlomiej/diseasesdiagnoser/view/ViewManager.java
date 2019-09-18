@@ -84,12 +84,16 @@ public class ViewManager {
     }
 
     public boolean showEntityEditDialog(Entity entity, PatientsService patientsService) {
+        return showEntityEditDialog("Edit " + entity.getLabel().toLowerCase(), entity, patientsService);
+    }
+
+    public boolean showEntityEditDialog(String title, Entity entity, PatientsService patientsService) {
         try {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = getFXMLLoader("fxml/EntityEditDialog.fxml");
             AnchorPane page = loader.load();
 
-            Stage dialogStage = createDialogStage(page, "Edit Entity");
+            Stage dialogStage = createDialogStage(page, title);
 
             EntityEditDialogController controller = loader.getController();
             controller.init(this, dialogStage, patientsService);
@@ -127,7 +131,7 @@ public class ViewManager {
 
             EntitiesEditDialogController controller = loader.getController();
 
-            ResponseStage<Collection<Entity>> dialogStage = createDialogStage(page, "Edit Patient", controller);
+            ResponseStage<Collection<Entity>> dialogStage = createDialogStage(page, "Edit " + rootEntity.getLabel().toLowerCase(), controller);
 
             controller.init(this, dialogStage, patientsService);
             controller.setEntities(rootEntity, currentEntities);

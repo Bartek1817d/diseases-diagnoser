@@ -82,7 +82,7 @@
                                             <children>
                                                 <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
-                                                        <Button mnemonicParsing="false" onAction="#handleAddSymptoms" text="New..." />
+                                                        <Button mnemonicParsing="false" onAction="#handleAddSymptoms" text="New/Edit..." />
                                                         <Button mnemonicParsing="false" onAction="#handleDeleteSymptoms" text="Delete" />
                                                     </buttons>
                                                 </ButtonBar>
@@ -125,7 +125,7 @@
                                             <children>
                                                 <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
-                                                        <Button mnemonicParsing="false" onAction="#handleAddNegativeTests" text="New..." />
+                                                        <Button mnemonicParsing="false" onAction="#handleAddNegativeTests" text="New/Edit..." />
                                                         <Button mnemonicParsing="false" onAction="#handleDeleteNegativeTests" text="Delete" />
                                                     </buttons>
                                                 </ButtonBar>
@@ -162,13 +162,13 @@
                                         </AnchorPane>
                                     </content>
                                 </Tab>
-                                <Tab text="Previous And Curent Diseases">
+                                <Tab text="Previous Diseases">
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
                                                 <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
-                                                        <Button mnemonicParsing="false" onAction="#handleAddPreviousAndCurrentDiseases" text="New..." />
+                                                        <Button mnemonicParsing="false" onAction="#handleAddPreviousAndCurrentDiseases" text="New/Edit..." />
                                                         <Button mnemonicParsing="false" onAction="#handleDeletePreviousAndCurrentDiseases" text="Delete" />
                                                     </buttons>
                                                 </ButtonBar>
@@ -211,7 +211,7 @@
                                             <children>
                                                 <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
-                                                        <Button mnemonicParsing="false" onAction="#handleAddDiseases" text="New..." />
+                                                        <Button mnemonicParsing="false" onAction="#handleAddDiseases" text="NewEdit..." />
                                                         <Button mnemonicParsing="false" onAction="#handleDeleteDiseases" text="Delete" />
                                                     </buttons>
                                                 </ButtonBar>
@@ -254,7 +254,7 @@
                                             <children>
                                                 <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
-                                                        <Button mnemonicParsing="false" onAction="#handleAddTests" text="New..." />
+                                                        <Button mnemonicParsing="false" onAction="#handleAddTests" text="New/Edit..." />
                                                         <Button mnemonicParsing="false" onAction="#handleDeleteTests" text="Delete" />
                                                     </buttons>
                                                 </ButtonBar>
@@ -297,7 +297,7 @@
                                             <children>
                                                 <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
-                                                        <Button mnemonicParsing="false" onAction="#handleAddTreatments" text="New..." />
+                                                        <Button mnemonicParsing="false" onAction="#handleAddTreatments" text="New/Edit..." />
                                                         <Button mnemonicParsing="false" onAction="#handleDeleteTreatments" text="Delete" />
                                                     </buttons>
                                                 </ButtonBar>
@@ -340,7 +340,7 @@
                                             <children>
                                                 <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
-                                                        <Button mnemonicParsing="false" onAction="#handleAddCauses" text="New..." />
+                                                        <Button mnemonicParsing="false" onAction="#handleAddCauses" text="New/Edit..." />
                                                         <Button mnemonicParsing="false" onAction="#handleDeleteCauses" text="Delete" />
                                                     </buttons>
                                                 </ButtonBar>
