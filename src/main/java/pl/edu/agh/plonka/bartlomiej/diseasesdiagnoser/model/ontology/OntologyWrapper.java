@@ -196,6 +196,8 @@ public class OntologyWrapper {
         setPatientIndObjectProperty(patientInd, properties.treatmentProperty, patient.getTreatments());
         setPatientIndObjectProperty(patientInd, properties.causeProperty, patient.getCauses());
         setPatientIndObjectProperty(patientInd, properties.previousOrCurrentDiseaseProperty, patient.getPreviousAndCurrentDiseases());
+
+        getInferredPatient(patient);
     }
 
     public Patient updatePatient(Patient patient) {
@@ -233,6 +235,11 @@ public class OntologyWrapper {
     public void deleteEntities(Collection<Entity> entities) {
         for (Entity entity : entities)
             deleteEntity(entity);
+    }
+
+    public void deletePatients(Collection<Patient> patients) {
+        for (Entity patient : patients)
+            deleteEntity(patient);
     }
 
     public void saveOntologyToFile(File file) throws OWLOntologyStorageException {

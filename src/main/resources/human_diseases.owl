@@ -6,7 +6,7 @@
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      ontologyIRI="http://www.agh.edu.pl/bartlomiejplonka/ontologies/human_diseases.owl">
-    <Prefix name="" IRI="http://www.agh.edu.pl/bartlomiejplonka/ontologies/human_diseases.owl"/>
+    <Prefix name="" IRI="http://www.agh.edu.pl/bartlomiejplonka/ontologies/human_diseases.owl#"/>
     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
     <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
@@ -17,10 +17,16 @@
         <NamedIndividual IRI="#Echocardiogram"/>
     </Declaration>
     <Declaration>
+        <DataProperty IRI="#firstName"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#ChestXRay"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Paleness"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#causeOfDisease"/>
     </Declaration>
     <Declaration>
         <Class IRI="#VegetalCause"/>
@@ -32,22 +38,34 @@
         <NamedIndividual IRI="#Winter"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#SouthAmerica"/>
+        <NamedIndividual IRI="#LimitationOfPhysicalActivity"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#LyingInBed"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Cancer"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#SkinTesting"/>
+        <NamedIndividual IRI="#Melanoma"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#Bartek"/>
+        <NamedIndividual IRI="#Constipation"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#SkinTesting"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#FastHeartRate"/>
     </Declaration>
     <Declaration>
         <Class IRI="#VirusCause"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Palpitations"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#previousDisease"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Herbapect"/>
@@ -59,13 +77,46 @@
         <Class IRI="#OtherSymptom"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#LifestyleChange"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Nausea"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#BlurryVision"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Testing"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#CardiovascularSymptom"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#age"/>
+    </Declaration>
+    <Declaration>
         <ObjectProperty IRI="#hadOrHasDisease"/>
     </Declaration>
     <Declaration>
         <Class IRI="#MusculoskeletalSystemTesting"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#SpeechDisorders"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#FoodCause"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Chickenpox"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#ChangesToTheShapeOrColorOfExistingMoles"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Yeast"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#LackOfExercise"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#HearingDisodrers"/>
@@ -77,13 +128,25 @@
         <NamedIndividual IRI="#MyocardialInfarction"/>
     </Declaration>
     <Declaration>
+        <ObjectProperty IRI="#shouldBeTreatedWith"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Anemia"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#AustraliaAndOceania"/>
+        <Class IRI="#DrugCause"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Colonoscopy"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SputumCulture"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#patientDataProperty"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#OtherTesting"/>
     </Declaration>
     <Declaration>
         <Class IRI="#DrugTreatment"/>
@@ -92,13 +155,28 @@
         <NamedIndividual IRI="#Vomiting"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#LifestypeCause"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Fever"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#lastName"/>
+    </Declaration>
+    <Declaration>
         <DataProperty IRI="#height"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Africa"/>
+        <ObjectProperty IRI="#hasSymptom"/>
     </Declaration>
     <Declaration>
-        <ObjectProperty IRI="#hasSymptom"/>
+        <Class IRI="#RespiratorySystemTesting"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Rash"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#AirPollution"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Tuberculosis"/>
@@ -107,10 +185,19 @@
         <ObjectProperty IRI="#negativeTest"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#InflammationOfTheOpticNerve"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Radiotherapy"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#DigestiveSystemSymptom"/>
+    </Declaration>
+    <Declaration>
         <ObjectProperty IRI="#diseaseObjectProperty"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Weakness"/>
     </Declaration>
     <Declaration>
         <ObjectProperty IRI="#sholudMakeTest"/>
@@ -122,19 +209,31 @@
         <NamedIndividual IRI="#ChestProjectionalRadiography"/>
     </Declaration>
     <Declaration>
-        <ObjectProperty IRI="#diagnosedBy"/>
+        <NamedIndividual IRI="#Poland"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#ColorectalCancer"/>
+        <ObjectProperty IRI="#diagnosedBy"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#ToxicSubstances"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#SkinDisease"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#ColorectalCancer"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Hoarseness"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#ChestPain"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#LossOfAppetite"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#placeOfResidence"/>
     </Declaration>
     <Declaration>
         <Class IRI="#EyeSymptom"/>
@@ -152,6 +251,9 @@
         <NamedIndividual IRI="#NewLumpOnTheSkin"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#BrainTumor"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#HeartBiopsy"/>
     </Declaration>
     <Declaration>
@@ -159,6 +261,9 @@
     </Declaration>
     <Declaration>
         <Class IRI="#SystemicTherapy"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Threadworm"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#SensoryProcessingDisorders"/>
@@ -188,10 +293,25 @@
         <Class IRI="#BacterialCause"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#Stress"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#BowelObstruction"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#MusclePain"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#DryCough"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#ParasiticCause"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Summer"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#MusculoskeletalSystemDisease"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Cause"/>
@@ -200,7 +320,19 @@
         <Class IRI="#Disease"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#AntiparasiticMedicine"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Dizziness"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#PersonalHygene"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#OtherCause"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#RetinalInflammatory"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Treatment"/>
@@ -212,16 +344,49 @@
         <NamedIndividual IRI="#ItchingOfAnus"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#FattyFoods"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Tapeworm"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#causes"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#MagneticResonance"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Cold"/>
     </Declaration>
     <Declaration>
         <ObjectProperty IRI="#shouldMakeTest"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#Dyspnoea"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#temperatureLevel"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#EKG"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#AnimalCause"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#LowBloodPressure"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#CoughMedicine"/>
+    </Declaration>
+    <Declaration>
         <DataProperty IRI="#weight"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Cough"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#AntiInflammatoryMedicine"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Pericarditis"/>
@@ -239,16 +404,25 @@
         <Class IRI="#SkinSymptom"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#Albendazole"/>
+        <NamedIndividual IRI="#ConcussionOfTheBrain"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#RespiratorySystemDisease"/>
+        <NamedIndividual IRI="#Albendazole"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#NightSweats"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#RespiratorySystemDisease"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Blindness"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#ExposureToUltravioletLightFromTheSun"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Rhinitis"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#LungCancer"/>
@@ -257,7 +431,16 @@
         <Class IRI="#NervousSystemDisease"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#SoreThroat"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Rinovirus"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#DigestiveSystemDisease"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Lice"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Pericardiocentesis"/>
@@ -272,280 +455,22 @@
         <NamedIndividual IRI="#Inflammation"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Other"/>
+        <NamedIndividual IRI="#Mebendazole"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Chemotherapy"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#Other"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Ovice"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#Epilepsy"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#NeurologicalSleepDisorder"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Somnolence"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#CardiovascularDisease"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Diarrhea"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Apap"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#MusculoskeletalSymptom"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Operation"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#AntipyreticDrug"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#DigestiveSystemTesting"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Smoking"/>
-    </Declaration>
-    <Declaration>
-        <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#Symptom"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#LossOfConsciousness"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Pyrantel"/>
-    </Declaration>
-    <Declaration>
-        <DataProperty IRI="#firstName"/>
-    </Declaration>
-    <Declaration>
-        <ObjectProperty IRI="#causeOfDisease"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#LimitationOfPhysicalActivity"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#LyingInBed"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Melanoma"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Constipation"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Palpitations"/>
-    </Declaration>
-    <Declaration>
-        <ObjectProperty IRI="#previousDisease"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Nausea"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#LifestyleChange"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#BlurryVision"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#Testing"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#CardiovascularSymptom"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#Asia"/>
-    </Declaration>
-    <Declaration>
-        <DataProperty IRI="#age"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#SpeechDisorders"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#FoodCause"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Chickenpox"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Yeast"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#LackOfExercise"/>
-    </Declaration>
-    <Declaration>
-        <ObjectProperty IRI="#shouldBeTreatedWith"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#DrugCause"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#SputumCulture"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#OtherTesting"/>
-    </Declaration>
-    <Declaration>
-        <DataProperty IRI="#patientDataProperty"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Fever"/>
-    </Declaration>
-    <Declaration>
-        <DataProperty IRI="#lastName"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#LifestypeCause"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#RespiratorySystemTesting"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Rash"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#AirPollution"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#InflammationOfTheOpticNerve"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#DigestiveSystemSymptom"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Weakness"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#Europe"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Poland"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#Season"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#SkinDisease"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#ChestPain"/>
-    </Declaration>
-    <Declaration>
-        <ObjectProperty IRI="#placeOfResidence"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#BrainTumor"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Threadworm"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Stress"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#BowelObstruction"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#MusclePain"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#ParasiticCause"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#MusculoskeletalSystemDisease"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#AntiparasiticMedicine"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#PersonalHygene"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#OtherCause"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#RetinalInflammatory"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#FattyFoods"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Tapeworm"/>
-    </Declaration>
-    <Declaration>
-        <ObjectProperty IRI="#causes"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Cold"/>
-    </Declaration>
-    <Declaration>
-        <DataProperty IRI="#temperatureLevel"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Dyspnoea"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#EKG"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#AnimalCause"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#CoughMedicine"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Cough"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#AntiInflammatoryMedicine"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#PlaceOfResidence"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#ConcussionOfTheBrain"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#NorthAmerica"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Blindness"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Rhinitis"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#InfectiousDisease"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#SoreThroat"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#DigestiveSystemDisease"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Lice"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Mebendazole"/>
+        <NamedIndividual IRI="#Boil"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#SeeingDisorders"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Boil"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Patient"/>
@@ -560,13 +485,31 @@
         <NamedIndividual IRI="#Pneumonia"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#Epilepsy"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#FriedFood"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#NeurologicalSleepDisorder"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Somnolence"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#CardiovascularDisease"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Diarrhea"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#BloodTest"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#SecondHandSmoke"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Apap"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Urticaria"/>
@@ -581,22 +524,40 @@
         <NamedIndividual IRI="#Chills"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#MusculoskeletalSymptom"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#CardiovascularSystemTesting"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Nervousness"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#Operation"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Spring"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#AntipyreticDrug"/>
     </Declaration>
     <Declaration>
         <Class IRI="#EnvirommentalCause"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#DigestiveSystemTesting"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Atherosclerosis"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#Smoking"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#GeneticCause"/>
+    </Declaration>
+    <Declaration>
+        <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Dermatoscopy"/>
@@ -611,12 +572,20 @@
         <NamedIndividual IRI="#Stroke"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#LossOfConsciousness"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Symptom"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Pyrantel"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Headache"/>
     </Declaration>
-    <SubClassOf>
-        <Class IRI="#Africa"/>
-        <Class IRI="#PlaceOfResidence"/>
-    </SubClassOf>
+    <Declaration>
+        <NamedIndividual IRI="#Bartek"/>
+    </Declaration>
     <SubClassOf>
         <Class IRI="#AnimalCause"/>
         <Class IRI="#Cause"/>
@@ -636,14 +605,6 @@
     <SubClassOf>
         <Class IRI="#AntipyreticDrug"/>
         <Class IRI="#DrugTreatment"/>
-    </SubClassOf>
-    <SubClassOf>
-        <Class IRI="#Asia"/>
-        <Class IRI="#PlaceOfResidence"/>
-    </SubClassOf>
-    <SubClassOf>
-        <Class IRI="#AustraliaAndOceania"/>
-        <Class IRI="#PlaceOfResidence"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="#BacterialCause"/>
@@ -694,10 +655,6 @@
         <Class IRI="#Cause"/>
     </SubClassOf>
     <SubClassOf>
-        <Class IRI="#Europe"/>
-        <Class IRI="#PlaceOfResidence"/>
-    </SubClassOf>
-    <SubClassOf>
         <Class IRI="#EyeDisease"/>
         <Class IRI="#Disease"/>
     </SubClassOf>
@@ -722,10 +679,6 @@
         <Class IRI="#Treatment"/>
     </SubClassOf>
     <SubClassOf>
-        <Class IRI="#InfectiousDisease"/>
-        <Class IRI="#Disease"/>
-    </SubClassOf>
-    <SubClassOf>
         <Class IRI="#LifestypeCause"/>
         <Class IRI="#Cause"/>
     </SubClassOf>
@@ -748,10 +701,6 @@
     <SubClassOf>
         <Class IRI="#NeurologicalSymptom"/>
         <Class IRI="#Symptom"/>
-    </SubClassOf>
-    <SubClassOf>
-        <Class IRI="#NorthAmerica"/>
-        <Class IRI="#PlaceOfResidence"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="#Other"/>
@@ -813,10 +762,6 @@
         <Class IRI="#Testing"/>
     </SubClassOf>
     <SubClassOf>
-        <Class IRI="#SouthAmerica"/>
-        <Class IRI="#PlaceOfResidence"/>
-    </SubClassOf>
-    <SubClassOf>
         <Class IRI="#SystemicTherapy"/>
         <Class IRI="#HospitalTreatment"/>
     </SubClassOf>
@@ -863,10 +808,6 @@
     <ClassAssertion>
         <Class IRI="#CardiovascularDisease"/>
         <NamedIndividual IRI="#Atherosclerosis"/>
-    </ClassAssertion>
-    <ClassAssertion>
-        <Class IRI="#Season"/>
-        <NamedIndividual IRI="#Autumn"/>
     </ClassAssertion>
     <ClassAssertion>
         <Class IRI="#Patient"/>
@@ -1197,10 +1138,6 @@
         <NamedIndividual IRI="#Pneumonia"/>
     </ClassAssertion>
     <ClassAssertion>
-        <Class IRI="#Europe"/>
-        <NamedIndividual IRI="#Poland"/>
-    </ClassAssertion>
-    <ClassAssertion>
         <Class IRI="#AntiparasiticMedicine"/>
         <NamedIndividual IRI="#Pyrantel"/>
     </ClassAssertion>
@@ -1253,10 +1190,6 @@
         <NamedIndividual IRI="#SpeechDisorders"/>
     </ClassAssertion>
     <ClassAssertion>
-        <Class IRI="#Season"/>
-        <NamedIndividual IRI="#Spring"/>
-    </ClassAssertion>
-    <ClassAssertion>
         <Class IRI="#RespiratorySystemTesting"/>
         <NamedIndividual IRI="#SputumCulture"/>
     </ClassAssertion>
@@ -1267,10 +1200,6 @@
     <ClassAssertion>
         <Class IRI="#LifestypeCause"/>
         <NamedIndividual IRI="#Stress"/>
-    </ClassAssertion>
-    <ClassAssertion>
-        <Class IRI="#Season"/>
-        <NamedIndividual IRI="#Summer"/>
     </ClassAssertion>
     <ClassAssertion>
         <Class IRI="#ParasiticDisease"/>
@@ -1303,10 +1232,6 @@
     <ClassAssertion>
         <Class IRI="#OtherSymptom"/>
         <NamedIndividual IRI="#Weakness"/>
-    </ClassAssertion>
-    <ClassAssertion>
-        <Class IRI="#Season"/>
-        <NamedIndividual IRI="#Winter"/>
     </ClassAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#hasSymptom"/>
@@ -1602,10 +1527,6 @@
     <ObjectPropertyRange>
         <ObjectProperty IRI="#negativeTest"/>
         <Class IRI="#Testing"/>
-    </ObjectPropertyRange>
-    <ObjectPropertyRange>
-        <ObjectProperty IRI="#placeOfResidence"/>
-        <Class IRI="#PlaceOfResidence"/>
     </ObjectPropertyRange>
     <ObjectPropertyRange>
         <ObjectProperty IRI="#previousDisease"/>
@@ -1911,41 +1832,6 @@
         </Annotation>
         <Annotation>
             <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Infectious1</Literal>
-        </Annotation>
-        <Body>
-            <ClassAtom>
-                <Class IRI="#Disease"/>
-                <Variable IRI="#disease"/>
-            </ClassAtom>
-            <ClassAtom>
-                <Class IRI="#BacterialCause"/>
-                <Variable IRI="#bacterialCause"/>
-            </ClassAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#causedBy"/>
-                <Variable IRI="#disease"/>
-                <Variable IRI="#bacterialCause"/>
-            </ObjectPropertyAtom>
-        </Body>
-        <Head>
-            <ClassAtom>
-                <Class IRI="#InfectiousDisease"/>
-                <Variable IRI="#disease"/>
-            </ClassAtom>
-        </Head>
-    </DLSafeRule>
-    <DLSafeRule>
-        <Annotation>
-            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
-        </Annotation>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
-        </Annotation>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
             <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">MyocarditisCause1</Literal>
         </Annotation>
         <Body>
@@ -2167,41 +2053,6 @@
                 <Variable IRI="#patient"/>
                 <Variable IRI="#treatment"/>
             </ObjectPropertyAtom>
-        </Head>
-    </DLSafeRule>
-    <DLSafeRule>
-        <Annotation>
-            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
-        </Annotation>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
-        </Annotation>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Infectious2</Literal>
-        </Annotation>
-        <Body>
-            <ClassAtom>
-                <Class IRI="#Disease"/>
-                <Variable IRI="#disease"/>
-            </ClassAtom>
-            <ClassAtom>
-                <Class IRI="#VirusCause"/>
-                <Variable IRI="#virusCause"/>
-            </ClassAtom>
-            <ObjectPropertyAtom>
-                <ObjectProperty IRI="#causedBy"/>
-                <Variable IRI="#disease"/>
-                <Variable IRI="#virusCause"/>
-            </ObjectPropertyAtom>
-        </Body>
-        <Head>
-            <ClassAtom>
-                <Class IRI="#InfectiousDisease"/>
-                <Variable IRI="#disease"/>
-            </ClassAtom>
         </Head>
     </DLSafeRule>
     <DLSafeRule>
@@ -3408,16 +3259,6 @@
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#Africa</IRI>
-        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Africa</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#Africa</IRI>
-        <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Afryka</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>#AirPollution</IRI>
         <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Air pollution</Literal>
     </AnnotationAssertion>
@@ -3518,16 +3359,6 @@
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#Asia</IRI>
-        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Asia</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#Asia</IRI>
-        <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Azja</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>#Atherosclerosis</IRI>
         <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Atherosclerosis</Literal>
     </AnnotationAssertion>
@@ -3535,16 +3366,6 @@
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>#Atherosclerosis</IRI>
         <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Miażdżyca tętnic</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#AustraliaAndOceania</IRI>
-        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Australia and Oceania</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#AustraliaAndOceania</IRI>
-        <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Australia i Oceania</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
@@ -4031,16 +3852,6 @@ Koronawirusy są trudne w hodowli in vitro - niektóre szczepy rosną tylko na h
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#Europe</IRI>
-        <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Europa</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#Europe</IRI>
-        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Europe</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>#ExposureToUltravioletLightFromTheSun</IRI>
         <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Ekspozycja na promieniowanie ultrafioletowe (UV) pochodzące z promieniowania słonecznego</Literal>
     </AnnotationAssertion>
@@ -4098,6 +3909,16 @@ Koronawirusy są trudne w hodowli in vitro - niektóre szczepy rosną tylko na h
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>#FattyFoods</IRI>
         <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Tłusta żywność</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Fever</IRI>
+        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Fever, also known as pyrexia and febrile response, is defined as having a temperature above the normal range due to an increase in the body&apos;s temperature set point. There is not a single agreed-upon upper limit for normal temperature with sources using values between 37.5 and 38.3 °C. The increase in set point triggers increased muscle contractions and causes a feeling of cold. This results in greater heat production and efforts to conserve heat. When the set point temperature returns to normal, a person feels hot, becomes flushed, and may begin to sweat. Rarely a fever may trigger a febrile seizure. This is more common in young children. Fevers do not typically go higher than 41 to 42 °C.</Literal>
+    </AnnotationAssertion>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Fever</IRI>
+        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">This is fever</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
@@ -4238,16 +4059,6 @@ Koronawirusy są trudne w hodowli in vitro - niektóre szczepy rosną tylko na h
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>#Ibuprofen</IRI>
         <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Ibuprofen</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#InfectiousDisease</IRI>
-        <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Choroba zakaźna</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#InfectiousDisease</IRI>
-        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Infectious disease</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
@@ -4573,16 +4384,6 @@ Głównymi objawami choroby przy rozpoznaniu są: kaszel, duszność, ból w kla
         <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Nocne poty</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#NorthAmerica</IRI>
-        <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Ameryka Północna</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#NorthAmerica</IRI>
-        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">North America</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
         <IRI>#Operation</IRI>
         <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Operacja</Literal>
@@ -4734,16 +4535,6 @@ Głównymi objawami choroby przy rozpoznaniu są: kaszel, duszność, ból w kla
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#PlaceOfResidence</IRI>
-        <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Miejsce zamieszkania</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#PlaceOfResidence</IRI>
-        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Place of residence</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>#Pneumonia</IRI>
         <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Pneumonia</Literal>
     </AnnotationAssertion>
@@ -4856,16 +4647,6 @@ There are 99 recognized types of human rhinoviruses that differ according to the
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#Season</IRI>
-        <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Pora roku</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#Season</IRI>
-        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Season</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>#SecondHandSmoke</IRI>
         <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Palenie bierne</Literal>
     </AnnotationAssertion>
@@ -4953,16 +4734,6 @@ There are 99 recognized types of human rhinoviruses that differ according to the
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
         <IRI>#SoreThroat</IRI>
         <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Sore throat</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#SouthAmerica</IRI>
-        <Literal xml:lang="pl" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">Ameryka Południowa</Literal>
-    </AnnotationAssertion>
-    <AnnotationAssertion>
-        <AnnotationProperty abbreviatedIRI="rdfs:label"/>
-        <IRI>#SouthAmerica</IRI>
-        <Literal xml:lang="en" datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">South America</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:label"/>
@@ -5213,5 +4984,5 @@ There are 99 recognized types of human rhinoviruses that differ according to the
 
 
 
-<!-- Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi -->
+<!-- Generated by the OWL API (version 4.5.0.2017-10-13T06:44:12Z) https://github.com/owlcs/owlapi -->
 

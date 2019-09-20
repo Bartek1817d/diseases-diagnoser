@@ -56,9 +56,27 @@ public class PatientsService {
         patients.add(patient);
     }
 
+    public void addPatients(Collection<Patient> patients) {
+        patients.forEach(p -> {
+            ontology.addPatient(p);
+            this.patients.add(p);
+        });
+
+    }
+
     public void deletePatient(Patient patient) {
         patients.remove(patient);
         ontology.deleteEntity(patient);
+    }
+
+    public void deletePatients(Collection<Patient> patients) {
+        this.patients.removeAll(patients);
+        ontology.deletePatients(patients);
+    }
+
+    public Collection<Patient> updatePatients(Collection<Patient> patients) {
+        patients.forEach(p -> ontology.updatePatient(p));
+        return patients;
     }
 
     public ObservableList<Rule> getRules() {
@@ -70,6 +88,7 @@ public class PatientsService {
             throw new RuleAlreadyExistsException(rule);
         ontology.addRule(rule);
         rules.add(rule);
+        updatePatients(patients);
     }
 
     public void addRules(Collection<Rule> rules) throws RuleAlreadyExistsException, CreateRuleException {
@@ -80,11 +99,13 @@ public class PatientsService {
     public void deleteRule(Rule rule) {
         this.ontology.deleteRule(rule);
         this.rules.remove(rule);
+        updatePatients(patients);
     }
 
     public void deleteRules(Collection<Rule> rules) {
         this.ontology.deleteRules(rules);
         this.rules.removeAll(rules);
+        updatePatients(patients);
     }
 
     public void editPatient(Patient patient) {

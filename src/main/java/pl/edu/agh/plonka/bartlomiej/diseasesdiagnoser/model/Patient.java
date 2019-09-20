@@ -192,6 +192,22 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.diseases.add(disease);
     }
 
+    public void removeAllDiseases() {
+        this.diseases.clear();
+    }
+
+    public void removeAllCauses() {
+        this.causes.clear();
+    }
+
+    public void removeAllTests() {
+        this.tests.clear();
+    }
+
+    public void removeAllTreatments() {
+        this.treatments.clear();
+    }
+
     public ObservableList<Entity> getInferredDiseases() {
         return inferredDiseases;
     }

@@ -19,7 +19,7 @@ public class MachineLearning {
 
     // 0 for restrictive, 1 for general
     private static final float epsilon = 0.5f;
-    private static final float decisionVotesPercent = 0.5f;
+    private static final float decisionVotesPercent = 0.3f;
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private OntologyWrapper ontology;
 
