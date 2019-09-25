@@ -36,10 +36,10 @@ public class MachineLearning {
         rules.addAll(sequentialCovering(trainingSet, ontology.getTests().values(), SHOULD_MAKE_TEST));
         rules.addAll(sequentialCovering(trainingSet, ontology.getTreatments().values(), SHOULD_BE_TREATED_WITH));
         rules.addAll(sequentialCovering(trainingSet, ontology.getCauses().values(), CAUSE_OF_DISEASE));
-        return rules;
+        return simplifyRules(rules);
     }
 
-    public Collection<Rule> sequentialCovering(Set<Patient> trainingSet,
+    private Collection<Rule> sequentialCovering(Set<Patient> trainingSet,
                                                Collection<Entity> entities,
                                                Category.Predicate categoryPredicate)
             throws PartialStarCreationException {
@@ -50,7 +50,7 @@ public class MachineLearning {
         return rules;
     }
 
-    public Collection<Rule> sequentialCovering(Set<Patient> trainingSet, Category category) throws PartialStarCreationException {
+    private Collection<Rule> sequentialCovering(Set<Patient> trainingSet, Category category) throws PartialStarCreationException {
         Collection<Rule> rules = new HashSet<>();
         Set<Patient> uncoveredSet = new HashSet<>(trainingSet);
         int ruleIdx = 1;
@@ -259,6 +259,21 @@ public class MachineLearning {
                 predicate = "unknownPredicate";
         }
         return format("%s_%s_%s_%d", GENERATED_RULE_PREFIX, predicate, category.getEntity(), ruleIdx);
+    }
+
+    private Collection<Rule> simplifyRules(Collection<Rule> rules) {
+        List<Rule> rulesList = new ArrayList<>(rules);
+        for (int i = 0; i < rulesList.size() - 1; i++) {
+            Rule rule = rulesList.get(i);
+            for (int j = i + 1; j < rulesList.size(); j++) {
+                Rule referenceRule = rulesList.get(j);
+                if (rule.getBodyAtoms().equals(referenceRule.getBodyAtoms())) {
+                    rule.addHeadAtoms(referenceRule.getHeadAtoms());
+                    rulesList.remove(referenceRule);
+                }
+            }
+        }
+        return rulesList;
     }
 
 }
