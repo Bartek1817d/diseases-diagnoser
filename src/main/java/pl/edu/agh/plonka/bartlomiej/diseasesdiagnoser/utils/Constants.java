@@ -35,7 +35,7 @@ public class Constants {
     public static final String TESTING_CLASS = "Testing";
     public static final String TREATMENT_CLASS = "Treatment";
 
-    public static final String GENERATED_RULE_PREFIX = "Generated_";
+    public static final String GENERATED_RULE_PREFIX = "Generated";
 
     //constraints
     public static final int PATIENT_MIN_AGE = 0;

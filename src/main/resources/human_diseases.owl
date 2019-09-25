@@ -6,7 +6,7 @@
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      ontologyIRI="http://www.agh.edu.pl/bartlomiejplonka/ontologies/human_diseases.owl">
-    <Prefix name="" IRI="http://www.agh.edu.pl/bartlomiejplonka/ontologies/human_diseases.owl#"/>
+    <Prefix name="" IRI="http://www.agh.edu.pl/bartlomiejplonka/ontologies/human_diseases.owl"/>
     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
     <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
@@ -56,6 +56,9 @@
         <Class IRI="#SkinTesting"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#Bartek"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#FastHeartRate"/>
     </Declaration>
     <Declaration>
@@ -71,6 +74,9 @@
         <NamedIndividual IRI="#Herbapect"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#Nausea"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#Hemoptysis"/>
     </Declaration>
     <Declaration>
@@ -78,9 +84,6 @@
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#LifestyleChange"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Nausea"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#BlurryVision"/>
@@ -143,10 +146,10 @@
         <NamedIndividual IRI="#SputumCulture"/>
     </Declaration>
     <Declaration>
-        <DataProperty IRI="#patientDataProperty"/>
+        <Class IRI="#OtherTesting"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#OtherTesting"/>
+        <DataProperty IRI="#patientDataProperty"/>
     </Declaration>
     <Declaration>
         <Class IRI="#DrugTreatment"/>
@@ -155,13 +158,13 @@
         <NamedIndividual IRI="#Vomiting"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#LifestypeCause"/>
-    </Declaration>
-    <Declaration>
         <NamedIndividual IRI="#Fever"/>
     </Declaration>
     <Declaration>
         <DataProperty IRI="#lastName"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#LifestypeCause"/>
     </Declaration>
     <Declaration>
         <DataProperty IRI="#height"/>
@@ -215,13 +218,13 @@
         <ObjectProperty IRI="#diagnosedBy"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#ToxicSubstances"/>
-    </Declaration>
-    <Declaration>
         <Class IRI="#SkinDisease"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#ColorectalCancer"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#ToxicSubstances"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Hoarseness"/>
@@ -320,10 +323,10 @@
         <Class IRI="#Disease"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#AntiparasiticMedicine"/>
+        <NamedIndividual IRI="#Dizziness"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#Dizziness"/>
+        <Class IRI="#AntiparasiticMedicine"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#PersonalHygene"/>
@@ -356,16 +359,16 @@
         <NamedIndividual IRI="#MagneticResonance"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#Cold"/>
-    </Declaration>
-    <Declaration>
         <ObjectProperty IRI="#shouldMakeTest"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#Dyspnoea"/>
+        <NamedIndividual IRI="#Cold"/>
     </Declaration>
     <Declaration>
         <DataProperty IRI="#temperatureLevel"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#Dyspnoea"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#EKG"/>
@@ -410,10 +413,10 @@
         <NamedIndividual IRI="#Albendazole"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#NightSweats"/>
+        <Class IRI="#RespiratorySystemDisease"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#RespiratorySystemDisease"/>
+        <NamedIndividual IRI="#NightSweats"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Blindness"/>
@@ -455,22 +458,22 @@
         <NamedIndividual IRI="#Inflammation"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#Mebendazole"/>
+        <Class IRI="#Other"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Chemotherapy"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Other"/>
+        <NamedIndividual IRI="#Mebendazole"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Ovice"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#Boil"/>
+        <NamedIndividual IRI="#SeeingDisorders"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#SeeingDisorders"/>
+        <NamedIndividual IRI="#Boil"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Patient"/>
@@ -572,19 +575,16 @@
         <NamedIndividual IRI="#Stroke"/>
     </Declaration>
     <Declaration>
-        <NamedIndividual IRI="#LossOfConsciousness"/>
+        <Class IRI="#Symptom"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Symptom"/>
+        <NamedIndividual IRI="#LossOfConsciousness"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Pyrantel"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#Headache"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#Bartek"/>
     </Declaration>
     <SubClassOf>
         <Class IRI="#AnimalCause"/>
@@ -1494,19 +1494,33 @@
     </ObjectPropertyRange>
     <ObjectPropertyRange>
         <ObjectProperty IRI="#causedBy"/>
-        <Class IRI="#Cause"/>
-    </ObjectPropertyRange>
-    <ObjectPropertyRange>
-        <ObjectProperty IRI="#causedBy"/>
-        <Class IRI="#Disease"/>
+        <ObjectIntersectionOf>
+            <ObjectUnionOf>
+                <Class IRI="#Cause"/>
+                <Class IRI="#Disease"/>
+            </ObjectUnionOf>
+            <ObjectComplementOf>
+                <ObjectIntersectionOf>
+                    <Class IRI="#Cause"/>
+                    <Class IRI="#Disease"/>
+                </ObjectIntersectionOf>
+            </ObjectComplementOf>
+        </ObjectIntersectionOf>
     </ObjectPropertyRange>
     <ObjectPropertyRange>
         <ObjectProperty IRI="#causes"/>
-        <Class IRI="#Disease"/>
-    </ObjectPropertyRange>
-    <ObjectPropertyRange>
-        <ObjectProperty IRI="#causes"/>
-        <Class IRI="#Symptom"/>
+        <ObjectIntersectionOf>
+            <ObjectUnionOf>
+                <Class IRI="#Disease"/>
+                <Class IRI="#Symptom"/>
+            </ObjectUnionOf>
+            <ObjectComplementOf>
+                <ObjectIntersectionOf>
+                    <Class IRI="#Disease"/>
+                    <Class IRI="#Symptom"/>
+                </ObjectIntersectionOf>
+            </ObjectComplementOf>
+        </ObjectIntersectionOf>
     </ObjectPropertyRange>
     <ObjectPropertyRange>
         <ObjectProperty IRI="#diagnosedBy"/>
@@ -4984,5 +4998,5 @@ There are 99 recognized types of human rhinoviruses that differ according to the
 
 
 
-<!-- Generated by the OWL API (version 4.5.0.2017-10-13T06:44:12Z) https://github.com/owlcs/owlapi -->
+<!-- Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi -->
 

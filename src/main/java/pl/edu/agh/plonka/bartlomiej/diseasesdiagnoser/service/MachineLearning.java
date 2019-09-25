@@ -13,6 +13,9 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import static java.lang.Float.MAX_VALUE;
+import static java.lang.String.format;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Category.Predicate.*;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
 public class MachineLearning {
@@ -29,23 +32,42 @@ public class MachineLearning {
 
     public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) throws PartialStarCreationException {
         Collection<Rule> rules = new HashSet<>();
+        rules.addAll(sequentialCovering(trainingSet, ontology.getDiseases().values(), HAS_DISEASE));
+        rules.addAll(sequentialCovering(trainingSet, ontology.getTests().values(), SHOULD_MAKE_TEST));
+        rules.addAll(sequentialCovering(trainingSet, ontology.getTreatments().values(), SHOULD_BE_TREATED_WITH));
+        rules.addAll(sequentialCovering(trainingSet, ontology.getCauses().values(), CAUSE_OF_DISEASE));
+        return rules;
+    }
+
+    public Collection<Rule> sequentialCovering(Set<Patient> trainingSet,
+                                               Collection<Entity> entities,
+                                               Category.Predicate categoryPredicate)
+            throws PartialStarCreationException {
+        Collection<Rule> rules = new HashSet<>();
+        for (Entity entity : entities) {
+            rules.addAll(sequentialCovering(trainingSet, new Category(entity, categoryPredicate)));
+        }
+        return rules;
+    }
+
+    public Collection<Rule> sequentialCovering(Set<Patient> trainingSet, Category category) throws PartialStarCreationException {
+        Collection<Rule> rules = new HashSet<>();
         Set<Patient> uncoveredSet = new HashSet<>(trainingSet);
         int ruleIdx = 1;
-        while (!uncoveredSet.isEmpty()) {
-            Complex complex = findComplex(trainingSet, uncoveredSet);
-            Concepts concepts = categories(complex, trainingSet, uncoveredSet);
+        while (assertPatientWithCategoryInSet(uncoveredSet, category)) {
+            Complex complex = findComplex(trainingSet, uncoveredSet, category);
             removeCoveredExamples(uncoveredSet, complex);
-            Rule rule = complex.generateRule(GENERATED_RULE_PREFIX + ruleIdx++, concepts, ontology);
+            Rule rule = complex.generateRule(generateRuleName(category, ruleIdx++), category, ontology);
             rules.add(rule);
         }
         return rules;
     }
 
-    private Complex findComplex(Set<Patient> trainingSet, Set<Patient> uncoveredSet) throws PartialStarCreationException {
+    private Complex findComplex(Set<Patient> trainingSet, Set<Patient> uncoveredSet, Category category) throws PartialStarCreationException {
         LOG.debug("findComplex");
         Star star = new Star();
-        Patient positiveSeed = positiveSeed(trainingSet, uncoveredSet);
-        Patient negativeSeed = negativeSeed(trainingSet, star, positiveSeed);
+        Patient positiveSeed = positiveSeed(trainingSet, uncoveredSet, category);
+        Patient negativeSeed = negativeSeed(trainingSet, star, positiveSeed, category);
         while (positiveSeed != null && negativeSeed != null) {
             Collection<Complex> partialStar = partialStar(positiveSeed, negativeSeed);
             if (partialStar.isEmpty()) {
@@ -56,57 +78,31 @@ public class MachineLearning {
             star.deleteNarrowComplexes();
             star.sort(new ComplexComparator(trainingSet, uncoveredSet, positiveSeed));
             star.leaveFirstElements(5);
-            negativeSeed = negativeSeed(trainingSet, star, positiveSeed);
+            negativeSeed = negativeSeed(trainingSet, star, positiveSeed, category);
         }
         return star.get(0);
     }
 
-    private Concepts categories(Complex complex, Collection<Patient> trainingSet, Collection<Patient> uncoveredSet) {
-        LOG.debug("categories");
-
-        Concepts concepts = new Concepts();
-        int patientsCovered = 0;
-        HashMap<Entity, Integer> diseasesVoteBox = new HashMap<>();
-        HashMap<Entity, Integer> testsVoteBox = new HashMap<>();
-        HashMap<Entity, Integer> treatmentsVoteBox = new HashMap<>();
-        HashMap<Entity, Integer> causesVoteBox = new HashMap<>();
-
-        for (Patient trainingSeed : trainingSet) {
-            if (complex.isPatientCovered(trainingSeed)) {
-                patientsCovered++;
-                trainingSeed.getDiseases().forEach(e -> addVote(diseasesVoteBox, e));
-                trainingSeed.getTests().forEach(e -> addVote(testsVoteBox, e));
-                trainingSeed.getTreatments().forEach(e -> addVote(treatmentsVoteBox, e));
-                trainingSeed.getCauses().forEach(e -> addVote(causesVoteBox, e));
-            }
-        }
-
-        concepts.diseases = countVotes(diseasesVoteBox, patientsCovered);
-        concepts.tests = countVotes(testsVoteBox, patientsCovered);
-        concepts.treatments = countVotes(treatmentsVoteBox, patientsCovered);
-        concepts.causes = countVotes(causesVoteBox, patientsCovered);
-
-        return concepts;
-    }
-
-
-    private Patient positiveSeed(Set<Patient> trainingSet, Set<Patient> uncoveredSet) {
+    private Patient positiveSeed(Set<Patient> trainingSet, Set<Patient> uncoveredSet, Category category) {
         LOG.debug("positiveSeed");
         if (uncoveredSet.isEmpty())
             return null;
         Set<Patient> coveredSet = Sets.difference(trainingSet, uncoveredSet);
         for (Patient uncovered : uncoveredSet) {
-            calculateDistance(uncovered, coveredSet);
+            if (category.assertPatientInCategory(uncovered)) {
+                calculateDistance(uncovered, coveredSet);
+            } else {
+                uncovered.setEvaluation(-MAX_VALUE);
+            }
         }
         return Collections.max(uncoveredSet);
     }
 
-    private Patient negativeSeed(Collection<Patient> trainingSet, Star star, Patient positiveSeed) {
+    private Patient negativeSeed(Collection<Patient> trainingSet, Star star, Patient positiveSeed, Category category) {
         LOG.debug("negativeSeed");
         List<Patient> negativeSeeds = new ArrayList<>();
         for (Patient patient : trainingSet) {
-            if (star.isPatientCovered(patient) && (!positiveSeed.getDiseases().containsAll(patient.getDiseases()) ||
-                    !positiveSeed.getTests().containsAll(patient.getTests()) || !positiveSeed.getTreatments().containsAll(patient.getTreatments()))) {
+            if (star.isPatientCovered(patient) && !category.assertPatientInCategory(patient)) {
                 negativeSeeds.add(patient);
             }
         }
@@ -238,6 +234,31 @@ public class MachineLearning {
                 .filter(e -> (float) e.getValue() / allVotesNumber >= decisionVotesPercent)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
+    }
+
+    private boolean assertPatientWithCategoryInSet(Set<Patient> patientsSet, Category category) {
+        return patientsSet.stream().anyMatch(category::assertPatientInCategory);
+    }
+
+    private String generateRuleName(Category category, int ruleIdx) {
+        String predicate;
+        switch (category.getPredicate()) {
+            case CAUSE_OF_DISEASE:
+                predicate = CAUSE_OF_DISEASE_PROPERTY;
+                break;
+            case SHOULD_BE_TREATED_WITH:
+                predicate = SHOULD_BE_TREATED_WITH_PROPERTY;
+                break;
+            case SHOULD_MAKE_TEST:
+                predicate = SHOULD_MAKE_TEST_PROPERTY;
+                break;
+            case HAS_DISEASE:
+                predicate = HAS_DISEASE_PROPERTY;
+                break;
+            default:
+                predicate = "unknownPredicate";
+        }
+        return format("%s_%s_%s_%d", GENERATED_RULE_PREFIX, predicate, category.getEntity(), ruleIdx);
     }
 
 }

@@ -1,11 +1,8 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service;
 
-import com.google.common.collect.Sets;
-import javafx.collections.ObservableList;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.PartialStarCreationException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.RuleAlreadyExistsException;
@@ -18,7 +15,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.*;
-import java.util.function.Supplier;
 
 import static com.google.common.collect.Sets.symmetricDifference;
 import static java.lang.String.format;
@@ -54,7 +50,7 @@ public class MachineLearningTest {
             long start = nanoTime();
             machineLearning.sequentialCovering(patients);
             long stop = nanoTime();
-            results.println(format(Locale.US, "%d,%f", n, (float)(stop - start) / 1000000000));
+            results.println(format(Locale.US, "%d,%f", n, (float) (stop - start) / 1000000000));
         }
         results.close();
     }
@@ -64,6 +60,12 @@ public class MachineLearningTest {
         for (int i = 1; i <= 10; i++) {
             validateLearningRules(i);
         }
+    }
+
+    @Test
+    public void testGroupedEntities() throws Exception {
+        GroupedEntities groupedEntities = new GroupedEntities(1);
+        System.out.println(groupedEntities.getAge(0));
     }
 
     private void validateLearningRules(int n) throws PartialStarCreationException, RuleAlreadyExistsException, CreateRuleException {
@@ -101,29 +103,30 @@ public class MachineLearningTest {
         difference += (double) symmetricDifference(oldTests, newTests).size() * 100 / oldTests.size();
         difference += (double) symmetricDifference(oldTreatments, newTreatments).size() * 100 / oldTreatments.size();
 
-        return difference / 4;
+        return difference;
     }
 
     private Set<Patient> generatePatients(int count) {
         Set<Patient> patients = new HashSet<>(count);
+        GroupedEntities groupedEntities = new GroupedEntities(count);
         for (int i = 0; i < count; i++) {
-            patients.add(generatePatient("patient" + (i + 1)));
+            patients.add(generatePatient("patient" + (i + 1), groupedEntities, i));
         }
         return patients;
     }
 
-    private Patient generatePatient(String id) {
+    private Patient generatePatient(String id, GroupedEntities groupedEntities, int i) {
         Patient patient = new Patient(id);
-        patient.setAge(PATIENT_MIN_AGE + RAND.nextInt(PATIENT_MAX_AGE - PATIENT_MIN_AGE));
-        patient.setHeight(PATIENT_MIN_HEIGHT + RAND.nextInt(PATIENT_MAX_HEIGHT - PATIENT_MIN_HEIGHT));
-        patient.setWeight(PATIENT_MIN_WEIGHT + RAND.nextInt(PATIENT_MAX_WEIGHT - PATIENT_MIN_WEIGHT));
-        patient.setSymptoms(selectRandomSubset(ontology.getSymptoms().values()));
-        patient.setCauses(selectRandomSubset(ontology.getCauses().values()));
-        patient.setDiseases(selectRandomSubset(ontology.getDiseases().values()));
-        patient.setNegativeTests(selectRandomSubset(ontology.getTests().values()));
-        patient.setTreatments(selectRandomSubset(ontology.getTreatments().values()));
-        patient.setPreviousAndCurrentDiseases(selectRandomSubset(ontology.getDiseases().values()));
-        patient.setTests(selectRandomSubset(ontology.getTests().values()));
+        patient.setAge(groupedEntities.getAge(i));
+        patient.setHeight(groupedEntities.getHeight(i));
+        patient.setWeight(groupedEntities.getWeight(i));
+        patient.setSymptoms(selectRandomSubset(groupedEntities.getSymptoms(i)));
+        patient.setCauses(selectRandomSubset(groupedEntities.getCauses(i)));
+        patient.setDiseases(selectRandomSubset(groupedEntities.getDiseases(i)));
+        patient.setNegativeTests(selectRandomSubset(groupedEntities.getNegativeTests(i)));
+        patient.setTreatments(selectRandomSubset(groupedEntities.getTreatments(i)));
+        patient.setPreviousAndCurrentDiseases(selectRandomSubset(groupedEntities.getPreviousDiseases(i)));
+        patient.setTests(selectRandomSubset(groupedEntities.getTests(i)));
         return patient;
     }
 
@@ -136,5 +139,97 @@ public class MachineLearningTest {
             subSet.add(list.get(nextIndex));
         }
         return subSet;
+    }
+
+    private static class GroupedEntities {
+        private int n;
+        private List<Collection<Entity>> symptoms;
+        private List<Collection<Entity>> causes;
+        private List<Collection<Entity>> diseases;
+        private List<Collection<Entity>> tests;
+        private List<Collection<Entity>> treatments;
+        private List<Collection<Entity>> previousDiseases;
+        private List<Collection<Entity>> negativeTests;
+
+        GroupedEntities(int n) {
+            this.n = n;
+            this.symptoms = generateGroups(ontology.getSymptoms().values());
+            this.causes = generateGroups(ontology.getCauses().values());
+            this.diseases = generateGroups(ontology.getDiseases().values());
+            this.tests = generateGroups(ontology.getTests().values());
+            this.treatments = generateGroups(ontology.getTreatments().values());
+            this.previousDiseases = generateGroups(ontology.getDiseases().values());
+            this.negativeTests = generateGroups(ontology.getTests().values());
+        }
+
+        int getAge(int i) {
+            return generateNumber(i, PATIENT_MIN_AGE, PATIENT_MAX_AGE);
+        }
+
+        int getHeight(int i) {
+            return generateNumber(i, PATIENT_MIN_HEIGHT, PATIENT_MAX_HEIGHT);
+        }
+
+        int getWeight(int i) {
+            return generateNumber(i, PATIENT_MIN_WEIGHT, PATIENT_MAX_WEIGHT);
+        }
+
+        Collection<Entity> getSymptoms(int i) {
+            return symptoms.get(i);
+        }
+
+        Collection<Entity> getCauses(int i) {
+            return causes.get(i);
+        }
+
+        Collection<Entity> getDiseases(int i) {
+            return diseases.get(i);
+        }
+
+        Collection<Entity> getTests(int i) {
+            return tests.get(i);
+        }
+
+        Collection<Entity> getTreatments(int i) {
+            return treatments.get(i);
+        }
+
+        Collection<Entity> getPreviousDiseases(int i) {
+            return previousDiseases.get(i);
+        }
+
+        Collection<Entity> getNegativeTests(int i) {
+            return negativeTests.get(i);
+        }
+
+        private List<Collection<Entity>> generateGroups(Collection<Entity> entities) {
+            int error = 4;
+            int entitiesSize = entities.size();
+            int chunkSize = entitiesSize / n;
+            List<Collection<Entity>> entitiesGroups = new ArrayList<>(n);
+            List<Entity> entitiesList = new ArrayList<>(entities);
+            for (int i = 0; i < entitiesSize; i += chunkSize) {
+                entitiesGroups.add(entitiesList.subList(Math.max(i - error, 0), Math.min(i + chunkSize + error, entitiesSize)));
+            }
+            return entitiesGroups;
+        }
+
+        private int generateNumber(int i, int min, int max) {
+            float variance = 8;
+            float baseMean = (float) (max - min) / (2 * n);
+            float width = baseMean * 2;
+            int generatedNumber = (int) getGaussian(baseMean + width * i, variance);
+            if (generatedNumber < min) {
+                return min;
+            } else if (generatedNumber > max) {
+                return max;
+            } else {
+                return generatedNumber;
+            }
+        }
+
+        private double getGaussian(float mean, float variance) {
+            return mean + RAND.nextGaussian() * variance;
+        }
     }
 }

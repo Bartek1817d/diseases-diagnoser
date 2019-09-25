@@ -9,6 +9,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWra
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singleton;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
 public class Complex implements Comparable<Complex> {
@@ -196,7 +197,7 @@ public class Complex implements Comparable<Complex> {
         return selector == null || selector.covers(entity);
     }
 
-    public Rule generateRule(String ruleName, Concepts concepts, OntologyWrapper ontology) {
+    public Rule generateRule(String ruleName, Category category, OntologyWrapper ontology) {
         Rule rule = new Rule(ruleName);
         Variable patientVariable = new Variable("patient", ontology.getClasses().get(PATIENT_CLASS));
         Variable ageVariable = new Variable("_age");
@@ -212,10 +213,20 @@ public class Complex implements Comparable<Complex> {
         rule.addBodyAtoms(createEntityAtoms(patientVariable, PREVIOUS_DISEASE_PROPERTY, previousDiseasesSelector));
         rule.addBodyAtoms(createEntityAtoms(patientVariable, NEGATIVE_TEST_PROPERTY, negativeTestsSelector));
 
-        rule.addHeadAtoms(createEntityAtoms(patientVariable, HAS_DISEASE_PROPERTY, concepts.diseases));
-        rule.addHeadAtoms(createEntityAtoms(patientVariable, SHOULD_MAKE_TEST_PROPERTY, concepts.tests));
-        rule.addHeadAtoms(createEntityAtoms(patientVariable, SHOULD_BE_TREATED_WITH_PROPERTY, concepts.treatments));
-        rule.addHeadAtoms(createEntityAtoms(patientVariable, CAUSE_OF_DISEASE_PROPERTY, concepts.causes));
+        switch (category.getPredicate()) {
+            case HAS_DISEASE:
+                rule.addHeadAtoms(createEntityAtoms(patientVariable, HAS_DISEASE_PROPERTY, singleton(category.getEntity())));
+                break;
+            case SHOULD_MAKE_TEST:
+                rule.addHeadAtoms(createEntityAtoms(patientVariable, SHOULD_MAKE_TEST_PROPERTY, singleton(category.getEntity())));
+                break;
+            case SHOULD_BE_TREATED_WITH:
+                rule.addHeadAtoms(createEntityAtoms(patientVariable, SHOULD_BE_TREATED_WITH_PROPERTY, singleton(category.getEntity())));
+                break;
+            case CAUSE_OF_DISEASE:
+                rule.addHeadAtoms(createEntityAtoms(patientVariable, CAUSE_OF_DISEASE_PROPERTY, singleton(category.getEntity())));
+                break;
+        }
 
         return rule;
     }
