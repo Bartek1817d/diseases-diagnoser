@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import static java.lang.Float.MAX_VALUE;
 import static java.lang.String.format;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Category.Predicate.*;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.ComplexComparator.sortStar;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
 public class MachineLearning {
@@ -76,7 +77,7 @@ public class MachineLearning {
             }
             star.intersection(partialStar);
             star.deleteNarrowComplexes();
-            star.sort(new ComplexComparator(trainingSet, uncoveredSet, positiveSeed));
+            sortStar(star, category, trainingSet);
             star.leaveFirstElements(5);
             negativeSeed = negativeSeed(trainingSet, star, positiveSeed, category);
         }

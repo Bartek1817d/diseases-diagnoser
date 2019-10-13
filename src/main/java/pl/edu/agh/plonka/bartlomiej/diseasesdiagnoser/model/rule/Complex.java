@@ -23,10 +23,7 @@ public class Complex implements Comparable<Complex> {
     private LinearSelector<Integer> heightSelector;
     private LinearSelector<Integer> weightSelector;
 
-    private Integer evaluation1;
-    private Integer evaluation2;
-    private Integer evaluation3;
-    private Integer evaluation4;
+    private Float evaluation;
 
     @SuppressWarnings("unchecked")
     public static Complex conjunction(Complex complex1, Complex complex2) {
@@ -111,36 +108,12 @@ public class Complex implements Comparable<Complex> {
         this.weightSelector = weightSelector;
     }
 
-    public Integer getEvaluation1() {
-        return evaluation1;
+    public Float getEvaluation() {
+        return evaluation;
     }
 
-    public void setEvaluation1(Integer evaluation1) {
-        this.evaluation1 = evaluation1;
-    }
-
-    public Integer getEvaluation2() {
-        return evaluation2;
-    }
-
-    public void setEvaluation2(Integer evaluation2) {
-        this.evaluation2 = evaluation2;
-    }
-
-    public Integer getEvaluation3() {
-        return evaluation3;
-    }
-
-    public void setEvaluation3(Integer evaluation3) {
-        this.evaluation3 = evaluation3;
-    }
-
-    public Integer getEvaluation4() {
-        return evaluation4;
-    }
-
-    public void setEvaluation4(Integer evaluation4) {
-        this.evaluation4 = evaluation4;
+    public void setEvaluation(Float evaluation) {
+        this.evaluation = evaluation;
     }
 
     public boolean contains(Complex complex) {

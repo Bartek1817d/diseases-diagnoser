@@ -9,82 +9,45 @@ import java.util.Comparator;
 
 public class ComplexComparator implements Comparator<Complex> {
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private final static Logger LOG = LoggerFactory.getLogger(ComplexComparator.class);
 
-    private Concepts learnedConcept;
-    private Collection<Patient> trainingSet;
-    private Collection<Patient> uncoveredSet;
-    private int positiveExamples = 0;
-    private int negativeExamples;
+    private final static float w1 = 1f;
+    private final static float w2 = 1f;
 
-    public ComplexComparator(Collection<Patient> trainingSet, Collection<Patient> uncoveredSet, Patient positiveSeed) {
-        this.learnedConcept = new Concepts(positiveSeed);
-        this.trainingSet = trainingSet;
-        this.uncoveredSet = uncoveredSet;
-
-        for (Patient seed : trainingSet)
-            if (learnedConcept.covers(seed))
-                positiveExamples++;
-        negativeExamples = trainingSet.size() - positiveExamples;
+    public static void sortStar(Star star, Category category, Collection<Patient> trainingSet) {
+        ComplexComparator comparator = new ComplexComparator(star, category, trainingSet);
+        star.sort(comparator.reversed());
     }
 
-    private Pair coveredPositiveAndNegativeSeeds(Collection<Patient> trainingSet, Complex complex) {
-        int positive = 0;
-        int negative = 0;
-        for (Patient seed : trainingSet)
-            if (complex.isPatientCovered(seed))
-                if (learnedConcept.covers(seed))
-                    positive++;
-                else
-                    negative++;
-        return new Pair(positive, negative);
+    private ComplexComparator(Star star, Category category, Collection<Patient> trainingSet) {
+        star.forEach(complex -> evaluateComplex(complex, category, trainingSet));
+    }
+
+    private static void evaluateComplex(Complex complex, Category category, Collection<Patient> trainingSet) {
+        int coveredWithTheSameCategory = 0;
+        int uncoveredWithDifferentCategory = 0;
+
+        for (Patient patient : trainingSet) {
+            if (complex.isPatientCovered(patient) && category.assertPatientInCategory(patient))
+                coveredWithTheSameCategory++;
+            else if (!complex.isPatientCovered(patient) && !category.assertPatientInCategory(patient)) {
+                uncoveredWithDifferentCategory++;
+            }
+        }
+
+        complex.setEvaluation(w1 * coveredWithTheSameCategory + w2 * uncoveredWithDifferentCategory);
     }
 
     @Override
     public int compare(Complex complex1, Complex complex2) {
-        if (complex1.getEvaluation1() == null) {
-            Pair p = coveredPositiveAndNegativeSeeds(trainingSet, complex1);
-            complex1.setEvaluation1(p.positive);
-            complex1.setEvaluation2(negativeExamples - p.negative);
-        }
-        if (complex2.getEvaluation2() == null) {
-            Pair p = coveredPositiveAndNegativeSeeds(trainingSet, complex2);
-            complex2.setEvaluation1(p.positive);
-            complex2.setEvaluation2(negativeExamples - p.negative);
-        }
-        if (complex1.getEvaluation1() < complex2.getEvaluation1())
-            return 1;
-        if (complex1.getEvaluation1() > complex2.getEvaluation1())
+        if (complex1.getEvaluation() < complex2.getEvaluation()) {
             return -1;
-        if (complex1.getEvaluation2() < complex2.getEvaluation2())
+        } else if (complex1.getEvaluation() > complex2.getEvaluation()) {
             return 1;
-        if (complex1.getEvaluation2() > complex2.getEvaluation2())
-            return -1;
-
-        if (complex1.getEvaluation3() == null) {
-            Pair p = coveredPositiveAndNegativeSeeds(uncoveredSet, complex1);
-            complex1.setEvaluation3(p.positive);
+        } else {
+            return 0;
         }
-        if (complex2.getEvaluation3() == null) {
-            Pair p = coveredPositiveAndNegativeSeeds(uncoveredSet, complex2);
-            complex2.setEvaluation3(p.positive);
-        }
-        if (complex1.getEvaluation3() < complex2.getEvaluation3())
-            return 1;
-        if (complex1.getEvaluation3() > complex2.getEvaluation3())
-            return -1;
-
-        return 0;
     }
 
-    private class Pair {
-        private int positive;
-        private int negative;
-
-        private Pair(int positive, int negative) {
-            this.positive = positive;
-            this.negative = negative;
-        }
-    }
 
 }
