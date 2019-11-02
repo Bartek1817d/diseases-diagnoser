@@ -23,7 +23,6 @@ public class MachineLearning {
 
     // 0 for restrictive, 1 for general
     private static final float epsilon = 0.5f;
-    private static final float decisionVotesPercent = 0.3f;
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private OntologyWrapper ontology;
 
@@ -220,21 +219,6 @@ public class MachineLearning {
             }
         }
         return null;
-    }
-
-    private void addVote(Map<Entity, Integer> voteBox, Entity entity) {
-        if (voteBox.containsKey(entity))
-            voteBox.put(entity, voteBox.get(entity) + 1);
-        else
-            voteBox.put(entity, 1);
-    }
-
-    private Collection<Entity> countVotes(Map<Entity, Integer> voteBox, int allVotesNumber) {
-        return voteBox.entrySet()
-                .stream()
-                .filter(e -> (float) e.getValue() / allVotesNumber >= decisionVotesPercent)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
     }
 
     private boolean assertPatientWithCategoryInSet(Set<Patient> patientsSet, Category category) {
