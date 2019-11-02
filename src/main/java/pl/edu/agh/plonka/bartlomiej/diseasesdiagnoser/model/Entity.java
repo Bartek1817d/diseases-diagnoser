@@ -76,7 +76,7 @@ public class Entity {
 
     @Override
     public String toString() {
-        return label.get();
+        return id.get();
     }
 
     @Override

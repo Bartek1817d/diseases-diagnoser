@@ -1,6 +1,6 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
@@ -15,27 +15,33 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Sets.symmetricDifference;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.nanoTime;
+import static java.util.Arrays.stream;
+import static java.util.Collections.singleton;
+import static java.util.function.Function.identity;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
 public class MachineLearningTest {
 
     private static final Logger LOG = getLogger(MachineLearningTest.class);
-
-    private static OntologyWrapper ontology;
-    private static MachineLearning machineLearning;
-    private static PatientsService patientsService;
     private static final Random RAND = new Random(currentTimeMillis());
+    private OntologyWrapper ontology;
+    private MachineLearning machineLearning;
+    private PatientsService patientsService;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        patientsService = new PatientsService(new File("src/test/resources/human_diseases.owl"));
-        ontology = patientsService.getOntology();
+    @Before
+    public void setUp() throws Exception {
+//        patientsService = new PatientsService(new File("src/test/resources/human_diseases.owl"));
+//        ontology = patientsService.getOntology();
+        mockOntology();
         machineLearning = new MachineLearning(ontology);
     }
 
@@ -66,6 +72,17 @@ public class MachineLearningTest {
     public void testGroupedEntities() throws Exception {
         GroupedEntities groupedEntities = new GroupedEntities(1);
         System.out.println(groupedEntities.getAge(0));
+    }
+
+    @Test
+    public void testGeneratingRules() throws PartialStarCreationException {
+        Set<Patient> patients = new HashSet<>();
+        patients.add(generatePatient("patient1", 24, "StabbingChestPain", "EKG", "Myocarditis"));
+        patients.add(generatePatient("patient2", 24, "Dyspnoea", "ChestXRay", "Pericarditis"));
+        patients.add(generatePatient("patient3", 60, "StabbingChestPain", "ChestXRay", "LungCancer"));
+
+        Collection<Rule> rules = machineLearning.sequentialCovering(patients);
+        System.out.println(rules);
     }
 
     private void validateLearningRules(int n) throws PartialStarCreationException, RuleAlreadyExistsException, CreateRuleException {
@@ -130,6 +147,15 @@ public class MachineLearningTest {
         return patient;
     }
 
+    private Patient generatePatient(String patientId, Integer age, String symptom, String negativeTest, String disease) {
+        Patient patient = new Patient(patientId);
+        patient.setAge(age);
+        patient.setSymptoms(singleton(ontology.getSymptoms().get(symptom)));
+        patient.setNegativeTests(singleton(ontology.getTests().get(negativeTest)));
+        patient.setDiseases(singleton(ontology.getDiseases().get(disease)));
+        return patient;
+    }
+
     private Collection<Entity> selectRandomSubset(Collection<Entity> set) {
         List<Entity> list = new ArrayList<>(set);
         int size = RAND.nextInt(list.size()) + 1;
@@ -139,6 +165,44 @@ public class MachineLearningTest {
             subSet.add(list.get(nextIndex));
         }
         return subSet;
+    }
+
+    private void mockOntology() {
+        ontology = mock(OntologyWrapper.class);
+        when(ontology.getDiseases()).thenReturn(mockDiseases());
+        when(ontology.getSymptoms()).thenReturn(mockSymptoms());
+        when(ontology.getTests()).thenReturn(mockTests());
+        when(ontology.getTreatments()).thenReturn(mockTreatments());
+        when(ontology.getCauses()).thenReturn(mockCauses());
+        when(ontology.getClasses()).thenReturn(mockClasses());
+    }
+
+    private Map<String, Entity> mockDiseases() {
+        return mockEntities("Cold", "LungCancer", "Chickenpox", "Myocarditis", "Pericarditis");
+    }
+
+    private Map<String, Entity> mockSymptoms() {
+        return mockEntities("Cough", "StabbingChestPain", "Dyspnoea");
+    }
+
+    private Map<String, Entity> mockTests() {
+        return mockEntities("EKG", "ChestXRay");
+    }
+
+    private Map<String, Entity> mockTreatments() {
+        return new HashMap<>();
+    }
+
+    private Map<String, Entity> mockCauses() {
+        return new HashMap<>();
+    }
+
+    private Map<String, Entity> mockClasses() {
+        return mockEntities("Patient");
+    }
+
+    private Map<String, Entity> mockEntities(String... entities) {
+        return stream(entities).collect(Collectors.toMap(identity(), Entity::new));
     }
 
     private static class GroupedEntities {
@@ -153,13 +217,13 @@ public class MachineLearningTest {
 
         GroupedEntities(int n) {
             this.n = n;
-            this.symptoms = generateGroups(ontology.getSymptoms().values());
-            this.causes = generateGroups(ontology.getCauses().values());
-            this.diseases = generateGroups(ontology.getDiseases().values());
-            this.tests = generateGroups(ontology.getTests().values());
-            this.treatments = generateGroups(ontology.getTreatments().values());
-            this.previousDiseases = generateGroups(ontology.getDiseases().values());
-            this.negativeTests = generateGroups(ontology.getTests().values());
+//            this.symptoms = generateGroups(ontology.getSymptoms().values());
+//            this.causes = generateGroups(ontology.getCauses().values());
+//            this.diseases = generateGroups(ontology.getDiseases().values());
+//            this.tests = generateGroups(ontology.getTests().values());
+//            this.treatments = generateGroups(ontology.getTreatments().values());
+//            this.previousDiseases = generateGroups(ontology.getDiseases().values());
+//            this.negativeTests = generateGroups(ontology.getTests().values());
         }
 
         int getAge(int i) {
