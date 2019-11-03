@@ -57,32 +57,33 @@ class EntitiesLoader {
         }
 
         if (classEntity.getLabel() == null) {
-            classEntity.setLabel(getLabel(owlClass));
-            classEntity.setComment(getComment(owlClass));
+            classEntity.setLanguageLabelMap(getLabel(owlClass));
+            classEntity.setLanguageCommentMap(getComment(owlClass));
+            classEntity.setLanguage(lang);
         }
 
         return classEntity;
     }
 
-    private String getLabel(OWLEntity owlClass) {
+    private Map<String, String> getLabel(OWLEntity owlClass) {
         return getProperty(owlClass, factory.getRDFSLabel());
     }
 
-    private String getComment(OWLEntity owlClass) {
+    private Map<String, String> getComment(OWLEntity owlClass) {
         return getProperty(owlClass, factory.getRDFSComment());
     }
 
-    private String getProperty(OWLEntity owlClass, OWLAnnotationProperty annotationProperty) {
+    private Map<String, String> getProperty(OWLEntity owlClass, OWLAnnotationProperty annotationProperty) {
+        HashMap<String, String> propertyMap = new HashMap<>();
         for (OWLAnnotation annotation : EntitySearcher.getAnnotations(owlClass, ontology,
                 annotationProperty)) {
             OWLAnnotationValue val = annotation.getValue();
             if (val instanceof OWLLiteral) {
                 OWLLiteral label = (OWLLiteral) val;
-                if (label.hasLang(lang))
-                    return label.getLiteral();
+                propertyMap.put(label.getLang(), label.getLiteral());
             }
         }
-        return null;
+        return propertyMap;
     }
 
     private Entity loadInstance(OWLNamedIndividual owlInstance, Map<String, Entity> instances, Map<String, Entity> classes) {
@@ -90,8 +91,9 @@ class EntitiesLoader {
         Entity instance = new Entity(instanceID);
         for (OWLClassExpression owlParentClass : EntitySearcher.getTypes(owlInstance, ontology))
             instance.addClass(classes.get(renderer.render(owlParentClass)));
-        instance.setLabel(getLabel(owlInstance));
-        instance.setComment(getComment(owlInstance));
+        instance.setLanguageLabelMap(getLabel(owlInstance));
+        instance.setLanguageCommentMap(getComment(owlInstance));
+        instance.setLanguage(lang);
         instances.put(instanceID, instance);
         return instance;
     }
