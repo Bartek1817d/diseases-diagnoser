@@ -1,4 +1,4 @@
-package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology;
+package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.semanticweb.owlapi.model.SWRLAtom;

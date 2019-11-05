@@ -1,4 +1,4 @@
-package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology;
+package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service;
 
 import com.clarkparsia.pellet.owlapiv3.PelletReasonerFactory;
 import com.google.common.collect.Range;

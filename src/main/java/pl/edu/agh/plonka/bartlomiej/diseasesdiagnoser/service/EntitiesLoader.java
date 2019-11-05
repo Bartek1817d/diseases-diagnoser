@@ -1,4 +1,4 @@
-package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology;
+package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service;
 
 import org.semanticweb.owlapi.io.OWLObjectRenderer;
 import org.semanticweb.owlapi.model.*;

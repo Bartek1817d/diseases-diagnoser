@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.OntologyWrapper;
 
 import java.util.*;
 import java.util.stream.Collectors;

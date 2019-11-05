@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.RuleAlreadyExistsException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 
 import java.io.File;

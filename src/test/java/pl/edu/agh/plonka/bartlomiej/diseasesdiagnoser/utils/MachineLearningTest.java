@@ -6,7 +6,7 @@ import org.junit.Test;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.PartialStarCreationException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.ontology.OntologyWrapper;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.OntologyWrapper;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.MachineLearning;
 
