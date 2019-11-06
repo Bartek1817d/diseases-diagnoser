@@ -113,6 +113,7 @@ public class PatientOverviewController {
             }
         });
 
+        setListViewCellFactories();
         addDescriptionListeners();
         enableMultipleSelection();
         addListKeyBindings();
@@ -413,6 +414,21 @@ public class PatientOverviewController {
         }
     }
 
+    private void setListViewCellFactories() {
+        symptomsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        inferredSymptomsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        diseasesList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        inferredDiseasesList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        testsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        inferredTestsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        treatmentsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        inferredTreatmentsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        causesList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        inferredCausesList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        negativeTestsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        previousAndCurrentDiseasesList.setCellFactory(PatientOverviewController::listViewCellFactory);
+    }
+
     private void bindPatientProperties(Patient patient) {
         firstNameLabel.textProperty().bind(patient.getObservableFirstName());
         lastNameLabel.textProperty().bind(patient.getObservableLastName());
@@ -420,14 +436,6 @@ public class PatientOverviewController {
         heightLabel.textProperty().bind(new PositiveIntegerStringBinding(patient.getObservableHeight()));
         weightLabel.textProperty().bind(new PositiveIntegerStringBinding(patient.getObservableWeight()));
 
-        symptomsList.setCellFactory(list -> new ListCell<Entity>() {
-            @Override
-            protected void updateItem(Entity item, boolean empty) {
-                super.updateItem(item, empty);
-                if (!empty && item != null)
-                    textProperty().bind(item.getObservableLabel());
-            }
-        });
 
         symptomsList.setItems(patient.getSymptoms());
         inferredSymptomsList.setItems(patient.getInferredSymptoms());
@@ -521,5 +529,16 @@ public class PatientOverviewController {
         causesList.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteCauses));
         negativeTestsList.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteNegativeTests));
         previousAndCurrentDiseasesList.setOnKeyPressed(createDeleteEventHandler(this::handleDeletePreviousAndCurrentDiseases));
+    }
+
+    private static ListCell<Entity> listViewCellFactory(ListView<Entity> list) {
+        return new ListCell<Entity>() {
+            @Override
+            protected void updateItem(Entity item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty && item != null)
+                    textProperty().bind(item.getObservableLabel());
+            }
+        };
     }
 }
