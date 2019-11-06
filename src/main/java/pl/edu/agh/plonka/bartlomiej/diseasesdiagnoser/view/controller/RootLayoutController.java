@@ -1,6 +1,8 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
@@ -16,14 +18,16 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toSet;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.GENERATED_RULE_PREFIX;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultDirectoryFile;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultOntologyFile;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.setResources;
 
 /**
  * The controller for the root layout. The root layout provides the basic
@@ -35,6 +39,37 @@ import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefault
 public class RootLayoutController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
+
+    @FXML
+    private Menu fileMenu;
+    @FXML
+    private Menu viewMenu;
+    @FXML
+    private Menu rulesMenu;
+    @FXML
+    private Menu helpMenu;
+    @FXML
+    private MenuItem newMenu;
+    @FXML
+    private MenuItem openMenu;
+    @FXML
+    private MenuItem saveMenu;
+    @FXML
+    private MenuItem saveAsMenu;
+    @FXML
+    private MenuItem exitMenu;
+    @FXML
+    private MenuItem languageMenu;
+    @FXML
+    private MenuItem rulesEditMenu;
+    @FXML
+    private MenuItem rulesLearnMenu;
+    @FXML
+    private MenuItem aboutMenu;
+    @FXML
+    private MenuItem englishMenu;
+    @FXML
+    private MenuItem polishMenu;
 
     private PatientsService patientsService;
     private MachineLearning machineLearning;
@@ -49,6 +84,27 @@ public class RootLayoutController {
         this.machineLearning = machineLearning;
         this.ontologyUrl = ontologyUrl;
         this.viewManager = viewManager;
+
+        bindResourceBundle();
+    }
+
+    private void bindResourceBundle() {
+        fileMenu.textProperty().bind(getStringBinding("file"));
+        viewMenu.textProperty().bind(getStringBinding("view"));
+        rulesMenu.textProperty().bind(getStringBinding("rules"));
+        helpMenu.textProperty().bind(getStringBinding("help"));
+        newMenu.textProperty().bind(getStringBinding("new"));
+        openMenu.textProperty().bind(getStringBinding("open"));
+        saveMenu.textProperty().bind(getStringBinding("save"));
+        saveAsMenu.textProperty().bind(getStringBinding("saveAs"));
+        exitMenu.textProperty().bind(getStringBinding("exit"));
+        languageMenu.textProperty().bind(getStringBinding("language"));
+        rulesEditMenu.textProperty().bind(getStringBinding("rulesEdit"));
+        rulesLearnMenu.textProperty().bind(getStringBinding("rulesLearn"));
+        aboutMenu.textProperty().bind(getStringBinding("about"));
+        englishMenu.textProperty().bind(getStringBinding("english"));
+        polishMenu.textProperty().bind(getStringBinding("polish"));
+
     }
 
     /**
@@ -174,13 +230,13 @@ public class RootLayoutController {
     @FXML
     private void handleChangeLanguageToEnglish() {
         handleChangeLanguage("en");
-        viewManager.setLanguage("en");
+        setResources(getBundle("bundles/MyBundle", new Locale("en")));
     }
 
     @FXML
-    private void handleChangeLanguageToPolish() {
+    private void handleChangeLanguageToPolish() throws IOException {
         handleChangeLanguage("pl");
-        viewManager.setLanguage("pl");
+        setResources(getBundle("bundles/MyBundle", new Locale("pl")));
     }
 
     private void handleChangeLanguage(String language) {
