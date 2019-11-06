@@ -171,6 +171,20 @@ public class RootLayoutController {
         System.exit(0);
     }
 
+    @FXML
+    private void handleChangeLanguageToEnglish() {
+        handleChangeLanguage("en");
+    }
+
+    @FXML
+    private void handleChangeLanguageToPolish() {
+        handleChangeLanguage("pl");
+    }
+
+    private void handleChangeLanguage(String language) {
+        patientsService.changeLanguage(language);
+    }
+
     private boolean isGeneratedRule(Rule rule) {
         return rule.getName().trim().startsWith(GENERATED_RULE_PREFIX);
     }

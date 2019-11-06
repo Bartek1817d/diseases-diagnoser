@@ -22,6 +22,16 @@
                         <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
                     </items>
                 </Menu>
+            <Menu mnemonicParsing="false" text="View">
+               <items>
+                  <Menu mnemonicParsing="false" text="Language">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#handleChangeLanguageToEnglish" text="English" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleChangeLanguageToPolish" text="Polish" />
+                    </items>
+                  </Menu>
+               </items>
+            </Menu>
                 <Menu mnemonicParsing="false" text="Rules">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#handleEditRules" text="Edit" />

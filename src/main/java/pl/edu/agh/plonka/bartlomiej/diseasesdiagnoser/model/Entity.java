@@ -50,6 +50,10 @@ public class Entity {
         this.label.set(label);
     }
 
+    public ObservableValue<String> getObservableLabel() {
+        return label;
+    }
+
     public String getComment() {
         return comment.get();
     }
@@ -125,7 +129,11 @@ public class Entity {
     }
 
     public void setLanguage(String language) {
-        this.label.setValue(languageLabelMap.get(language));
-        this.comment.setValue(languageCommentMap.get(language));
+        if (languageLabelMap.containsKey(language))
+            this.label.setValue(languageLabelMap.get(language));
+        else
+            this.label.setValue(id.getValue());
+        if (languageCommentMap.containsKey(language))
+            this.comment.setValue(languageCommentMap.get(language));
     }
 }
