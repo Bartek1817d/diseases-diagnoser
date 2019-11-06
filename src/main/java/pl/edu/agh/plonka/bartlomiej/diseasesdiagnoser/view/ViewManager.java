@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class ViewManager {
 
@@ -304,6 +306,7 @@ public class ViewManager {
 
     private FXMLLoader getFXMLLoader(String resourcePath) {
         FXMLLoader loader = new FXMLLoader();
+        loader.setResources(ResourceBundle.getBundle("bundles/MyBundle", new Locale("en")));
         loader.setLocation(getClass().getClassLoader().getResource(resourcePath));
         return loader;
     }
