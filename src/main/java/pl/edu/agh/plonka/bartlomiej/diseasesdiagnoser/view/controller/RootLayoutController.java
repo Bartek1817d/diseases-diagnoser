@@ -174,11 +174,13 @@ public class RootLayoutController {
     @FXML
     private void handleChangeLanguageToEnglish() {
         handleChangeLanguage("en");
+        viewManager.setLanguage("en");
     }
 
     @FXML
     private void handleChangeLanguageToPolish() {
         handleChangeLanguage("pl");
+        viewManager.setLanguage("pl");
     }
 
     private void handleChangeLanguage(String language) {

@@ -42,6 +42,7 @@ public class ViewManager {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+    private String language = "en";
 
     public ViewManager(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -306,7 +307,7 @@ public class ViewManager {
 
     private FXMLLoader getFXMLLoader(String resourcePath) {
         FXMLLoader loader = new FXMLLoader();
-        loader.setResources(ResourceBundle.getBundle("bundles/MyBundle", new Locale("en")));
+        loader.setResources(ResourceBundle.getBundle("bundles/MyBundle", new Locale(language)));
         loader.setLocation(getClass().getClassLoader().getResource(resourcePath));
         return loader;
     }
@@ -332,5 +333,13 @@ public class ViewManager {
         dialogStage.setScene(scene);
 
         return dialogStage;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }
