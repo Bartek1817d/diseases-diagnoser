@@ -114,4 +114,8 @@ public class PatientsService {
     public OntologyWrapper getOntology() {
         return ontology;
     }
+
+    public void changeLanguage(String language) {
+        ontology.changeLanguage(language);
+    }
 }

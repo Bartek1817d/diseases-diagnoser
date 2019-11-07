@@ -21,6 +21,7 @@ import java.util.function.Function;
 import static javafx.scene.control.SelectionMode.MULTIPLE;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.ControllerUtils.createDeleteEventHandler;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
 
 public class PatientOverviewController {
 
@@ -36,6 +37,24 @@ public class PatientOverviewController {
     private TableColumn<Patient, String> lastNameColumn;
 
     @FXML
+    private Tab personalDataTab;
+    @FXML
+    private Tab symptomTab;
+    @FXML
+    private Tab negativeTestTab;
+    @FXML
+    private Tab previousDiseaseTab;
+    @FXML
+    private Tab diseaseTab;
+    @FXML
+    private Tab testTab;
+    @FXML
+    private Tab treatmentTab;
+    @FXML
+    private Tab causeTab;
+
+
+    @FXML
     private Label firstNameLabel;
     @FXML
     private Label lastNameLabel;
@@ -45,6 +64,17 @@ public class PatientOverviewController {
     private Label heightLabel;
     @FXML
     private Label weightLabel;
+
+    @FXML
+    private Label firstNameLabelL;
+    @FXML
+    private Label lastNameLabelL;
+    @FXML
+    private Label ageLabelL;
+    @FXML
+    private Label heightLabelL;
+    @FXML
+    private Label weightLabelL;
 
     @FXML
     private ListView<Entity> symptomsList;
@@ -70,6 +100,7 @@ public class PatientOverviewController {
     private ListView<Entity> negativeTestsList;
     @FXML
     private ListView<Entity> previousAndCurrentDiseasesList;
+
     @FXML
     private TextArea symptomDescription;
     @FXML
@@ -84,6 +115,70 @@ public class PatientOverviewController {
     private TextArea negativeTestDescription;
     @FXML
     private TextArea previousAndCurrentDiseasesDescription;
+
+    @FXML
+    private Button newPatientButton;
+    @FXML
+    private Button editPatientButton;
+    @FXML
+    private Button deletePatientButton;
+    @FXML
+    private Button newSymptomButton;
+    @FXML
+    private Button deleteSymptomButton;
+    @FXML
+    private Button newNegativeTestButton;
+    @FXML
+    private Button deleteNegativeTestButton;
+    @FXML
+    private Button newPreviousDiseaseButton;
+    @FXML
+    private Button deletePreviousDiseaseButton;
+    @FXML
+    private Button newDiseaseButton;
+    @FXML
+    private Button deleteDiseaseButton;
+    @FXML
+    private Button newTestButton;
+    @FXML
+    private Button deleteTestButton;
+    @FXML
+    private Button newTreatmentButton;
+    @FXML
+    private Button deleteTreatmentButton;
+    @FXML
+    private Button newCauseButton;
+    @FXML
+    private Button deleteCauseButton;
+
+    @FXML
+    private Label assertedSymptomsLabel;
+    @FXML
+    private Label inferredSymptomsLabel;
+    @FXML
+    private Label assertedNegativeTestsLabel;
+    @FXML
+    private Label inferredNegativeTestsLabel;
+    @FXML
+    private Label assertedPreviousDiseasesLabel;
+    @FXML
+    private Label inferredPreviousDiseasesLabel;
+    @FXML
+    private Label assertedDiseasesLabel;
+    @FXML
+    private Label inferredDiseasesLabel;
+    @FXML
+    private Label assertedTestsLabel;
+    @FXML
+    private Label inferredTestsLabel;
+    @FXML
+    private Label assertedTreatmentsLabel;
+    @FXML
+    private Label inferredTreatmentsLabel;
+    @FXML
+    private Label assertedCausesLabel;
+    @FXML
+    private Label inferredCausesLabel;
 
     private ViewManager viewManager;
 
@@ -113,6 +208,8 @@ public class PatientOverviewController {
             }
         });
 
+        bindResourceBundle();
+        setListViewCellFactories();
         addDescriptionListeners();
         enableMultipleSelection();
         addListKeyBindings();
@@ -413,12 +510,28 @@ public class PatientOverviewController {
         }
     }
 
+    private void setListViewCellFactories() {
+        symptomsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        inferredSymptomsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        diseasesList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        inferredDiseasesList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        testsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        inferredTestsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        treatmentsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        inferredTreatmentsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        causesList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        inferredCausesList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        negativeTestsList.setCellFactory(PatientOverviewController::listViewCellFactory);
+        previousAndCurrentDiseasesList.setCellFactory(PatientOverviewController::listViewCellFactory);
+    }
+
     private void bindPatientProperties(Patient patient) {
         firstNameLabel.textProperty().bind(patient.getObservableFirstName());
         lastNameLabel.textProperty().bind(patient.getObservableLastName());
         ageLabel.textProperty().bind(new PositiveIntegerStringBinding(patient.getObservableAge()));
         heightLabel.textProperty().bind(new PositiveIntegerStringBinding(patient.getObservableHeight()));
         weightLabel.textProperty().bind(new PositiveIntegerStringBinding(patient.getObservableWeight()));
+
 
         symptomsList.setItems(patient.getSymptoms());
         inferredSymptomsList.setItems(patient.getInferredSymptoms());
@@ -432,6 +545,8 @@ public class PatientOverviewController {
         inferredCausesList.setItems(patient.getInferredCauses());
         negativeTestsList.setItems(patient.getNegativeTests());
         previousAndCurrentDiseasesList.setItems(patient.getPreviousAndCurrentDiseases());
+
+
     }
 
     private void unbindPatientProperties() {
@@ -510,5 +625,65 @@ public class PatientOverviewController {
         causesList.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteCauses));
         negativeTestsList.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteNegativeTests));
         previousAndCurrentDiseasesList.setOnKeyPressed(createDeleteEventHandler(this::handleDeletePreviousAndCurrentDiseases));
+    }
+
+    private static ListCell<Entity> listViewCellFactory(ListView<Entity> list) {
+        return new ListCell<Entity>() {
+            @Override
+            protected void updateItem(Entity item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty && item != null)
+                    textProperty().bind(item.getObservableLabel());
+            }
+        };
+    }
+
+    private void bindResourceBundle() {
+        firstNameColumn.textProperty().bind(getStringBinding("FIRST_NAME"));
+        lastNameColumn.textProperty().bind(getStringBinding("LAST_NAME"));
+        firstNameLabelL.textProperty().bind(getStringBinding("FIRST_NAME"));
+        lastNameLabelL.textProperty().bind(getStringBinding("LAST_NAME"));
+        ageLabelL.textProperty().bind(getStringBinding("AGE"));
+        heightLabelL.textProperty().bind(getStringBinding("HEIGHT"));
+        weightLabelL.textProperty().bind(getStringBinding("WEIGHT"));
+        newPatientButton.textProperty().bind(getStringBinding("NEW_PATIENT_BUTTON"));
+        editPatientButton.textProperty().bind(getStringBinding("EDIT_PATIENT_BUTTON"));
+        deletePatientButton.textProperty().bind(getStringBinding("DELETE_PATIENT_BUTTON"));
+        newSymptomButton.textProperty().bind(getStringBinding("NEW_EDIT_ENTITY_BUTTON"));
+        deleteSymptomButton.textProperty().bind(getStringBinding("DELETE_ENTITY_BUTTON"));
+        newNegativeTestButton.textProperty().bind(getStringBinding("NEW_EDIT_ENTITY_BUTTON"));
+        deleteNegativeTestButton.textProperty().bind(getStringBinding("DELETE_ENTITY_BUTTON"));
+        newPreviousDiseaseButton.textProperty().bind(getStringBinding("NEW_EDIT_ENTITY_BUTTON"));
+        deletePreviousDiseaseButton.textProperty().bind(getStringBinding("DELETE_ENTITY_BUTTON"));
+        newDiseaseButton.textProperty().bind(getStringBinding("NEW_EDIT_ENTITY_BUTTON"));
+        deleteDiseaseButton.textProperty().bind(getStringBinding("DELETE_ENTITY_BUTTON"));
+        newTestButton.textProperty().bind(getStringBinding("NEW_EDIT_ENTITY_BUTTON"));
+        deleteTestButton.textProperty().bind(getStringBinding("DELETE_ENTITY_BUTTON"));
+        newTreatmentButton.textProperty().bind(getStringBinding("NEW_EDIT_ENTITY_BUTTON"));
+        deleteTreatmentButton.textProperty().bind(getStringBinding("DELETE_ENTITY_BUTTON"));
+        newCauseButton.textProperty().bind(getStringBinding("NEW_EDIT_ENTITY_BUTTON"));
+        deleteCauseButton.textProperty().bind(getStringBinding("DELETE_ENTITY_BUTTON"));
+        assertedSymptomsLabel.textProperty().bind(getStringBinding("ASSERTED_LABEL"));
+        inferredSymptomsLabel.textProperty().bind(getStringBinding("INFERRED_LABEL"));
+        assertedNegativeTestsLabel.textProperty().bind(getStringBinding("ASSERTED_LABEL"));
+        inferredNegativeTestsLabel.textProperty().bind(getStringBinding("INFERRED_LABEL"));
+        assertedPreviousDiseasesLabel.textProperty().bind(getStringBinding("ASSERTED_LABEL"));
+        inferredPreviousDiseasesLabel.textProperty().bind(getStringBinding("INFERRED_LABEL"));
+        assertedDiseasesLabel.textProperty().bind(getStringBinding("ASSERTED_LABEL"));
+        inferredDiseasesLabel.textProperty().bind(getStringBinding("INFERRED_LABEL"));
+        assertedTestsLabel.textProperty().bind(getStringBinding("ASSERTED_LABEL"));
+        inferredTestsLabel.textProperty().bind(getStringBinding("INFERRED_LABEL"));
+        assertedTreatmentsLabel.textProperty().bind(getStringBinding("ASSERTED_LABEL"));
+        inferredTreatmentsLabel.textProperty().bind(getStringBinding("INFERRED_LABEL"));
+        assertedCausesLabel.textProperty().bind(getStringBinding("ASSERTED_LABEL"));
+        inferredCausesLabel.textProperty().bind(getStringBinding("INFERRED_LABEL"));
+        personalDataTab.textProperty().bind(getStringBinding("PERSONAL_DATA_TAB"));
+        symptomTab.textProperty().bind(getStringBinding("SYMPTOMS_TAB"));
+        negativeTestTab.textProperty().bind(getStringBinding("NEGATIVE_TESTS_TAB"));
+        previousDiseaseTab.textProperty().bind(getStringBinding("PREVIOUS_DISEASES_TAB"));
+        diseaseTab.textProperty().bind(getStringBinding("DISEASES_TAB"));
+        testTab.textProperty().bind(getStringBinding("TESTS_TAB"));
+        treatmentTab.textProperty().bind(getStringBinding("TREATMENTS_TAB"));
+        causeTab.textProperty().bind(getStringBinding("CAUSES_TAB"));
     }
 }

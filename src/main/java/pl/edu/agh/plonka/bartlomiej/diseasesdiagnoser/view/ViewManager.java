@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class ViewManager {
 

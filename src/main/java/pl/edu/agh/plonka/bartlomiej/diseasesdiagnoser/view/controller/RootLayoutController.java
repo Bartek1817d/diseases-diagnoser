@@ -1,6 +1,8 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
@@ -16,14 +18,17 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toSet;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.BUNDLE_PATH;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.GENERATED_RULE_PREFIX;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultDirectoryFile;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultOntologyFile;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.setResources;
 
 /**
  * The controller for the root layout. The root layout provides the basic
@@ -35,6 +40,37 @@ import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefault
 public class RootLayoutController {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
+
+    @FXML
+    private Menu fileMenu;
+    @FXML
+    private Menu viewMenu;
+    @FXML
+    private Menu rulesMenu;
+    @FXML
+    private Menu helpMenu;
+    @FXML
+    private MenuItem newMenu;
+    @FXML
+    private MenuItem openMenu;
+    @FXML
+    private MenuItem saveMenu;
+    @FXML
+    private MenuItem saveAsMenu;
+    @FXML
+    private MenuItem exitMenu;
+    @FXML
+    private MenuItem languageMenu;
+    @FXML
+    private MenuItem rulesEditMenu;
+    @FXML
+    private MenuItem rulesLearnMenu;
+    @FXML
+    private MenuItem aboutMenu;
+    @FXML
+    private MenuItem englishMenu;
+    @FXML
+    private MenuItem polishMenu;
 
     private PatientsService patientsService;
     private MachineLearning machineLearning;
@@ -49,6 +85,26 @@ public class RootLayoutController {
         this.machineLearning = machineLearning;
         this.ontologyUrl = ontologyUrl;
         this.viewManager = viewManager;
+
+        bindResourceBundle();
+    }
+
+    private void bindResourceBundle() {
+        fileMenu.textProperty().bind(getStringBinding("FILE_MENU"));
+        viewMenu.textProperty().bind(getStringBinding("VIEW_MENU"));
+        rulesMenu.textProperty().bind(getStringBinding("RULES_MENU"));
+        helpMenu.textProperty().bind(getStringBinding("HELP_MENU"));
+        newMenu.textProperty().bind(getStringBinding("NEW_MENU"));
+        openMenu.textProperty().bind(getStringBinding("OPEN_MENU"));
+        saveMenu.textProperty().bind(getStringBinding("SAVE_MENU"));
+        saveAsMenu.textProperty().bind(getStringBinding("SAVE_AS_MENU"));
+        exitMenu.textProperty().bind(getStringBinding("EXIT_MENU"));
+        languageMenu.textProperty().bind(getStringBinding("LANGUAGE_MENU"));
+        rulesEditMenu.textProperty().bind(getStringBinding("RULES_EDIT_MENU"));
+        rulesLearnMenu.textProperty().bind(getStringBinding("RULES_LEARN_MENU"));
+        aboutMenu.textProperty().bind(getStringBinding("ABOUT_MENU"));
+        englishMenu.textProperty().bind(getStringBinding("ENGLISH_MENU"));
+        polishMenu.textProperty().bind(getStringBinding("POLISH_MENU"));
     }
 
     /**
@@ -169,6 +225,22 @@ public class RootLayoutController {
     private void handleExit() {
         LOG.info("Close application.");
         System.exit(0);
+    }
+
+    @FXML
+    private void handleChangeLanguageToEnglish() {
+        handleChangeLanguage("en");
+        setResources(getBundle(BUNDLE_PATH, new Locale("en")));
+    }
+
+    @FXML
+    private void handleChangeLanguageToPolish() throws IOException {
+        handleChangeLanguage("pl");
+        setResources(getBundle(BUNDLE_PATH, new Locale("pl")));
+    }
+
+    private void handleChangeLanguage(String language) {
+        patientsService.changeLanguage(language);
     }
 
     private boolean isGeneratedRule(Rule rule) {

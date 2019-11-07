@@ -277,6 +277,15 @@ public class OntologyWrapper {
         return patients;
     }
 
+    public void changeLanguage(String language) {
+        classes.values().forEach(e -> e.setLanguage(language));
+        symptoms.values().forEach(e -> e.setLanguage(language));
+        diseases.values().forEach(e -> e.setLanguage(language));
+        tests.values().forEach(e -> e.setLanguage(language));
+        treatments.values().forEach(e -> e.setLanguage(language));
+        causes.values().forEach(e -> e.setLanguage(language));
+    }
+
     private Patient getInferredPatient(Patient patient) {
         reasoner.flush();
         OWLNamedIndividual patientInd = factory.getOWLNamedIndividual(patient.getID(), prefixManager);

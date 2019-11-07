@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Entity {
@@ -21,6 +22,9 @@ public class Entity {
     private final StringProperty comment = new SimpleStringProperty();
     private final SetProperty<Entity> classes = new SimpleSetProperty<>(
             FXCollections.observableSet(new HashSet<>()));
+
+    private Map<String, String> languageLabelMap;
+    private Map<String, String> languageCommentMap;
 
     public Entity() {
     }
@@ -43,6 +47,10 @@ public class Entity {
 
     public void setLabel(String label) {
         this.label.set(label);
+    }
+
+    public ObservableValue<String> getObservableLabel() {
+        return label;
     }
 
     public String getComment() {
@@ -101,5 +109,30 @@ public class Entity {
         } else {
             return id.get().equals(other.id.get());
         }
+    }
+
+    public Map<String, String> getLanguageLabelMap() {
+        return languageLabelMap;
+    }
+
+    public void setLanguageLabelMap(Map<String, String> languageLabelMap) {
+        this.languageLabelMap = languageLabelMap;
+    }
+
+    public Map<String, String> getLanguageCommentMap() {
+        return languageCommentMap;
+    }
+
+    public void setLanguageCommentMap(Map<String, String> languageCommentMap) {
+        this.languageCommentMap = languageCommentMap;
+    }
+
+    public void setLanguage(String language) {
+        if (languageLabelMap.containsKey(language))
+            this.label.setValue(languageLabelMap.get(language));
+        else
+            this.label.setValue(id.getValue());
+        if (languageCommentMap.containsKey(language))
+            this.comment.setValue(languageCommentMap.get(language));
     }
 }
