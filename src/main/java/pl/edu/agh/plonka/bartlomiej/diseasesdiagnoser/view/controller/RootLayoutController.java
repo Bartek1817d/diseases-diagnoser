@@ -23,6 +23,7 @@ import java.util.*;
 
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toSet;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.BUNDLE_PATH;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.GENERATED_RULE_PREFIX;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultDirectoryFile;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultOntologyFile;
@@ -89,21 +90,21 @@ public class RootLayoutController {
     }
 
     private void bindResourceBundle() {
-        fileMenu.textProperty().bind(getStringBinding("file"));
-        viewMenu.textProperty().bind(getStringBinding("view"));
-        rulesMenu.textProperty().bind(getStringBinding("rules"));
-        helpMenu.textProperty().bind(getStringBinding("help"));
-        newMenu.textProperty().bind(getStringBinding("new"));
-        openMenu.textProperty().bind(getStringBinding("open"));
-        saveMenu.textProperty().bind(getStringBinding("save"));
-        saveAsMenu.textProperty().bind(getStringBinding("saveAs"));
-        exitMenu.textProperty().bind(getStringBinding("exit"));
-        languageMenu.textProperty().bind(getStringBinding("language"));
-        rulesEditMenu.textProperty().bind(getStringBinding("rulesEdit"));
-        rulesLearnMenu.textProperty().bind(getStringBinding("rulesLearn"));
-        aboutMenu.textProperty().bind(getStringBinding("about"));
-        englishMenu.textProperty().bind(getStringBinding("english"));
-        polishMenu.textProperty().bind(getStringBinding("polish"));
+        fileMenu.textProperty().bind(getStringBinding("FILE_MENU"));
+        viewMenu.textProperty().bind(getStringBinding("VIEW_MENU"));
+        rulesMenu.textProperty().bind(getStringBinding("RULES_MENU"));
+        helpMenu.textProperty().bind(getStringBinding("HELP_MENU"));
+        newMenu.textProperty().bind(getStringBinding("NEW_MENU"));
+        openMenu.textProperty().bind(getStringBinding("OPEN_MENU"));
+        saveMenu.textProperty().bind(getStringBinding("SAVE_MENU"));
+        saveAsMenu.textProperty().bind(getStringBinding("SAVE_AS_MENU"));
+        exitMenu.textProperty().bind(getStringBinding("EXIT_MENU"));
+        languageMenu.textProperty().bind(getStringBinding("LANGUAGE_MENU"));
+        rulesEditMenu.textProperty().bind(getStringBinding("RULES_EDIT_MENU"));
+        rulesLearnMenu.textProperty().bind(getStringBinding("RULES_LEARN_MENU"));
+        aboutMenu.textProperty().bind(getStringBinding("ABOUT_MENU"));
+        englishMenu.textProperty().bind(getStringBinding("ENGLISH_MENU"));
+        polishMenu.textProperty().bind(getStringBinding("POLISH_MENU"));
 
     }
 
@@ -230,13 +231,13 @@ public class RootLayoutController {
     @FXML
     private void handleChangeLanguageToEnglish() {
         handleChangeLanguage("en");
-        setResources(getBundle("bundles/MyBundle", new Locale("en")));
+        setResources(getBundle(BUNDLE_PATH, new Locale("en")));
     }
 
     @FXML
     private void handleChangeLanguageToPolish() throws IOException {
         handleChangeLanguage("pl");
-        setResources(getBundle("bundles/MyBundle", new Locale("pl")));
+        setResources(getBundle(BUNDLE_PATH, new Locale("pl")));
     }
 
     private void handleChangeLanguage(String language) {

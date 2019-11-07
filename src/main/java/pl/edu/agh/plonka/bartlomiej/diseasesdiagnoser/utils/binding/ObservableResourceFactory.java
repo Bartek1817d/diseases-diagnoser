@@ -8,12 +8,13 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static java.util.ResourceBundle.getBundle;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.BUNDLE_PATH;
 
 public class ObservableResourceFactory {
 
     private static ObjectProperty<ResourceBundle> resources = new SimpleObjectProperty<>();
     static {
-        resources.set(getBundle("bundles/MyBundle", new Locale("en")));
+        resources.set(getBundle(BUNDLE_PATH, new Locale("en")));
     }
 
     private static ObjectProperty<ResourceBundle> resourcesProperty() {
