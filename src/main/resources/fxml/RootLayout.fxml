@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 
@@ -26,8 +27,8 @@
                <items>
                   <Menu fx:id="languageMenu" mnemonicParsing="false" text="Language">
                     <items>
-                      <MenuItem fx:id="englishMenu" mnemonicParsing="false" onAction="#handleChangeLanguageToEnglish" text="English" />
-                        <MenuItem fx:id="polishMenu" mnemonicParsing="false" onAction="#handleChangeLanguageToPolish" text="Polish" />
+                        <RadioMenuItem fx:id="englishMenu" mnemonicParsing="false" onAction="#handleChangeLanguageToEnglish" text="English" />
+                        <RadioMenuItem fx:id="polishMenu" mnemonicParsing="false" onAction="#handleChangeLanguageToPolish" text="Polish" />
                     </items>
                   </Menu>
                </items>

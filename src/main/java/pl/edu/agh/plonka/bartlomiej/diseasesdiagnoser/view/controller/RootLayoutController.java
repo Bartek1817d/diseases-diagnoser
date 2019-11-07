@@ -3,6 +3,8 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.ToggleGroup;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
@@ -68,9 +70,9 @@ public class RootLayoutController {
     @FXML
     private MenuItem aboutMenu;
     @FXML
-    private MenuItem englishMenu;
+    private RadioMenuItem englishMenu;
     @FXML
-    private MenuItem polishMenu;
+    private RadioMenuItem polishMenu;
 
     private PatientsService patientsService;
     private MachineLearning machineLearning;
@@ -85,8 +87,19 @@ public class RootLayoutController {
         this.machineLearning = machineLearning;
         this.ontologyUrl = ontologyUrl;
         this.viewManager = viewManager;
+    }
 
+    @FXML
+    private void initialize() {
         bindResourceBundle();
+        initLanguageMenu();
+    }
+
+    private void initLanguageMenu() {
+        ToggleGroup toggleGroup = new ToggleGroup();
+        polishMenu.setToggleGroup(toggleGroup);
+        englishMenu.setToggleGroup(toggleGroup);
+        englishMenu.setSelected(true);
     }
 
     private void bindResourceBundle() {
