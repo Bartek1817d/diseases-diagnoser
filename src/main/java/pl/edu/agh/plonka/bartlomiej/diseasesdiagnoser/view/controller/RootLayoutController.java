@@ -105,7 +105,6 @@ public class RootLayoutController {
         aboutMenu.textProperty().bind(getStringBinding("ABOUT_MENU"));
         englishMenu.textProperty().bind(getStringBinding("ENGLISH_MENU"));
         polishMenu.textProperty().bind(getStringBinding("POLISH_MENU"));
-
     }
 
     /**
