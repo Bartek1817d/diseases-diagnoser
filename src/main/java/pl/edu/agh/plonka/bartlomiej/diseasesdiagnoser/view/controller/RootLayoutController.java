@@ -219,6 +219,8 @@ public class RootLayoutController {
         } catch (CreateRuleException | RuleAlreadyExistsException e) {
             viewManager.errorExceptionDialog("Error generating rules", e.getMessage(),
                     "Couldn't save generated rules", e);
+        } catch (Throwable e) {
+            viewManager.errorExceptionDialog("Error generating rules", e.getMessage(), null, e);
         }
     }
 

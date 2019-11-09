@@ -53,7 +53,7 @@ public class MachineLearningTest {
     }
 
     @Test
-    public void testSequentialCoveringGenerateUniversalRule() throws Exception {
+    public void testSequentialCoveringGenerateUniversalRule() throws Throwable {
         Patient patient = createPatient("Patient", SYMPTOMS.values(), DISEASES.get("Disease1"));
 
         Collection<Rule> rules = machineLearning.sequentialCovering(singleton(patient));
@@ -65,7 +65,7 @@ public class MachineLearningTest {
     }
 
     @Test(expected = PartialStarCreationException.class)
-    public void testSequentialCoveringCreatePartialStarException() throws Exception {
+    public void testSequentialCoveringCreatePartialStarException() throws Throwable {
         Patient patient1 = createPatient("Patient1", SYMPTOMS.values(), DISEASES.get("Disease1"));
         Patient patient2 = createPatient("Patient2", SYMPTOMS.values(), DISEASES.get("Disease2"));
 
@@ -73,7 +73,7 @@ public class MachineLearningTest {
     }
 
     @Test
-    public void testSequentialCoveringCreateDifferentRules() throws Exception {
+    public void testSequentialCoveringCreateDifferentRules() throws Throwable {
         Patient patient1 = createPatient("Patient1", singleton(SYMPTOMS.get("Symptom1")), DISEASES.get("Disease1"));
         Patient patient2 = createPatient("Patient2", singleton(SYMPTOMS.get("Symptom2")), DISEASES.get("Disease2"));
         Patient patient3 = createPatient("Patient3", Arrays.asList(SYMPTOMS.get("Symptom2"), SYMPTOMS.get("Symptom3")), DISEASES.get("Disease2"));
@@ -85,7 +85,7 @@ public class MachineLearningTest {
     }
 
     @Test
-    public void testSequentialCoveringCreateRulesBasedOnAge() throws Exception {
+    public void testSequentialCoveringCreateRulesBasedOnAge() throws Throwable {
         Patient patient1 = createPatient("Patient1", 10, emptyList(), DISEASES.get("Disease1"));
         Patient patient2 = createPatient("Patient2", 20, emptyList(), DISEASES.get("Disease2"));
 

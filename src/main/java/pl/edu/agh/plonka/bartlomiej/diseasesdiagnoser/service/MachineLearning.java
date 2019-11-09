@@ -9,6 +9,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -29,24 +30,34 @@ public class MachineLearning {
         this.ontology = ontology;
     }
 
-    public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) throws PartialStarCreationException {
+    public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) throws Throwable {
+        Collection<Callable<Collection<Rule>>> callables = new ArrayList<>();
+        callables.addAll(sequentialCovering(trainingSet, ontology.getDiseases().values(), HAS_DISEASE));
+        callables.addAll(sequentialCovering(trainingSet, ontology.getTests().values(), SHOULD_MAKE_TEST));
+        callables.addAll(sequentialCovering(trainingSet, ontology.getTreatments().values(), SHOULD_BE_TREATED_WITH));
+        callables.addAll(sequentialCovering(trainingSet, ontology.getCauses().values(), CAUSE_OF_DISEASE));
+
+        ExecutorService service = Executors.newFixedThreadPool(10);
+        List<Future<Collection<Rule>>> futures = service.invokeAll(callables);
         Collection<Rule> rules = new HashSet<>();
-        rules.addAll(sequentialCovering(trainingSet, ontology.getDiseases().values(), HAS_DISEASE));
-        rules.addAll(sequentialCovering(trainingSet, ontology.getTests().values(), SHOULD_MAKE_TEST));
-        rules.addAll(sequentialCovering(trainingSet, ontology.getTreatments().values(), SHOULD_BE_TREATED_WITH));
-        rules.addAll(sequentialCovering(trainingSet, ontology.getCauses().values(), CAUSE_OF_DISEASE));
+        for (Future<Collection<Rule>> future : futures) {
+            try {
+                rules.addAll(future.get());
+            } catch (ExecutionException e) {
+                throw e.getCause();
+            }
+        }
         return simplifyRules(rules);
     }
 
-    private Collection<Rule> sequentialCovering(Set<Patient> trainingSet,
-                                               Collection<Entity> entities,
-                                               Category.Predicate categoryPredicate)
-            throws PartialStarCreationException {
-        Collection<Rule> rules = new HashSet<>();
+    private Collection<Callable<Collection<Rule>>> sequentialCovering(Set<Patient> trainingSet,
+                                              Collection<Entity> entities,
+                                              Category.Predicate categoryPredicate) {
+        Collection<Callable<Collection<Rule>>> callables = new ArrayList<>();
         for (Entity entity : entities) {
-            rules.addAll(sequentialCovering(trainingSet, new Category(entity, categoryPredicate)));
+            callables.add(() -> sequentialCovering(trainingSet, new Category(entity, categoryPredicate)));
         }
-        return rules;
+        return callables;
     }
 
     private Collection<Rule> sequentialCovering(Set<Patient> trainingSet, Category category) throws PartialStarCreationException {
