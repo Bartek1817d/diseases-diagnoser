@@ -84,7 +84,7 @@ public class Entity {
 
     @Override
     public String toString() {
-        return label.get();
+        return label.get() != null ? label.get() : id.get();
     }
 
     @Override

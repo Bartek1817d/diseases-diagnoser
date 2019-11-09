@@ -38,8 +38,8 @@ public class MachineLearningTest {
     private static final String[] TESTS = {"EKG", "ChestXRay"};
     private static final String CLASSES = "Patient";
 
-    private OntologyWrapper ontology;
-    private MachineLearning machineLearning;
+    private static OntologyWrapper ontology;
+    private static MachineLearning machineLearning;
 
     private static Map<String, Entity> mockDiseases() {
         return mockEntities(DISEASES);
@@ -70,7 +70,7 @@ public class MachineLearningTest {
     }
 
     @BeforeClass
-    public void setUp() throws Exception {
+    public static void setUp() throws Exception {
         if (MOCK_ONTOLOGY) {
             ontology = new OntologyWrapper(new File("src/test/resources/human_diseases.owl"));
         } else {
@@ -80,10 +80,10 @@ public class MachineLearningTest {
     }
 
     @Test
-    public void testNumericalComplexity() throws Exception {
+    public void testNumericalComplexity() throws Throwable {
         PrintWriter results = new PrintWriter(new FileOutputStream(new File("src/test/resources/results.csv")));
         results.println("n,time");
-        int maxN = 150;
+        int maxN = 20;
         for (int n = 1; n <= maxN; n++) {
             LOG.info(Integer.toString(n));
             Set<Patient> patients = generatePatients(n);
@@ -96,7 +96,7 @@ public class MachineLearningTest {
     }
 
     @Test
-    public void testGeneratingRules() throws PartialStarCreationException {
+    public void testGeneratingRules() throws Throwable {
         Set<Patient> patients = new HashSet<>();
         patients.add(generatePatient("patient1", 24, "StabbingChestPain", "EKG", "Myocarditis"));
         patients.add(generatePatient("patient2", 24, "Dyspnoea", "ChestXRay", "Pericarditis"));
@@ -149,7 +149,7 @@ public class MachineLearningTest {
         return subSet;
     }
 
-    private void mockOntology() {
+    private static void mockOntology() {
         ontology = mock(OntologyWrapper.class);
         when(ontology.getDiseases()).thenReturn(mockDiseases());
         when(ontology.getSymptoms()).thenReturn(mockSymptoms());
