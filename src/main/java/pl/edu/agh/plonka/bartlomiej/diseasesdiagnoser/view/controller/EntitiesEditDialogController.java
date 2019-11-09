@@ -1,6 +1,7 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBoxTreeItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -16,6 +17,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 import java.util.*;
 
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
 
 public class EntitiesEditDialogController implements ResponseController<Collection<Entity>> {
 
@@ -23,6 +25,17 @@ public class EntitiesEditDialogController implements ResponseController<Collecti
 
     @FXML
     private TreeView<Entity> entitiesTree;
+
+    @FXML
+    private Button newButton;
+    @FXML
+    private Button editButton;
+    @FXML
+    private Button deleteButton;
+    @FXML
+    private Button okButton;
+    @FXML
+    private Button cancelButton;
 
     private Stage dialogStage;
     private boolean okClicked = false;
@@ -94,6 +107,15 @@ public class EntitiesEditDialogController implements ResponseController<Collecti
 
     @FXML
     private void initialize() {
+        bindTranslations();
+    }
+
+    private void bindTranslations() {
+        newButton.textProperty().bind(getStringBinding("NEW"));
+        editButton.textProperty().bind(getStringBinding("EDIT"));
+        deleteButton.textProperty().bind(getStringBinding("DELETE"));
+        okButton.textProperty().bind(getStringBinding("OK"));
+        cancelButton.textProperty().bind(getStringBinding("CANCEL"));
     }
 
     /**

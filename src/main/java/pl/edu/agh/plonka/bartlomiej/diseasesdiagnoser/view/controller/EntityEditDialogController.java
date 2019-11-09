@@ -1,6 +1,8 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -11,6 +13,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NameUtils.generateName;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
 
 public class EntityEditDialogController {
 
@@ -21,6 +24,16 @@ public class EntityEditDialogController {
     private Stage dialogStage;
     private Entity entity;
     private boolean okClicked = false;
+
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Label descriptionLabel;
+
+    @FXML
+    private Button okButton;
+    @FXML
+    private Button cancelButton;
 
     @FXML
     private TextField entityName;
@@ -39,6 +52,14 @@ public class EntityEditDialogController {
      */
     @FXML
     private void initialize() {
+        bindTranslations();
+    }
+
+    private void bindTranslations() {
+        nameLabel.textProperty().bind(getStringBinding("NAME"));
+        descriptionLabel.textProperty().bind(getStringBinding("DESCRIPTION"));
+        okButton.textProperty().bind(getStringBinding("OK"));
+        cancelButton.textProperty().bind(getStringBinding("CANCEL"));
     }
 
     /**

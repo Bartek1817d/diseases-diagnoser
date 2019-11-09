@@ -2,6 +2,8 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
 import com.google.common.collect.Range;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -16,13 +18,39 @@ import java.util.Collection;
 
 import static java.util.Collections.emptyList;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
 
 public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
-    private TextField ruleNameField;
+    private TextField nameField;
     @FXML
-    private TextArea ruleViewArea;
+    private TextArea viewArea;
+
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Button ageButton;
+    @FXML
+    private Button heightButton;
+    @FXML
+    private Button weightButton;
+    @FXML
+    private Button symptomButton;
+    @FXML
+    private Button negativeTestButton;
+    @FXML
+    private Button previousDiseaseButton;
+    @FXML
+    private Button diseaseButton;
+    @FXML
+    private Button treatmentButton;
+    @FXML
+    private Button testButton;
+    @FXML
+    private Button okButton;
+    @FXML
+    private Button cancelButton;
 
     private RuleBuilder ruleBuilder;
     private PatientsService patientsService;
@@ -43,22 +71,42 @@ public class RuleEditDialogController implements ResponseController<Rule> {
         this.patientsService = patientsService;
         this.ruleBuilder = new RuleBuilder(rule);
 
-        ruleNameField.setText(rule.getName());
-        ruleViewArea.setText(ruleBuilder.build().toString());
+        nameField.setText(rule.getName());
+        viewArea.setText(ruleBuilder.build().toString());
+    }
+
+    @FXML
+    private void initialize() {
+        bindTranslations();
+    }
+
+    private void bindTranslations() {
+        nameLabel.textProperty().bind(getStringBinding("NAME"));
+        ageButton.textProperty().bind(getStringBinding("AGE"));
+        heightButton.textProperty().bind(getStringBinding("HEIGHT"));
+        weightButton.textProperty().bind(getStringBinding("WEIGHT"));
+        symptomButton.textProperty().bind(getStringBinding("SYMPTOM"));
+        negativeTestButton.textProperty().bind(getStringBinding("NEGATIVE_TEST"));
+        previousDiseaseButton.textProperty().bind(getStringBinding("PREVIOUS_DISEASE"));
+        diseaseButton.textProperty().bind(getStringBinding("DISEASE"));
+        treatmentButton.textProperty().bind(getStringBinding("TREATMENT"));
+        testButton.textProperty().bind(getStringBinding("TEST"));
+        okButton.textProperty().bind(getStringBinding("OK"));
+        cancelButton.textProperty().bind(getStringBinding("CANCEL"));
     }
 
     @Override
     public Response<Rule> getResponse() {
-        return new Response<>(okClicked, ruleBuilder.withName(ruleNameField.getText().trim()).build());
+        return new Response<>(okClicked, ruleBuilder.withName(nameField.getText().trim()).build());
     }
 
     @FXML
     private void handleOK() {
-        if (ruleNameField.getText().trim().isEmpty()) {
+        if (nameField.getText().trim().isEmpty()) {
             viewManager.errorDialog("Failed to create rule", null, "Cannot create rule with empty name!");
             return;
         }
-        if (ruleViewArea.getText().trim().isEmpty()) {
+        if (viewArea.getText().trim().isEmpty()) {
             viewManager.errorDialog("Failed to create rule", null, "Cannot create empty rule!");
             return;
         }
@@ -81,7 +129,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
                 emptyList(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withSymptoms(response.content);
-            ruleViewArea.setText(ruleBuilder.build().toString());
+            viewArea.setText(ruleBuilder.build().toString());
         }
     }
 
@@ -91,7 +139,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
                 emptyList(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withDiseases(response.content);
-            ruleViewArea.setText(ruleBuilder.build().toString());
+            viewArea.setText(ruleBuilder.build().toString());
         }
     }
 
@@ -100,7 +148,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
         Response<Range<Integer>> response = viewManager.showRangeSelectorDialog("Select age range", 0, 100);
         if (response.okClicked) {
             ruleBuilder.withAge(response.content);
-            ruleViewArea.setText(ruleBuilder.build().toString());
+            viewArea.setText(ruleBuilder.build().toString());
         }
     }
 
@@ -109,7 +157,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
         Response<Range<Integer>> response = viewManager.showRangeSelectorDialog("Select height range", 0, 300);
         if (response.okClicked) {
             ruleBuilder.withHeight(response.content);
-            ruleViewArea.setText(ruleBuilder.build().toString());
+            viewArea.setText(ruleBuilder.build().toString());
         }
     }
 
@@ -118,7 +166,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
         Response<Range<Integer>> response = viewManager.showRangeSelectorDialog("Select weight range", 0, 200);
         if (response.okClicked) {
             ruleBuilder.withWeight(response.content);
-            ruleViewArea.setText(ruleBuilder.build().toString());
+            viewArea.setText(ruleBuilder.build().toString());
         }
     }
 
@@ -128,7 +176,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
                 emptyList(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withTreatments(response.content);
-            ruleViewArea.setText(ruleBuilder.build().toString());
+            viewArea.setText(ruleBuilder.build().toString());
         }
     }
 
@@ -138,7 +186,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
                 emptyList(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withTests(response.content);
-            ruleViewArea.setText(ruleBuilder.build().toString());
+            viewArea.setText(ruleBuilder.build().toString());
         }
     }
 
@@ -148,7 +196,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
                 emptyList(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withNegativeTests(response.content);
-            ruleViewArea.setText(ruleBuilder.build().toString());
+            viewArea.setText(ruleBuilder.build().toString());
         }
     }
 
@@ -158,7 +206,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
                 emptyList(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withPreviousDiseases(response.content);
-            ruleViewArea.setText(ruleBuilder.build().toString());
+            viewArea.setText(ruleBuilder.build().toString());
         }
     }
 }

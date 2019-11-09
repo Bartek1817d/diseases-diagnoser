@@ -2,6 +2,7 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.controller;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -16,6 +17,7 @@ import java.util.Collection;
 
 import static javafx.scene.control.SelectionMode.MULTIPLE;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.ControllerUtils.createDeleteEventHandler;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
 
 public class RulesEditDialogController {
 
@@ -24,9 +26,20 @@ public class RulesEditDialogController {
     @FXML
     private TableView<Rule> rulesTable;
     @FXML
-    private TableColumn<Rule, String> ruleNameColumn;
+    private TableColumn<Rule, String> nameColumn;
     @FXML
-    private TableColumn<Rule, String> ruleContentColumn;
+    private TableColumn<Rule, String> contentColumn;
+
+    @FXML
+    private Button newButton;
+    @FXML
+    private Button editButton;
+    @FXML
+    private Button deleteButton;
+    @FXML
+    private Button okButton;
+    @FXML
+    private Button cancelButton;
 
     private ViewManager viewManager;
     private Stage dialogStage;
@@ -46,18 +59,30 @@ public class RulesEditDialogController {
     private void initialize() {
         rulesTable.getSelectionModel().setSelectionMode(MULTIPLE);
         rulesTable.widthProperty().addListener((observable, oldValue, newValue) -> {
-            ruleNameColumn.setPrefWidth(RULE_NAME_COLUMN_WIDTH);
-            ruleContentColumn.setPrefWidth(rulesTable.getWidth() - RULE_NAME_COLUMN_WIDTH);
+            nameColumn.setPrefWidth(RULE_NAME_COLUMN_WIDTH);
+            contentColumn.setPrefWidth(rulesTable.getWidth() - RULE_NAME_COLUMN_WIDTH);
         });
 
-        ruleNameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getName()));
-        ruleContentColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().toString()));
+        nameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getName()));
+        contentColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().toString()));
+
+        bindTranslations();
     }
 
     @FXML
     private void handleOK() {
         okClicked = true;
         dialogStage.close();
+    }
+
+    private void bindTranslations() {
+        nameColumn.textProperty().bind(getStringBinding("NAME"));
+        contentColumn.textProperty().bind(getStringBinding("CONTENT"));
+        newButton.textProperty().bind(getStringBinding("NEW"));
+        editButton.textProperty().bind(getStringBinding("EDIT"));
+        deleteButton.textProperty().bind(getStringBinding("DELETE"));
+        okButton.textProperty().bind(getStringBinding("OK"));
+        cancelButton.textProperty().bind(getStringBinding("CANCEL"));
     }
 
     /**
