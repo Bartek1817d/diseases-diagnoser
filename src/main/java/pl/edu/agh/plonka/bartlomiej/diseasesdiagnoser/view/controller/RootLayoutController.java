@@ -103,21 +103,21 @@ public class RootLayoutController {
     }
 
     private void bindResourceBundle() {
-        fileMenu.textProperty().bind(getStringBinding("FILE_MENU"));
-        viewMenu.textProperty().bind(getStringBinding("VIEW_MENU"));
-        rulesMenu.textProperty().bind(getStringBinding("RULES_MENU"));
-        helpMenu.textProperty().bind(getStringBinding("HELP_MENU"));
-        newMenu.textProperty().bind(getStringBinding("NEW_MENU"));
-        openMenu.textProperty().bind(getStringBinding("OPEN_MENU"));
-        saveMenu.textProperty().bind(getStringBinding("SAVE_MENU"));
-        saveAsMenu.textProperty().bind(getStringBinding("SAVE_AS_MENU"));
-        exitMenu.textProperty().bind(getStringBinding("EXIT_MENU"));
-        languageMenu.textProperty().bind(getStringBinding("LANGUAGE_MENU"));
-        rulesEditMenu.textProperty().bind(getStringBinding("RULES_EDIT_MENU"));
-        rulesLearnMenu.textProperty().bind(getStringBinding("RULES_LEARN_MENU"));
-        aboutMenu.textProperty().bind(getStringBinding("ABOUT_MENU"));
-        englishMenu.textProperty().bind(getStringBinding("ENGLISH_MENU"));
-        polishMenu.textProperty().bind(getStringBinding("POLISH_MENU"));
+        fileMenu.textProperty().bind(getStringBinding("FILE"));
+        viewMenu.textProperty().bind(getStringBinding("VIEW"));
+        rulesMenu.textProperty().bind(getStringBinding("RULES"));
+        helpMenu.textProperty().bind(getStringBinding("HELP"));
+        newMenu.textProperty().bind(getStringBinding("NEW"));
+        openMenu.textProperty().bind(getStringBinding("OPEN"));
+        saveMenu.textProperty().bind(getStringBinding("SAVE"));
+        saveAsMenu.textProperty().bind(getStringBinding("SAVE_AS"));
+        exitMenu.textProperty().bind(getStringBinding("EXIT"));
+        languageMenu.textProperty().bind(getStringBinding("LANGUAGE"));
+        rulesEditMenu.textProperty().bind(getStringBinding("RULES_EDIT"));
+        rulesLearnMenu.textProperty().bind(getStringBinding("RULES_LEARN"));
+        aboutMenu.textProperty().bind(getStringBinding("ABOUT"));
+        englishMenu.textProperty().bind(getStringBinding("ENGLISH"));
+        polishMenu.textProperty().bind(getStringBinding("POLISH"));
     }
 
     /**
