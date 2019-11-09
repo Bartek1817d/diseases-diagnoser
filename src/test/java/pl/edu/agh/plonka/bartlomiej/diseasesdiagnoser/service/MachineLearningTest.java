@@ -72,18 +72,18 @@ public class MachineLearningTest {
     @BeforeClass
     public static void setUp() throws Exception {
         if (MOCK_ONTOLOGY) {
-            ontology = new OntologyWrapper(new File("src/test/resources/human_diseases.owl"));
-        } else {
             mockOntology();
-            machineLearning = new MachineLearning(ontology);
+        } else {
+            ontology = new OntologyWrapper(new File("src/test/resources/human_diseases.owl"));
         }
+        machineLearning = new MachineLearning(ontology);
     }
 
     @Test
     public void testNumericalComplexity() throws Throwable {
-        PrintWriter results = new PrintWriter(new FileOutputStream(new File("src/test/resources/results.csv")));
+        PrintWriter results = new PrintWriter(new FileOutputStream(new File("src/test/resources/result2.csv")));
         results.println("n,time");
-        int maxN = 20;
+        int maxN = 50;
         for (int n = 1; n <= maxN; n++) {
             LOG.info(Integer.toString(n));
             Set<Patient> patients = generatePatients(n);

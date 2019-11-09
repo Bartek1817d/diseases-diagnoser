@@ -11,9 +11,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
-import static java.lang.Float.MAX_VALUE;
 import static java.lang.String.format;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Category.Predicate.*;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.ComplexComparator.sortStar;
@@ -31,14 +29,14 @@ public class MachineLearning {
     }
 
     public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) throws Throwable {
-        Collection<Callable<Collection<Rule>>> callables = new ArrayList<>();
-        callables.addAll(sequentialCovering(trainingSet, ontology.getDiseases().values(), HAS_DISEASE));
-        callables.addAll(sequentialCovering(trainingSet, ontology.getTests().values(), SHOULD_MAKE_TEST));
-        callables.addAll(sequentialCovering(trainingSet, ontology.getTreatments().values(), SHOULD_BE_TREATED_WITH));
-        callables.addAll(sequentialCovering(trainingSet, ontology.getCauses().values(), CAUSE_OF_DISEASE));
-
-        ExecutorService service = Executors.newFixedThreadPool(10);
+        ExecutorService service = Executors.newFixedThreadPool(1);
+        Collection<Callable<Collection<Rule>>> callables = prepareCallables(trainingSet);
         List<Future<Collection<Rule>>> futures = service.invokeAll(callables);
+        service.shutdown();
+        return collectResults(futures);
+    }
+
+    private Collection<Rule> collectResults(List<Future<Collection<Rule>>> futures) throws Throwable {
         Collection<Rule> rules = new HashSet<>();
         for (Future<Collection<Rule>> future : futures) {
             try {
@@ -50,9 +48,18 @@ public class MachineLearning {
         return simplifyRules(rules);
     }
 
-    private Collection<Callable<Collection<Rule>>> sequentialCovering(Set<Patient> trainingSet,
-                                              Collection<Entity> entities,
-                                              Category.Predicate categoryPredicate) {
+    private Collection<Callable<Collection<Rule>>> prepareCallables(Set<Patient> trainingSet) {
+        Collection<Callable<Collection<Rule>>> callables = new ArrayList<>();
+        callables.addAll(prepareCallable(trainingSet, ontology.getDiseases().values(), HAS_DISEASE));
+        callables.addAll(prepareCallable(trainingSet, ontology.getTests().values(), SHOULD_MAKE_TEST));
+        callables.addAll(prepareCallable(trainingSet, ontology.getTreatments().values(), SHOULD_BE_TREATED_WITH));
+        callables.addAll(prepareCallable(trainingSet, ontology.getCauses().values(), CAUSE_OF_DISEASE));
+        return callables;
+    }
+
+    private Collection<Callable<Collection<Rule>>> prepareCallable(Set<Patient> trainingSet,
+                                                                   Collection<Entity> entities,
+                                                                   Category.Predicate categoryPredicate) {
         Collection<Callable<Collection<Rule>>> callables = new ArrayList<>();
         for (Entity entity : entities) {
             callables.add(() -> sequentialCovering(trainingSet, new Category(entity, categoryPredicate)));
@@ -98,14 +105,14 @@ public class MachineLearning {
         if (uncoveredSet.isEmpty())
             return null;
         Set<Patient> coveredSet = Sets.difference(trainingSet, uncoveredSet);
+        Set<Patient> categoryCoveredSet = new HashSet<>();
         for (Patient uncovered : uncoveredSet) {
             if (category.assertPatientInCategory(uncovered)) {
                 calculateDistance(uncovered, coveredSet);
-            } else {
-                uncovered.setEvaluation(-MAX_VALUE);
+                categoryCoveredSet.add(uncovered);
             }
         }
-        return Collections.max(uncoveredSet);
+        return Collections.max(categoryCoveredSet);
     }
 
     private Patient negativeSeed(Collection<Patient> trainingSet, Star star, Patient positiveSeed, Category category) {
