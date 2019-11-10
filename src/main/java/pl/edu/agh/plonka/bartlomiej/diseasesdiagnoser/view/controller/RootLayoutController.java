@@ -16,6 +16,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.MachineLearning;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Language;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
@@ -27,6 +28,8 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.GENERATED_RULE_PREFIX;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Language.ENGLISH;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Language.POLISH;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultDirectoryFile;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultOntologyFile;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
@@ -244,15 +247,15 @@ public class RootLayoutController {
 
     @FXML
     private void handleChangeLanguageToEnglish() {
-        handleChangeLanguage("en");
+        handleChangeLanguage(ENGLISH);
     }
 
     @FXML
     private void handleChangeLanguageToPolish() throws IOException {
-        handleChangeLanguage("pl");
+        handleChangeLanguage(POLISH);
     }
 
-    private void handleChangeLanguage(String language) {
+    private void handleChangeLanguage(Language language) {
         setLanguage(language);
         patientsService.changeLanguage();
     }

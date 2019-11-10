@@ -537,7 +537,7 @@ public class OntologyWrapper {
     private void setEntityIndProperty(OWLNamedIndividual entityInd, OWLAnnotationProperty property, String value) {
         if (isNotBlank(value)) {
             ontologyManager.addAxiom(ontology, factory.getOWLAnnotationAssertionAxiom(property,
-                    entityInd.getIRI(), new OWLLiteralImplPlain(value, getLanguage())));
+                    entityInd.getIRI(), new OWLLiteralImplPlain(value, getLanguage().getCode())));
         }
     }
 

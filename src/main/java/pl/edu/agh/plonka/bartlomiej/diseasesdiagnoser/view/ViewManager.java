@@ -33,6 +33,8 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
+
 public class ViewManager {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -115,7 +117,7 @@ public class ViewManager {
         FXMLLoader loader = getFXMLLoader("fxml/PatientEditDialog.fxml");
         AnchorPane page = loader.load();
 
-        Stage dialogStage = createDialogStage(page, "Edit Patient");
+        Stage dialogStage = createDialogStage(page, getTranslation("EDIT_PATIENT"));
 
         PatientEditDialogController controller = loader.getController();
         controller.init(this, dialogStage, patientsService);
@@ -133,7 +135,7 @@ public class ViewManager {
 
             EntitiesEditDialogController controller = loader.getController();
 
-            ResponseStage<Collection<Entity>> dialogStage = createDialogStage(page, "Edit " + rootEntity.getLabel().toLowerCase(), controller);
+            ResponseStage<Collection<Entity>> dialogStage = createDialogStage(page, getTranslation("EDIT") + " " + rootEntity.getLabel().toLowerCase(), controller);
 
             controller.init(this, dialogStage, patientsService);
             controller.setEntities(rootEntity, currentEntities);
@@ -171,7 +173,7 @@ public class ViewManager {
 
             RuleEditDialogController controller = loader.getController();
 
-            ResponseStage<Rule> dialogStage = createDialogStage(page, "Create/Edit Rules", controller);
+            ResponseStage<Rule> dialogStage = createDialogStage(page, getTranslation("CREATE_EDIT_RULES"), controller);
             if (rule == null)
                 controller.init(this, dialogStage, patientsService);
             else
@@ -246,7 +248,7 @@ public class ViewManager {
         exception.printStackTrace(pw);
         String exceptionText = sw.toString();
 
-        Label label = new Label("The exception stacktrace was:");
+        Label label = new Label(getTranslation("STACK_TRACE"));
 
         TextArea textArea = new TextArea(exceptionText);
         textArea.setEditable(false);

@@ -130,11 +130,11 @@ public class Entity {
     }
 
     public void setLanguage() {
-        if (languageLabelMap.containsKey(getLanguage()))
-            this.label.setValue(languageLabelMap.get(getLanguage()));
+        if (languageLabelMap.containsKey(getLanguage().getCode()))
+            this.label.setValue(languageLabelMap.get(getLanguage().getCode()));
         else
             this.label.setValue(id.getValue());
-        if (languageCommentMap.containsKey(getLanguage()))
-            this.comment.setValue(languageCommentMap.get(getLanguage()));
+        if (languageCommentMap.containsKey(getLanguage().getCode()))
+            this.comment.setValue(languageCommentMap.get(getLanguage().getCode()));
     }
 }
