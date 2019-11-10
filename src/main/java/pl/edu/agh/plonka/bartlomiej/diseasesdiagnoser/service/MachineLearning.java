@@ -29,10 +29,9 @@ public class MachineLearning {
     }
 
     public Collection<Rule> sequentialCovering(Set<Patient> trainingSet) throws Throwable {
-        ExecutorService service = Executors.newFixedThreadPool(1);
+        ExecutorService service = Executors.newCachedThreadPool();
         Collection<Callable<Collection<Rule>>> callables = prepareCallables(trainingSet);
         List<Future<Collection<Rule>>> futures = service.invokeAll(callables);
-        service.shutdown();
         return collectResults(futures);
     }
 
