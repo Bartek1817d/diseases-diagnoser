@@ -21,16 +21,16 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toSet;
-import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.BUNDLE_PATH;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.GENERATED_RULE_PREFIX;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultDirectoryFile;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultOntologyFile;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
-import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.setResources;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.setLanguage;
 
 /**
  * The controller for the root layout. The root layout provides the basic
@@ -245,17 +245,16 @@ public class RootLayoutController {
     @FXML
     private void handleChangeLanguageToEnglish() {
         handleChangeLanguage("en");
-        setResources(getBundle(BUNDLE_PATH, new Locale("en")));
     }
 
     @FXML
     private void handleChangeLanguageToPolish() throws IOException {
         handleChangeLanguage("pl");
-        setResources(getBundle(BUNDLE_PATH, new Locale("pl")));
     }
 
     private void handleChangeLanguage(String language) {
-        patientsService.changeLanguage(language);
+        setLanguage(language);
+        patientsService.changeLanguage();
     }
 
     private boolean isGeneratedRule(Rule rule) {

@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getLanguage;
+
 public class Entity {
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -57,12 +59,12 @@ public class Entity {
         return comment.get();
     }
 
-    public ObservableValue<String> getObservableComment() {
-        return comment;
-    }
-
     public void setComment(String comment) {
         this.comment.set(comment);
+    }
+
+    public ObservableValue<String> getObservableComment() {
+        return comment;
     }
 
     public Set<Entity> getClasses() {
@@ -127,12 +129,12 @@ public class Entity {
         this.languageCommentMap = languageCommentMap;
     }
 
-    public void setLanguage(String language) {
-        if (languageLabelMap.containsKey(language))
-            this.label.setValue(languageLabelMap.get(language));
+    public void setLanguage() {
+        if (languageLabelMap.containsKey(getLanguage()))
+            this.label.setValue(languageLabelMap.get(getLanguage()));
         else
             this.label.setValue(id.getValue());
-        if (languageCommentMap.containsKey(language))
-            this.comment.setValue(languageCommentMap.get(language));
+        if (languageCommentMap.containsKey(getLanguage()))
+            this.comment.setValue(languageCommentMap.get(getLanguage()));
     }
 }
