@@ -61,6 +61,7 @@ public class ViewManager {
         rootLayout = loader.load();
 
         Scene scene = new Scene(rootLayout);
+        scene.getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
         primaryStage.setScene(scene);
 
         RootLayoutController controller = loader.getController();

@@ -1,0 +1,11 @@
+.tab {
+    -fx-pref-width: 120
+}
+
+.premise-tab {
+    -fx-background-color: MediumPurple
+}
+
+.conclusion-tab {
+    -fx-background-color: PaleGreen
+}
