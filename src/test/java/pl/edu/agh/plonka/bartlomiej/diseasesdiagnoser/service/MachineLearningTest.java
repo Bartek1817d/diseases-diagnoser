@@ -11,6 +11,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,7 @@ public class MachineLearningTest {
 
     private static final Random RAND = new Random(currentTimeMillis());
     private static final Boolean MOCK_ONTOLOGY = false;
+    private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 
     private static final String[] DISEASES = {"Cold", "LungCancer", "Chickenpox", "Myocarditis", "Pericarditis"};
     private static final String[] SYMPTOMS = {"Cough", "StabbingChestPain", "Dyspnoea"};
@@ -72,18 +74,19 @@ public class MachineLearningTest {
     @BeforeClass
     public static void setUp() throws Exception {
         if (MOCK_ONTOLOGY) {
-            ontology = new OntologyWrapper(new File("src/test/resources/human_diseases.owl"));
-        } else {
             mockOntology();
-            machineLearning = new MachineLearning(ontology);
+        } else {
+            ontology = new OntologyWrapper(new File("src/test/resources/human_diseases.owl"));
         }
+        machineLearning = new MachineLearning(ontology);
     }
 
     @Test
     public void testNumericalComplexity() throws Throwable {
-        PrintWriter results = new PrintWriter(new FileOutputStream(new File("src/test/resources/results.csv")));
+        PrintWriter results = new PrintWriter(new FileOutputStream(
+                new File(format("src/test/resources/result_%s.csv", TIMESTAMP_FORMAT.format(new Date())))));
         results.println("n,time");
-        int maxN = 20;
+        int maxN = 50;
         for (int n = 1; n <= maxN; n++) {
             LOG.info(Integer.toString(n));
             Set<Patient> patients = generatePatients(n);

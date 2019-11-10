@@ -15,14 +15,12 @@ class EntitiesLoader {
     private final OWLObjectRenderer renderer;
     private final OWLDataFactory factory;
     private final OWLReasoner reasoner;
-    private String lang;
 
-    EntitiesLoader(OWLOntology ontology, OWLObjectRenderer renderer, OWLDataFactory factory,  OWLReasoner reasoner, String lang) {
+    EntitiesLoader(OWLOntology ontology, OWLObjectRenderer renderer, OWLDataFactory factory, OWLReasoner reasoner) {
         this.ontology = ontology;
         this.renderer = renderer;
         this.factory = factory;
         this.reasoner = reasoner;
-        this.lang = lang;
     }
 
     Map<String, Entity> loadClasses() {
@@ -59,7 +57,7 @@ class EntitiesLoader {
         if (classEntity.getLabel() == null) {
             classEntity.setLanguageLabelMap(getLabel(owlClass));
             classEntity.setLanguageCommentMap(getComment(owlClass));
-            classEntity.setLanguage(lang);
+            classEntity.setLanguage();
         }
 
         return classEntity;
@@ -93,7 +91,7 @@ class EntitiesLoader {
             instance.addClass(classes.get(renderer.render(owlParentClass)));
         instance.setLanguageLabelMap(getLabel(owlInstance));
         instance.setLanguageCommentMap(getComment(owlInstance));
-        instance.setLanguage(lang);
+        instance.setLanguage();
         instances.put(instanceID, instance);
         return instance;
     }

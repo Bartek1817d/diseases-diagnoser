@@ -115,7 +115,7 @@ public class PatientsService {
         return ontology;
     }
 
-    public void changeLanguage(String language) {
-        ontology.changeLanguage(language);
+    public void changeLanguage() {
+        ontology.changeLanguage();
     }
 }

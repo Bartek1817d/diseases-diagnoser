@@ -26,7 +26,7 @@ public class NominalSelector<T> extends HashSet<T> implements Selector<T> {
         if (!(selector instanceof NominalSelector))
             return null;
         NominalSelector<T> resultSelector = new NominalSelector<>(this);
-        resultSelector.retainAll((NominalSelector<T>) selector);
+        resultSelector.addAll((NominalSelector<T>) selector);
         return resultSelector;
     }
 

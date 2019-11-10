@@ -230,7 +230,7 @@ public class ViewManager {
     }
 
     public void errorExceptionDialog(String title, String header, String content,
-                                     Exception exception) {
+                                     Throwable exception) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(primaryStage);
         if (title != null)

@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.BoundType.OPEN;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getLanguage;
 
 public class OntologyWrapper {
 
@@ -63,7 +64,6 @@ public class OntologyWrapper {
     private Map<String, Entity> treatments = new HashMap<>();
     private Map<String, Entity> causes = new HashMap<>();
     private Collection<Rule> rules = new ArrayList<>();
-    private String lang = "en";
     private OntologyProperties properties;
 
     public OntologyWrapper(String baseURL) throws OWLOntologyCreationException {
@@ -80,7 +80,7 @@ public class OntologyWrapper {
         ruleOntology = ruleEngine.getSWRLAPIOWLOntology();
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
-        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
+        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner);
         rulesManager = new RulesManager(ruleOntology);
     }
 
@@ -99,7 +99,7 @@ public class OntologyWrapper {
         ruleOntology = ruleEngine.getSWRLAPIOWLOntology();
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
-        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
+        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner);
         rulesManager = new RulesManager(ruleOntology);
         loadData();
     }
@@ -119,7 +119,7 @@ public class OntologyWrapper {
         ruleOntology = ruleEngine.getSWRLAPIOWLOntology();
         ruleRenderer = ruleOntology.createSWRLRuleRenderer();
         properties = new OntologyProperties(factory, prefixManager);
-        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner, lang);
+        entitiesLoader = new EntitiesLoader(ontology, renderer, factory, reasoner);
         rulesManager = new RulesManager(ruleOntology);
         loadData();
     }
@@ -277,13 +277,13 @@ public class OntologyWrapper {
         return patients;
     }
 
-    public void changeLanguage(String language) {
-        classes.values().forEach(e -> e.setLanguage(language));
-        symptoms.values().forEach(e -> e.setLanguage(language));
-        diseases.values().forEach(e -> e.setLanguage(language));
-        tests.values().forEach(e -> e.setLanguage(language));
-        treatments.values().forEach(e -> e.setLanguage(language));
-        causes.values().forEach(e -> e.setLanguage(language));
+    public void changeLanguage() {
+        classes.values().forEach(Entity::setLanguage);
+        symptoms.values().forEach(Entity::setLanguage);
+        diseases.values().forEach(Entity::setLanguage);
+        tests.values().forEach(Entity::setLanguage);
+        treatments.values().forEach(Entity::setLanguage);
+        causes.values().forEach(Entity::setLanguage);
     }
 
     private Patient getInferredPatient(Patient patient) {
@@ -537,7 +537,7 @@ public class OntologyWrapper {
     private void setEntityIndProperty(OWLNamedIndividual entityInd, OWLAnnotationProperty property, String value) {
         if (isNotBlank(value)) {
             ontologyManager.addAxiom(ontology, factory.getOWLAnnotationAssertionAxiom(property,
-                    entityInd.getIRI(), new OWLLiteralImplPlain(value, lang)));
+                    entityInd.getIRI(), new OWLLiteralImplPlain(value, getLanguage())));
         }
     }
 

@@ -13,16 +13,24 @@ import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.BUN
 public class ObservableResourceFactory {
 
     private static ObjectProperty<ResourceBundle> resources = new SimpleObjectProperty<>();
+    private static String language;
+
     static {
         resources.set(getBundle(BUNDLE_PATH, new Locale("en")));
+        language = "en";
     }
 
     private static ObjectProperty<ResourceBundle> resourcesProperty() {
         return resources;
     }
 
-    public static void setResources(ResourceBundle resources) {
-        resourcesProperty().set(resources);
+    public static String getLanguage() {
+        return language;
+    }
+
+    public static void setLanguage(String language) {
+        ObservableResourceFactory.language = language;
+        resources.set(getBundle(BUNDLE_PATH, new Locale(ObservableResourceFactory.language)));
     }
 
     public static StringBinding getStringBinding(String key) {
