@@ -30,18 +30,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.STYLES;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
 
 public class ViewManager {
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
-
     private static final double MIN_HEIGHT = 400;
     private static final double MIN_WIDTH = 600;
-
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
     private Stage primaryStage;
     private BorderPane rootLayout;
 
@@ -61,7 +58,7 @@ public class ViewManager {
         rootLayout = loader.load();
 
         Scene scene = new Scene(rootLayout);
-        scene.getStylesheets().add(getClass().getResource("/style/style.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource(STYLES).toExternalForm());
         primaryStage.setScene(scene);
 
         RootLayoutController controller = loader.getController();
