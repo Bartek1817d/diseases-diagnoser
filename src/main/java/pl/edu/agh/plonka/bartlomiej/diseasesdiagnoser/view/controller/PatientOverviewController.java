@@ -22,6 +22,7 @@ import static javafx.scene.control.SelectionMode.MULTIPLE;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.ControllerUtils.createDeleteEventHandler;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
 
 public class PatientOverviewController {
 
@@ -236,8 +237,8 @@ public class PatientOverviewController {
         if (selectedPatient != null) {
             patientsService.deletePatient(selectedPatient);
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -267,8 +268,8 @@ public class PatientOverviewController {
                 patientsService.editPatient(patient);
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -283,8 +284,8 @@ public class PatientOverviewController {
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -297,12 +298,12 @@ public class PatientOverviewController {
                 selectedPatient.getSymptoms().removeAll(symptoms);
                 patientsService.getOntology().updatePatient(selectedPatient);
             } else {
-                viewManager.warningDialog("No Selection", "No Symptoms Selected",
-                        "Please select symptoms in the table.");
+                viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_SYMPTOMS_SELECTED"),
+                        getTranslation("SELECT_SYMPTOMS"));
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -317,8 +318,8 @@ public class PatientOverviewController {
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -331,12 +332,12 @@ public class PatientOverviewController {
                 selectedPatient.getDiseases().removeAll(diseases);
                 patientsService.getOntology().updatePatient(selectedPatient);
             } else {
-                viewManager.warningDialog("No Selection", "No Diseases Selected",
-                        "Please select diseases in the table.");
+                viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_DISEASES_SELECTED"),
+                        getTranslation("SELECT_DISEASES"));
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -351,8 +352,8 @@ public class PatientOverviewController {
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -365,12 +366,12 @@ public class PatientOverviewController {
                 selectedPatient.getTests().removeAll(tests);
                 patientsService.getOntology().updatePatient(selectedPatient);
             } else {
-                viewManager.warningDialog("No Selection", "No Tests Selected",
-                        "Please select tests in the table.");
+                viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_TESTS_SELECTED"),
+                        getTranslation("SELECT_TESTS"));
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -385,8 +386,8 @@ public class PatientOverviewController {
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -399,12 +400,12 @@ public class PatientOverviewController {
                 selectedPatient.getTreatments().removeAll(treatments);
                 patientsService.getOntology().updatePatient(selectedPatient);
             } else {
-                viewManager.warningDialog("No Selection", "No Treatments Selected",
-                        "Please select treatments in the table.");
+                viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_TREATMENTS_SELECTED"),
+                        getTranslation("SELECT_TREATMENTS"));
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -419,8 +420,8 @@ public class PatientOverviewController {
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -433,12 +434,12 @@ public class PatientOverviewController {
                 selectedPatient.getCauses().removeAll(causes);
                 patientsService.getOntology().updatePatient(selectedPatient);
             } else {
-                viewManager.warningDialog("No Selection", "No Causes Selected",
-                        "Please select causes in the table.");
+                viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_CAUSES_SELECTED"),
+                        getTranslation("SELECT_CAUSES"));
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -453,8 +454,8 @@ public class PatientOverviewController {
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -467,12 +468,12 @@ public class PatientOverviewController {
                 selectedPatient.getNegativeTests().removeAll(negativeTests);
                 patientsService.getOntology().updatePatient(selectedPatient);
             } else {
-                viewManager.warningDialog("No Selection", "No Negative Tests Selected",
-                        "Please select negative tests in the table.");
+                viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_NEGATIVE_TESTS_SELECTED"),
+                        getTranslation("SELECT_NEGATIVE_TESTS"));
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -487,8 +488,8 @@ public class PatientOverviewController {
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 
@@ -501,12 +502,12 @@ public class PatientOverviewController {
                 selectedPatient.getPreviousAndCurrentDiseases().removeAll(previousAndCurrentDiseases);
                 patientsService.getOntology().updatePatient(selectedPatient);
             } else {
-                viewManager.warningDialog("No Selection", "No Negative Tests Selected",
-                        "Please select negative tests in the table.");
+                viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PREVIOUS_DISEASES_SELECTED"),
+                        getTranslation("SELECT_PREVIOUS_DISEASES"));
             }
         } else {
-            viewManager.warningDialog("No Selection", "No Patient Selected",
-                    "Please select a patient in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
         }
     }
 

@@ -18,6 +18,7 @@ import java.util.*;
 
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
 
 public class EntitiesEditDialogController implements ResponseController<Collection<Entity>> {
 
@@ -167,8 +168,8 @@ public class EntitiesEditDialogController implements ResponseController<Collecti
             }
         } else {
             // Nothing selected.
-            viewManager.warningDialog("No Selection", "No Class Selected",
-                    "Please select parent class in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_CLASS_SELECTED"),
+                    getTranslation("SELECT_CLASS"));
         }
     }
 
@@ -184,8 +185,8 @@ public class EntitiesEditDialogController implements ResponseController<Collecti
             }
         } else {
             // Nothing selected.
-            viewManager.warningDialog("No Selection", "No Item Selected",
-                    "Please select item in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_ENTITY_SELECTED"),
+                    getTranslation("SELECT_ENTITY"));
         }
     }
 
@@ -200,8 +201,8 @@ public class EntitiesEditDialogController implements ResponseController<Collecti
             allIndividuals.remove(entity.getID());
         } else {
             // Nothing selected.
-            viewManager.warningDialog("No Selection", "No Entities Selected",
-                    "Please select entities in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_ENTITIES_SELECTED"),
+                    getTranslation("SELECT_ENTITIES"));
         }
     }
 }
