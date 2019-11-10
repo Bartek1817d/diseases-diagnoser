@@ -35,7 +35,6 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.BoundType.OPEN;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getLanguage;
 
 public class OntologyWrapper {
 
@@ -221,8 +220,8 @@ public class OntologyWrapper {
     public void addEntity(Entity entity) {
         OWLNamedIndividual entityInd = factory.getOWLNamedIndividual(entity.getID(), prefixManager);
         setEntityIndClasses(entityInd, entity.getClasses());
-        setEntityIndProperty(entityInd, factory.getRDFSLabel(), entity.getLabel());
-        setEntityIndProperty(entityInd, factory.getRDFSComment(), entity.getComment());
+        setEntityIndProperty(entityInd, factory.getRDFSLabel(), entity.getLanguageLabelMap());
+        setEntityIndProperty(entityInd, factory.getRDFSComment(), entity.getLanguageCommentMap());
     }
 
     public void deleteEntity(Entity entity) {
@@ -534,11 +533,15 @@ public class OntologyWrapper {
         }
     }
 
-    private void setEntityIndProperty(OWLNamedIndividual entityInd, OWLAnnotationProperty property, String value) {
-        if (isNotBlank(value)) {
-            ontologyManager.addAxiom(ontology, factory.getOWLAnnotationAssertionAxiom(property,
-                    entityInd.getIRI(), new OWLLiteralImplPlain(value, getLanguage().getCode())));
+    private void setEntityIndProperty(OWLNamedIndividual entityInd, OWLAnnotationProperty property, Map<String, String> languageMap) {
+        if (languageMap == null) {
+            LOG.warn("Language map is null. Cannot save {}.", entityInd);
+            return;
         }
+        languageMap.forEach((language, value) -> {
+            ontologyManager.addAxiom(ontology, factory.getOWLAnnotationAssertionAxiom(property,
+                    entityInd.getIRI(), new OWLLiteralImplPlain(value, language)));
+        });
     }
 
     private void setIndClass(OWLClassExpression classExpression, OWLIndividual individual) {

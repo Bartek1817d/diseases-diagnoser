@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -25,8 +26,8 @@ public class Entity {
     private final SetProperty<Entity> classes = new SimpleSetProperty<>(
             FXCollections.observableSet(new HashSet<>()));
 
-    private Map<String, String> languageLabelMap;
-    private Map<String, String> languageCommentMap;
+    private Map<String, String> languageLabelMap = new HashMap<>();
+    private Map<String, String> languageCommentMap = new HashMap<>();
 
     public Entity() {
     }
@@ -49,6 +50,7 @@ public class Entity {
 
     public void setLabel(String label) {
         this.label.set(label);
+        this.languageLabelMap.put(getLanguage().getCode(), label);
     }
 
     public ObservableValue<String> getObservableLabel() {
@@ -61,6 +63,7 @@ public class Entity {
 
     public void setComment(String comment) {
         this.comment.set(comment);
+        this.languageCommentMap.put(getLanguage().getCode(), comment);
     }
 
     public ObservableValue<String> getObservableComment() {
