@@ -18,6 +18,7 @@ import java.util.Collection;
 import static javafx.scene.control.SelectionMode.MULTIPLE;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.ControllerUtils.createDeleteEventHandler;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
 
 public class RulesEditDialogController {
 
@@ -110,7 +111,7 @@ public class RulesEditDialogController {
             try {
                 patientsService.addRule(rule);
             } catch (CreateRuleException | RuleAlreadyExistsException e) {
-                viewManager.errorExceptionDialog("Failed to create rule", e.getMessage(), "Couldn't create rule " + rule.getName(), e);
+                viewManager.errorExceptionDialog(getTranslation("ERROR_CREATING_RULE"), e.getMessage(), getTranslation("ERROR_CREATING_RULE") + ' ' + rule.getName(), e);
             }
         }
     }
@@ -125,7 +126,7 @@ public class RulesEditDialogController {
                 patientsService.deleteRule(selectedRule);
                 patientsService.addRule(newRule);
             } catch (CreateRuleException | RuleAlreadyExistsException e) {
-                viewManager.errorExceptionDialog("Failed to create rule", e.getMessage(), "Couldn't create rule " + newRule.getName(), e);
+                viewManager.errorExceptionDialog(getTranslation("ERROR_CREATING_RULE"), e.getMessage(), getTranslation("ERROR_CREATING_RULE") + ' ' + newRule.getName(), e);
             }
         }
     }
@@ -136,8 +137,8 @@ public class RulesEditDialogController {
         if (!selectedRules.isEmpty()) {
             patientsService.deleteRules(selectedRules);
         } else {
-            viewManager.warningDialog("No Selection", "No Rule Selected",
-                    "Please select a rule in the table.");
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_RULE_SELECTED"),
+                    getTranslation("SELECT_RULE"));
         }
     }
 
