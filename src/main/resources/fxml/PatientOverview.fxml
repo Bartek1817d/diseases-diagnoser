@@ -65,7 +65,7 @@
                                                         <Label fx:id="weightLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                     </children>
                                                 </GridPane>
-                                                <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
+                                                <ButtonBar prefHeight="40.0" styleClass="horizontal-button-bar" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
                                                         <Button fx:id="newPatientButton" mnemonicParsing="false" onAction="#handleNewPatient" text="New..." />
                                                         <Button fx:id="editPatientButton" mnemonicParsing="false" onAction="#handleEditPatient" text="Edit..." />
@@ -80,7 +80,7 @@
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
-                                                <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
+                                                <ButtonBar prefHeight="40.0" styleClass="horizontal-button-bar" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
                                                         <Button fx:id="newSymptomButton" mnemonicParsing="false" onAction="#handleAddSymptoms" text="New/Edit..." />
                                                         <Button fx:id="deleteSymptomButton" mnemonicParsing="false" onAction="#handleDeleteSymptoms" text="Delete" />
@@ -123,7 +123,7 @@
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
-                                                <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
+                                                <ButtonBar prefHeight="40.0" styleClass="horizontal-button-bar" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
                                                         <Button fx:id="newNegativeTestButton" mnemonicParsing="false" onAction="#handleAddNegativeTests" text="New/Edit..." />
                                                         <Button fx:id="deleteNegativeTestButton" mnemonicParsing="false" onAction="#handleDeleteNegativeTests" text="Delete" />
@@ -166,7 +166,7 @@
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
-                                                <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
+                                                <ButtonBar prefHeight="40.0" styleClass="horizontal-button-bar" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
                                                         <Button fx:id="newPreviousDiseaseButton" mnemonicParsing="false" onAction="#handleAddPreviousAndCurrentDiseases" text="New/Edit..." />
                                                         <Button fx:id="deletePreviousDiseaseButton" mnemonicParsing="false" onAction="#handleDeletePreviousAndCurrentDiseases" text="Delete" />
@@ -209,7 +209,7 @@
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
-                                                <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
+                                                <ButtonBar prefHeight="40.0" styleClass="horizontal-button-bar" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
                                                         <Button fx:id="newDiseaseButton" mnemonicParsing="false" onAction="#handleAddDiseases" text="NewEdit..." />
                                                         <Button fx:id="deleteDiseaseButton" mnemonicParsing="false" onAction="#handleDeleteDiseases" text="Delete" />
@@ -252,7 +252,7 @@
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
-                                                <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
+                                                <ButtonBar prefHeight="40.0" styleClass="horizontal-button-bar" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
                                                         <Button fx:id="newTestButton" mnemonicParsing="false" onAction="#handleAddTests" text="New/Edit..." />
                                                         <Button fx:id="deleteTestButton" mnemonicParsing="false" onAction="#handleDeleteTests" text="Delete" />
@@ -295,7 +295,7 @@
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
-                                                <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
+                                                <ButtonBar prefHeight="40.0" prefWidth="200.0" styleClass="horizontal-button-bar" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
                                                         <Button fx:id="newTreatmentButton" mnemonicParsing="false" onAction="#handleAddTreatments" text="New/Edit..." />
                                                         <Button fx:id="deleteTreatmentButton" mnemonicParsing="false" onAction="#handleDeleteTreatments" text="Delete" />
@@ -338,7 +338,7 @@
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                             <children>
-                                                <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
+                                                <ButtonBar prefHeight="40.0" styleClass="horizontal-button-bar" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
                                                         <Button fx:id="newCauseButton" mnemonicParsing="false" onAction="#handleAddCauses" text="New/Edit..." />
                                                         <Button fx:id="deleteCauseButton" mnemonicParsing="false" onAction="#handleDeleteCauses" text="Delete" />

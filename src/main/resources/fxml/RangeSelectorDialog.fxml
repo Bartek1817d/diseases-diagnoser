@@ -24,7 +24,7 @@
                 </CheckBox>
             </children>
         </HBox>
-        <HBox alignment="CENTER_RIGHT" layoutX="200.0" layoutY="114.0" prefHeight="38.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <HBox alignment="CENTER_RIGHT" layoutX="200.0" layoutY="114.0" prefHeight="38.0" prefWidth="600.0" styleClass="horizontal-button-bar" stylesheets="@../style/style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <children>
                 <Button fx:id="okButton" mnemonicParsing="false" onAction="#handleOK" prefHeight="25.0" prefWidth="80.0" text="OK">
                     <HBox.margin>

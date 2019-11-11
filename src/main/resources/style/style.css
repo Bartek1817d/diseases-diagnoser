@@ -9,3 +9,7 @@
 .conclusion {
     -fx-background-color: PaleGreen
 }
+
+.horizontal-button-bar .button {
+    -fx-min-width: 100px;
+}
