@@ -14,6 +14,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NameUtils.generateName;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
 
 public class EntityEditDialogController {
 
@@ -107,7 +108,7 @@ public class EntityEditDialogController {
 
     private boolean isInputValid() {
         if (entityName.getText() == null || entityName.getText().length() == 0) {
-            viewManager.errorDialog("Error creating entity", null, "No okClicked name!\n");
+            viewManager.errorDialog(getTranslation("ERROR_CREATING_ENTITY"), null, getTranslation("MISSING_ENTITY_NAME"));
             return false;
         } else
             return true;
