@@ -1,6 +1,9 @@
 package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule;
 
 import com.google.common.collect.Range;
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 
 import java.util.ArrayList;
@@ -13,7 +16,9 @@ import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toSet;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 
-public class RuleBuilder {
+public class RuleBuilder implements ObservableValue<String> {
+
+    private InvalidationListener invalidationListener;
 
     private Variable patientVariable;
     private Variable ageVariable;
@@ -140,11 +145,13 @@ public class RuleBuilder {
 
     public RuleBuilder withSymptom(Entity symptom) {
         this.symptoms = singleton(symptom);
+        invalidate();
         return this;
     }
 
     public RuleBuilder withSymptoms(Collection<Entity> symptoms) {
         this.symptoms = new HashSet<>(symptoms);
+        invalidate();
         return this;
     }
 
@@ -154,11 +161,13 @@ public class RuleBuilder {
 
     public RuleBuilder withNegativeTest(Entity negativeTest) {
         this.negativeTests = singleton(negativeTest);
+        invalidate();
         return this;
     }
 
     public RuleBuilder withNegativeTests(Collection<Entity> negativeTests) {
         this.negativeTests = new HashSet<>(negativeTests);
+        invalidate();
         return this;
     }
 
@@ -168,16 +177,19 @@ public class RuleBuilder {
 
     public RuleBuilder withDisease(Entity disease) {
         this.diseases = singleton(disease);
+        invalidate();
         return this;
     }
 
     public RuleBuilder withDiseases(Collection<Entity> diseases) {
         this.diseases = new HashSet<>(diseases);
+        invalidate();
         return this;
     }
 
     public RuleBuilder withPreviousDiseases(Collection<Entity> previousDiseases) {
         this.previousDiseases = new HashSet<>(previousDiseases);
+        invalidate();
         return this;
     }
 
@@ -187,31 +199,37 @@ public class RuleBuilder {
 
     public RuleBuilder withAge(Range<Integer> ageRange) {
         this.ageRange = this.ageRange.intersection(ageRange);
+        invalidate();
         return this;
     }
 
     public RuleBuilder withHeight(Range<Integer> heightRange) {
         this.heightRange = this.heightRange.intersection(heightRange);
+        invalidate();
         return this;
     }
 
     public RuleBuilder withWeight(Range<Integer> weightRange) {
         this.weightRange = this.weightRange.intersection(weightRange);
+        invalidate();
         return this;
     }
 
     public RuleBuilder withTreatments(Collection<Entity> treatments) {
         this.treatments = new HashSet<>(treatments);
+        invalidate();
         return this;
     }
 
     public RuleBuilder withTests(Collection<Entity> tests) {
         this.tests = new HashSet<>(tests);
+        invalidate();
         return this;
     }
 
     public RuleBuilder withCauses(Collection<Entity> causes) {
         this.causes = new HashSet<>(causes);
+        invalidate();
         return this;
     }
 
@@ -320,5 +338,48 @@ public class RuleBuilder {
 
     private boolean isRangeUniversal(Range range) {
         return !range.hasLowerBound() && !range.hasUpperBound();
+    }
+
+    private void invalidate() {
+        if (invalidationListener != null) {
+            invalidationListener.invalidated(null);
+        }
+    }
+
+    public void clear() {
+        symptoms.clear();
+        negativeTests.clear();
+        previousDiseases.clear();
+        diseases.clear();
+        treatments.clear();
+        tests.clear();
+        causes.clear();
+        ageRange = Range.all();
+        heightRange = Range.all();
+        weightRange = Range.all();
+        invalidate();
+    }
+
+    @Override
+    public void addListener(ChangeListener<? super String> listener) {
+    }
+
+    @Override
+    public void removeListener(ChangeListener<? super String> listener) {
+    }
+
+    @Override
+    public String getValue() {
+        return build().toString();
+    }
+
+    @Override
+    public void addListener(InvalidationListener listener) {
+        this.invalidationListener = listener;
+    }
+
+    @Override
+    public void removeListener(InvalidationListener listener) {
+        this.invalidationListener = null;
     }
 }
