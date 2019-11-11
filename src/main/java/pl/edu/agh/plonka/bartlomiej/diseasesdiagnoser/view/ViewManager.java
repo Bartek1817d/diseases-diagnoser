@@ -150,7 +150,7 @@ public class ViewManager {
             FXMLLoader loader = getFXMLLoader("fxml/RulesEditDialog.fxml");
             AnchorPane page = loader.load();
 
-            Stage dialogStage = createDialogStage(page, "Create/Edit Rules");
+            Stage dialogStage = createDialogStage(page, getTranslation("CREATE_EDIT_RULES"));
 
             RulesEditDialogController controller = loader.getController();
             controller.init(this, dialogStage, patientsService);

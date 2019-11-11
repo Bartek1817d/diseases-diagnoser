@@ -250,7 +250,7 @@ public class RootLayoutController {
     }
 
     @FXML
-    private void handleChangeLanguageToPolish() throws IOException {
+    private void handleChangeLanguageToPolish() {
         handleChangeLanguage(POLISH);
     }
 
