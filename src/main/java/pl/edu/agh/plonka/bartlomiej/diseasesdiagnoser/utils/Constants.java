@@ -45,5 +45,5 @@ public class Constants {
     public static final int PATIENT_MIN_WEIGHT = 10;
     public static final int PATIENT_MAX_WEIGHT = 200;
 
-    public static final String BUNDLE_PATH = "bundles/i18n";
+    public static final String BUNDLE_PATH = "translation/i18n";
 }
