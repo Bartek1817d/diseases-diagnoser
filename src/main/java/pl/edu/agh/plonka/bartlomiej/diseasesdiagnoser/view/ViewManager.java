@@ -84,7 +84,7 @@ public class ViewManager {
     }
 
     public boolean showEntityEditDialog(Entity entity, PatientsService patientsService) {
-        return showEntityEditDialog("Edit " + entity.getLabel().toLowerCase(), entity, patientsService);
+        return showEntityEditDialog(getTranslation("EDIT") + ' ' + entity.getLabel().toLowerCase(), entity, patientsService);
     }
 
     public boolean showEntityEditDialog(String title, Entity entity, PatientsService patientsService) {
