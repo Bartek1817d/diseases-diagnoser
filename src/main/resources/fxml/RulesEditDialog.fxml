@@ -47,7 +47,7 @@
                         </Button>
                     </children>
                 </VBox>
-                <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="429.0" styleClass="horizontal-button-bar" stylesheets="@../style/style.css" GridPane.rowIndex="1">
+                <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="429.0" styleClass="horizontal-button-bar" stylesheets="@../style/common.css" GridPane.rowIndex="1">
                     <children>
                         <Button fx:id="okButton" mnemonicParsing="false" onAction="#handleOK" prefHeight="25.0" prefWidth="70.0" text="OK">
                             <HBox.margin>

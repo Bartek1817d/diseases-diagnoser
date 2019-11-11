@@ -31,7 +31,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
 
-import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.STYLES;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
 
 public class ViewManager {
@@ -58,7 +57,6 @@ public class ViewManager {
         rootLayout = loader.load();
 
         Scene scene = new Scene(rootLayout);
-        scene.getStylesheets().add(getClass().getResource(STYLES).toExternalForm());
         primaryStage.setScene(scene);
 
         RootLayoutController controller = loader.getController();

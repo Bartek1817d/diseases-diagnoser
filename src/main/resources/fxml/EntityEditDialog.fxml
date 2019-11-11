@@ -13,7 +13,7 @@
         <TextArea fx:id="entityDescription" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="66.0" />
         <Label fx:id="nameLabel" layoutX="35.0" layoutY="6.0" text="Name" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
         <Label fx:id="descriptionLabel" layoutX="14.0" layoutY="54.0" text="Description" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="50.0" />
-        <ButtonBar layoutX="98.0" layoutY="281.0" prefHeight="40.0" prefWidth="200.0" styleClass="horizontal-button-bar" stylesheets="@../style/style.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+        <ButtonBar layoutX="98.0" layoutY="281.0" prefHeight="40.0" prefWidth="200.0" styleClass="horizontal-button-bar" stylesheets="@../style/common.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
             <buttons>
                 <Button fx:id="okButton" mnemonicParsing="false" onAction="#handleOK" text="OK" />
                 <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
