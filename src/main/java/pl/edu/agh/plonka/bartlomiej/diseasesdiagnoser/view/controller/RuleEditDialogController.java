@@ -19,6 +19,7 @@ import java.util.Collection;
 import static java.util.Collections.emptyList;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
 
 public class RuleEditDialogController implements ResponseController<Rule> {
 
@@ -47,6 +48,8 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     private Button treatmentButton;
     @FXML
     private Button testButton;
+    @FXML
+    private Button causeButton;
     @FXML
     private Button okButton;
     @FXML
@@ -85,12 +88,13 @@ public class RuleEditDialogController implements ResponseController<Rule> {
         ageButton.textProperty().bind(getStringBinding("AGE"));
         heightButton.textProperty().bind(getStringBinding("HEIGHT"));
         weightButton.textProperty().bind(getStringBinding("WEIGHT"));
-        symptomButton.textProperty().bind(getStringBinding("SYMPTOM"));
-        negativeTestButton.textProperty().bind(getStringBinding("NEGATIVE_TEST"));
-        previousDiseaseButton.textProperty().bind(getStringBinding("PREVIOUS_DISEASE"));
-        diseaseButton.textProperty().bind(getStringBinding("DISEASE"));
-        treatmentButton.textProperty().bind(getStringBinding("TREATMENT"));
-        testButton.textProperty().bind(getStringBinding("TEST"));
+        symptomButton.textProperty().bind(getStringBinding("SYMPTOMS"));
+        negativeTestButton.textProperty().bind(getStringBinding("NEGATIVE_TESTS"));
+        previousDiseaseButton.textProperty().bind(getStringBinding("PREVIOUS_DISEASES"));
+        diseaseButton.textProperty().bind(getStringBinding("DISEASES"));
+        treatmentButton.textProperty().bind(getStringBinding("TREATMENTS"));
+        testButton.textProperty().bind(getStringBinding("TESTS"));
+        causeButton.textProperty().bind(getStringBinding("CAUSES"));
         okButton.textProperty().bind(getStringBinding("OK"));
         cancelButton.textProperty().bind(getStringBinding("CANCEL"));
     }
@@ -103,11 +107,11 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     @FXML
     private void handleOK() {
         if (nameField.getText().trim().isEmpty()) {
-            viewManager.errorDialog("Failed to create rule", null, "Cannot create rule with empty name!");
+            viewManager.errorDialog(getTranslation("ERROR_CREATING_RULE"), null, "Cannot create rule with empty name!");
             return;
         }
         if (viewArea.getText().trim().isEmpty()) {
-            viewManager.errorDialog("Failed to create rule", null, "Cannot create empty rule!");
+            viewManager.errorDialog(getTranslation("ERROR_CREATING_RULE"), null, "Cannot create empty rule!");
             return;
         }
         okClicked = true;
@@ -206,6 +210,16 @@ public class RuleEditDialogController implements ResponseController<Rule> {
                 emptyList(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withPreviousDiseases(response.content);
+            viewArea.setText(ruleBuilder.build().toString());
+        }
+    }
+
+    @FXML
+    private void handleAddCauses() {
+        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(CAUSE_CLASS),
+                emptyList(), patientsService);
+        if (response.okClicked) {
+            ruleBuilder.withCauses(response.content);
             viewArea.setText(ruleBuilder.build().toString());
         }
     }

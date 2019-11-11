@@ -28,13 +28,12 @@ public class RuleBuilder {
     private Set<Entity> diseases = new HashSet<>();
     private Set<Entity> treatments = new HashSet<>();
     private Set<Entity> tests = new HashSet<>();
-
+    private Set<Entity> causes = new HashSet<>();
 
     private AbstractAtom patientDeclarationAtom;
     private AbstractAtom ageAtom;
     private AbstractAtom heightAtom;
     private AbstractAtom weightAtom;
-
 
     private Range<Integer> ageRange = Range.all();
     private Range<Integer> heightRange = Range.all();
@@ -211,6 +210,11 @@ public class RuleBuilder {
         return this;
     }
 
+    public RuleBuilder withCauses(Collection<Entity> causes) {
+        this.causes = new HashSet<>(causes);
+        return this;
+    }
+
     public Rule build() {
         Set<AbstractAtom> declarationAtoms = new HashSet<>();
         Set<AbstractAtom> headAtoms = new HashSet<>();
@@ -229,7 +233,6 @@ public class RuleBuilder {
                 .map(previousDisease -> new TwoArgumentsAtom<>(PREVIOUS_DISEASE_PROPERTY, patientVariable, previousDisease))
                 .collect(toSet()));
 
-
         headAtoms.addAll(diseases.stream()
                 .map(disease -> new TwoArgumentsAtom<>(HAS_DISEASE_PROPERTY, patientVariable, disease))
                 .collect(toSet()));
@@ -238,6 +241,9 @@ public class RuleBuilder {
                 .collect(toSet()));
         headAtoms.addAll(tests.stream()
                 .map(test -> new TwoArgumentsAtom<>(SHOULD_MAKE_TEST_PROPERTY, patientVariable, test))
+                .collect(toSet()));
+        headAtoms.addAll(causes.stream()
+                .map(cause -> new TwoArgumentsAtom<>(CAUSE_OF_DISEASE_PROPERTY, patientVariable, cause))
                 .collect(toSet()));
 
         if (!isRangeUniversal(ageRange)) {
