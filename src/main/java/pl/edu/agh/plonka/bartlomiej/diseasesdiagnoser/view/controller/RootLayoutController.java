@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.PartialStarCreationException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.RuleAlreadyExistsException;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.MachineLearning;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Language;
@@ -21,13 +19,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
-import static java.util.stream.Collectors.toSet;
-import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.GENERATED_RULE_PREFIX;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Language.ENGLISH;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Language.POLISH;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultDirectoryFile;
@@ -200,21 +192,14 @@ public class RootLayoutController {
     @FXML
     private void handleEditRules() {
         LOG.info("Handle edit rules.");
-        boolean okClicked = viewManager.showRulesEditDialog(patientsService);
+        boolean okClicked = viewManager.showRulesEditDialog(patientsService, machineLearning);
     }
 
     @FXML
     private void handleRunMachineLearning() {
         LOG.info("Handle run machine learning algorithm");
-        Collection<Patient> patients = patientsService.getPatients();
         try {
-            Collection<Rule> newGeneratedRules = machineLearning.sequentialCovering(new HashSet<>(patients));
-            Set<Rule> oldGeneratedRules = patientsService.getRules()
-                    .stream()
-                    .filter(this::isGeneratedRule)
-                    .collect(toSet());
-            patientsService.deleteRules(oldGeneratedRules);
-            patientsService.addRules(newGeneratedRules);
+            patientsService.learnNewRules(machineLearning);
         } catch (PartialStarCreationException e) {
             viewManager.errorExceptionDialog(getTranslation("ERROR_GENERATING_RULES"), e.getMessage(),
                     getTranslation("ERROR_CREATING_PARTIAL_STAR"), e);
@@ -257,10 +242,6 @@ public class RootLayoutController {
     private void handleChangeLanguage(Language language) {
         setLanguage(language);
         patientsService.changeLanguage();
-    }
-
-    private boolean isGeneratedRule(Rule rule) {
-        return rule.getName().trim().startsWith(GENERATED_RULE_PREFIX);
     }
 
 }

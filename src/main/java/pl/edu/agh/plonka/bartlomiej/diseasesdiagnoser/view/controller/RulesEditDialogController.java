@@ -6,9 +6,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.PartialStarCreationException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.RuleAlreadyExistsException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.MachineLearning;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Response;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
@@ -16,11 +19,14 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 import java.util.Collection;
 
 import static javafx.scene.control.SelectionMode.MULTIPLE;
+import static org.slf4j.LoggerFactory.getLogger;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.ControllerUtils.createDeleteEventHandler;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
 
 public class RulesEditDialogController {
+
+    private static final Logger LOG = getLogger(RulesEditDialogController.class);
 
     private static Float RULE_NAME_COLUMN_WIDTH = 200.0f;
 
@@ -36,6 +42,8 @@ public class RulesEditDialogController {
     @FXML
     private Button editButton;
     @FXML
+    private Button learnButton;
+    @FXML
     private Button deleteButton;
     @FXML
     private Button okButton;
@@ -46,11 +54,14 @@ public class RulesEditDialogController {
     private Stage dialogStage;
     private boolean okClicked = false;
     private PatientsService patientsService;
+    private MachineLearning machineLearning;
 
-    public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService) {
+    public void init(ViewManager viewManager, Stage dialogStage, PatientsService patientsService,
+                     MachineLearning machineLearning) {
         this.viewManager = viewManager;
         this.dialogStage = dialogStage;
         this.patientsService = patientsService;
+        this.machineLearning = machineLearning;
 
         rulesTable.setItems(patientsService.getRules());
         rulesTable.setOnKeyPressed(createDeleteEventHandler(this::handleDeleteRules));
@@ -81,6 +92,7 @@ public class RulesEditDialogController {
         contentColumn.textProperty().bind(getStringBinding("CONTENT"));
         newButton.textProperty().bind(getStringBinding("NEW"));
         editButton.textProperty().bind(getStringBinding("EDIT"));
+        learnButton.textProperty().bind(getStringBinding("LEARN"));
         deleteButton.textProperty().bind(getStringBinding("DELETE"));
         okButton.textProperty().bind(getStringBinding("OK"));
         cancelButton.textProperty().bind(getStringBinding("CANCEL"));
@@ -139,6 +151,22 @@ public class RulesEditDialogController {
         } else {
             viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_RULE_SELECTED"),
                     getTranslation("SELECT_RULE"));
+        }
+    }
+
+    @FXML
+    public void handleLearnNewRules() {
+        LOG.info("Handle run machine learning algorithm");
+        try {
+            patientsService.learnNewRules(machineLearning);
+        } catch (PartialStarCreationException e) {
+            viewManager.errorExceptionDialog(getTranslation("ERROR_GENERATING_RULES"), e.getMessage(),
+                    getTranslation("ERROR_CREATING_PARTIAL_STAR"), e);
+        } catch (CreateRuleException | RuleAlreadyExistsException e) {
+            viewManager.errorExceptionDialog(getTranslation("ERROR_GENERATING_RULES"), e.getMessage(),
+                    getTranslation("ERROR_SAVING_RULES"), e);
+        } catch (Throwable e) {
+            viewManager.errorExceptionDialog(getTranslation("ERROR_GENERATING_RULES"), e.getMessage(), null, e);
         }
     }
 

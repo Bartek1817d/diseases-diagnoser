@@ -147,7 +147,7 @@ public class ViewManager {
         }
     }
 
-    public boolean showRulesEditDialog(PatientsService patientsService) {
+    public boolean showRulesEditDialog(PatientsService patientsService, MachineLearning machineLearning) {
         try {
             FXMLLoader loader = getFXMLLoader("fxml/RulesEditDialog.fxml");
             AnchorPane page = loader.load();
@@ -155,7 +155,7 @@ public class ViewManager {
             Stage dialogStage = createDialogStage(page, getTranslation("CREATE_EDIT_RULES"));
 
             RulesEditDialogController controller = loader.getController();
-            controller.init(this, dialogStage, patientsService);
+            controller.init(this, dialogStage, patientsService, machineLearning);
 
             dialogStage.showAndWait();
 

@@ -13,6 +13,11 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.GENERATED_RULE_PREFIX;
 
 public class PatientsService {
 
@@ -117,5 +122,20 @@ public class PatientsService {
 
     public void changeLanguage() {
         ontology.changeLanguage();
+    }
+
+    public void learnNewRules(MachineLearning machineLearning) throws Throwable {
+        Collection<Patient> patients = getPatients();
+        Collection<Rule> newGeneratedRules = machineLearning.sequentialCovering(new HashSet<>(patients));
+        Set<Rule> oldGeneratedRules = getRules()
+                .stream()
+                .filter(this::isGeneratedRule)
+                .collect(toSet());
+        deleteRules(oldGeneratedRules);
+        addRules(newGeneratedRules);
+    }
+
+    private boolean isGeneratedRule(Rule rule) {
+        return rule.getName().trim().startsWith(GENERATED_RULE_PREFIX);
     }
 }
