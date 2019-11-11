@@ -107,11 +107,11 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     @FXML
     private void handleOK() {
         if (nameField.getText().trim().isEmpty()) {
-            viewManager.errorDialog(getTranslation("ERROR_CREATING_RULE"), null, "Cannot create rule with empty name!");
+            viewManager.errorDialog(getTranslation("ERROR_CREATING_RULE"), null, getTranslation("ERROR_CREATING_RULE_EMPTY_NAME"));
             return;
         }
         if (viewArea.getText().trim().isEmpty()) {
-            viewManager.errorDialog(getTranslation("ERROR_CREATING_RULE"), null, "Cannot create empty rule!");
+            viewManager.errorDialog(getTranslation("ERROR_CREATING_RULE"), null, getTranslation("ERROR_CREATING_RULE_EMPTY_CONTEXT"));
             return;
         }
         okClicked = true;
@@ -149,7 +149,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
     private void handleAddAge() {
-        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog("Select age range", 0, 100);
+        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog(getTranslation("SELECT_AGE_RANGE"), 0, 100);
         if (response.okClicked) {
             ruleBuilder.withAge(response.content);
             viewArea.setText(ruleBuilder.build().toString());
@@ -158,7 +158,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
     private void handleAddHeight() {
-        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog("Select height range", 0, 300);
+        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog(getTranslation("SELECT_HEIGHT_RANGE"), 0, 300);
         if (response.okClicked) {
             ruleBuilder.withHeight(response.content);
             viewArea.setText(ruleBuilder.build().toString());
@@ -167,7 +167,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
     private void handleAddWeight() {
-        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog("Select weight range", 0, 200);
+        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog(getTranslation("SELECT_WEIGHT_RANGE"), 0, 200);
         if (response.okClicked) {
             ruleBuilder.withWeight(response.content);
             viewArea.setText(ruleBuilder.build().toString());
