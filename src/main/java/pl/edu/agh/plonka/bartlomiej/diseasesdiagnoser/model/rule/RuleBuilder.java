@@ -336,6 +336,22 @@ public class RuleBuilder implements ObservableValue<String> {
         return range;
     }
 
+    public Set<Entity> getPreviousDiseases() {
+        return previousDiseases;
+    }
+
+    public Set<Entity> getTreatments() {
+        return treatments;
+    }
+
+    public Set<Entity> getTests() {
+        return tests;
+    }
+
+    public Set<Entity> getCauses() {
+        return causes;
+    }
+
     private boolean isRangeUniversal(Range range) {
         return !range.hasLowerBound() && !range.hasUpperBound();
     }

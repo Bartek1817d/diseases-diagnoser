@@ -78,7 +78,6 @@ public class RuleEditDialogController implements ResponseController<Rule> {
         this.ruleBuilder = new RuleBuilder(rule);
 
         nameField.setText(rule.getName());
-        viewArea.setText(ruleBuilder.build().toString());
         viewArea.textProperty().bind(ruleBuilder);
     }
 
@@ -135,7 +134,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     @FXML
     private void handleAddSymptoms() {
         Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(SYMPTOM_CLASS),
-                emptyList(), patientsService);
+                ruleBuilder.getSymptoms(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withSymptoms(response.content);
         }
@@ -144,7 +143,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     @FXML
     private void handleAddDiseases() {
         Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(DISEASE_CLASS),
-                emptyList(), patientsService);
+                ruleBuilder.getDiseases(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withDiseases(response.content);
         }
@@ -177,7 +176,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     @FXML
     private void handleAddTreatments() {
         Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(TREATMENT_CLASS),
-                emptyList(), patientsService);
+                ruleBuilder.getTreatments(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withTreatments(response.content);
         }
@@ -186,7 +185,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     @FXML
     private void handleAddTests() {
         Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(TESTING_CLASS),
-                emptyList(), patientsService);
+                ruleBuilder.getTests(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withTests(response.content);
         }
@@ -195,7 +194,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     @FXML
     private void handleAddNegativeTests() {
         Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(TESTING_CLASS),
-                emptyList(), patientsService);
+                ruleBuilder.getNegativeTests(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withNegativeTests(response.content);
         }
@@ -204,7 +203,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     @FXML
     private void handleAddPreviousDiseases() {
         Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(DISEASE_CLASS),
-                emptyList(), patientsService);
+                ruleBuilder.getPreviousDiseases(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withPreviousDiseases(response.content);
         }
@@ -213,7 +212,7 @@ public class RuleEditDialogController implements ResponseController<Rule> {
     @FXML
     private void handleAddCauses() {
         Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(CAUSE_CLASS),
-                emptyList(), patientsService);
+                ruleBuilder.getCauses(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withCauses(response.content);
         }
