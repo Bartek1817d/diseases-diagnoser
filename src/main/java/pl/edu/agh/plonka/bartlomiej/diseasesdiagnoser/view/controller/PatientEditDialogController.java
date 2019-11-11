@@ -10,6 +10,8 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NameUtils;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
+
 /**
  * Dialog to edit details of a patient.
  *
@@ -119,49 +121,49 @@ public class PatientEditDialogController {
     /**
      * Validates the user input in the text fields.
      *
-     * @return true if the input is okClicked
+     * @return true if the input is valid
      */
     private boolean isInputValid() {
         String errorMessage = "";
 
         if (firstNameField.getText() == null || firstNameField.getText().length() == 0) {
-            errorMessage += "No okClicked first name!\n";
+            errorMessage += getTranslation("INVALID_FIRST_NAME") + '\n';
         }
         if (lastNameField.getText() == null || lastNameField.getText().length() == 0) {
-            errorMessage += "No okClicked last name!\n";
+            errorMessage += getTranslation("INVALID_LAST_NAME") + '\n';
         }
         if (ageField.getText() == null || ageField.getText().length() == 0) {
-            errorMessage += "No okClicked age!\n";
+            errorMessage += getTranslation("INVALID_AGE") + '\n';
         } else {
             try {
                 Integer.parseInt(ageField.getText());
             } catch (NumberFormatException e) {
-                errorMessage += "No okClicked age (must be an integer)!\n";
+                errorMessage += getTranslation("INVALID_AGE_REQUIRED_INTEGER") + '\n';
             }
         }
         if (heightField.getText() == null || heightField.getText().length() == 0) {
-            errorMessage += "No okClicked height!\n";
+            errorMessage += getTranslation("INVALID_HEIGHT") + '\n';
         } else {
             try {
                 Integer.parseInt(heightField.getText());
             } catch (NumberFormatException e) {
-                errorMessage += "No okClicked height (must be an integer)!\n";
+                errorMessage += getTranslation("INVALID_HEIGHT_REQUIRED_INTEGER") + '\n';
             }
         }
         if (weightField.getText() == null || weightField.getText().length() == 0) {
-            errorMessage += "No weight!\n";
+            errorMessage += getTranslation("INVALID_WEIGHT") + '\n';
         } else {
             try {
                 Integer.parseInt(weightField.getText());
             } catch (NumberFormatException e) {
-                errorMessage += "No okClicked weight (must be an integer)!\n";
+                errorMessage += getTranslation("INVALID_WEIGHT_REQUIRED_INTEGER") + '\n';
             }
         }
 
         if (errorMessage.length() == 0) {
             return true;
         } else {
-            viewManager.errorDialog("Error creating patient", null, errorMessage);
+            viewManager.errorDialog(getTranslation("ERROR_CREATING_PATIENT"), null, errorMessage);
             return false;
         }
     }
