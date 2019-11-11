@@ -60,6 +60,65 @@ public class Complex implements Comparable<Complex> {
         return resultComplexes;
     }
 
+    private static Collection<AbstractAtom> createEntityAtoms(Variable variable, String predicate, Collection<Entity> entities) {
+        if (entities == null)
+            return Collections.emptyList();
+        else
+            return entities.stream().map(e -> new TwoArgumentsAtom<>(predicate, variable, e)).collect(Collectors.toList());
+    }
+
+    private static Collection<AbstractAtom> createLinearAtoms(Variable linearVariable, Variable patientVariable, String propertyName,
+                                                              LinearSelector<Integer> linearSelector) {
+        if (linearSelector == null)
+            return Collections.emptyList();
+
+        Collection<AbstractAtom> atoms = new ArrayList<>();
+        atoms.add(new TwoArgumentsAtom<>(propertyName, patientVariable, linearVariable));
+        atoms.addAll(createLinearAtoms(linearVariable, linearSelector));
+
+        return atoms;
+    }
+
+    private static Collection<AbstractAtom> createLinearAtoms(Variable linearVariable, LinearSelector<Integer> linearSelector) {
+        ArrayList<AbstractAtom> atoms = new ArrayList<>();
+        if (linearSelector.hasLowerBound() && linearSelector.hasUpperBound()
+                && linearSelector.lowerEndpoint().equals(linearSelector.upperEndpoint())) {
+            TwoArgumentsAtom<Variable, Integer> equalAtom = new TwoArgumentsAtom<>(
+                    EQUAL_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.lowerEndpoint());
+            atoms.add(equalAtom);
+        } else {
+            if (linearSelector.hasLowerBound()) {
+                switch (linearSelector.lowerBoundType()) {
+                    case OPEN:
+                        TwoArgumentsAtom<Variable, Integer> greaterThanAtom = new TwoArgumentsAtom<>(
+                                GREATER_THAN_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.lowerEndpoint());
+                        atoms.add(greaterThanAtom);
+                        break;
+                    case CLOSED:
+                        TwoArgumentsAtom<Variable, Integer> atLeastAtom = new TwoArgumentsAtom<>(
+                                GREATER_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.lowerEndpoint());
+                        atoms.add(atLeastAtom);
+                        break;
+                }
+            }
+            if (linearSelector.hasUpperBound()) {
+                switch (linearSelector.upperBoundType()) {
+                    case OPEN:
+                        TwoArgumentsAtom<Variable, Integer> lessThanAtom = new TwoArgumentsAtom<>(
+                                LESS_THAN_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.upperEndpoint());
+                        atoms.add(lessThanAtom);
+                        break;
+                    case CLOSED:
+                        TwoArgumentsAtom<Variable, Integer> atMostAtom = new TwoArgumentsAtom<>(
+                                LESS_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.upperEndpoint());
+                        atoms.add(atMostAtom);
+                        break;
+                }
+            }
+        }
+        return atoms;
+    }
+
     public NominalSelector<Entity> getPreviousDiseasesSelector() {
         return previousDiseasesSelector;
     }
@@ -177,7 +236,7 @@ public class Complex implements Comparable<Complex> {
         Variable heightVariable = new Variable("_height");
         Variable weightVariable = new Variable("_weight");
 
-        rule.addBodyAtom(new ClassDeclarationAtom<>(ontology.getClasses().get(PATIENT_CLASS), patientVariable));
+        rule.addDeclarationAtom(new ClassDeclarationAtom<>(ontology.getClasses().get(PATIENT_CLASS), patientVariable));
 
         rule.addBodyAtoms(createLinearAtoms(ageVariable, patientVariable, AGE_PROPERTY, ageSelector));
         rule.addBodyAtoms(createLinearAtoms(heightVariable, patientVariable, HEIGHT_PROPERTY, heightSelector));
@@ -202,65 +261,6 @@ public class Complex implements Comparable<Complex> {
         }
 
         return rule;
-    }
-
-    private static Collection<AbstractAtom> createEntityAtoms(Variable variable, String predicate, Collection<Entity> entities) {
-        if (entities == null)
-            return Collections.emptyList();
-        else
-            return entities.stream().map(e -> new TwoArgumentsAtom<>(predicate, variable, e)).collect(Collectors.toList());
-    }
-
-    private static Collection<AbstractAtom> createLinearAtoms(Variable linearVariable, Variable patientVariable, String propertyName,
-                                                       LinearSelector<Integer> linearSelector) {
-        if (linearSelector == null)
-            return Collections.emptyList();
-
-        Collection<AbstractAtom> atoms = new ArrayList<>();
-        atoms.add(new TwoArgumentsAtom<>(propertyName, patientVariable, linearVariable));
-        atoms.addAll(createLinearAtoms(linearVariable, linearSelector));
-
-        return atoms;
-    }
-
-    private static Collection<AbstractAtom> createLinearAtoms(Variable linearVariable, LinearSelector<Integer> linearSelector) {
-        ArrayList<AbstractAtom> atoms = new ArrayList<>();
-        if (linearSelector.hasLowerBound() && linearSelector.hasUpperBound()
-                && linearSelector.lowerEndpoint().equals(linearSelector.upperEndpoint())) {
-            TwoArgumentsAtom<Variable, Integer> equalAtom = new TwoArgumentsAtom<>(
-                    EQUAL_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.lowerEndpoint());
-            atoms.add(equalAtom);
-        } else {
-            if (linearSelector.hasLowerBound()) {
-                switch (linearSelector.lowerBoundType()) {
-                    case OPEN:
-                        TwoArgumentsAtom<Variable, Integer> greaterThanAtom = new TwoArgumentsAtom<>(
-                                GREATER_THAN_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.lowerEndpoint());
-                        atoms.add(greaterThanAtom);
-                        break;
-                    case CLOSED:
-                        TwoArgumentsAtom<Variable, Integer> atLeastAtom = new TwoArgumentsAtom<>(
-                                GREATER_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.lowerEndpoint());
-                        atoms.add(atLeastAtom);
-                        break;
-                }
-            }
-            if (linearSelector.hasUpperBound()) {
-                switch (linearSelector.upperBoundType()) {
-                    case OPEN:
-                        TwoArgumentsAtom<Variable, Integer> lessThanAtom = new TwoArgumentsAtom<>(
-                                LESS_THAN_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.upperEndpoint());
-                        atoms.add(lessThanAtom);
-                        break;
-                    case CLOSED:
-                        TwoArgumentsAtom<Variable, Integer> atMostAtom = new TwoArgumentsAtom<>(
-                                LESS_THAN_OR_EQUAL_PROPERTY, SWRLB_PREFIX, linearVariable, linearSelector.upperEndpoint());
-                        atoms.add(atMostAtom);
-                        break;
-                }
-            }
-        }
-        return atoms;
     }
 
     @Override
