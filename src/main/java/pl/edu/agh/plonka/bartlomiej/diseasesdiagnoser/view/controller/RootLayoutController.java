@@ -32,8 +32,7 @@ import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Language.ENGL
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Language.POLISH;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultDirectoryFile;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.SystemDefaults.setDefaultOntologyFile;
-import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
-import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.setLanguage;
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.*;
 
 /**
  * The controller for the root layout. The root layout provides the basic
@@ -146,8 +145,8 @@ public class RootLayoutController {
                 setDefaultDirectoryFile(file.getParentFile());
             } catch (OWLOntologyCreationException e) {
                 LOG.error("Failed to load ontology from " + file.getPath() + ". Creating empty ontology.");
-                viewManager.errorExceptionDialog("Error creating ontology", null,
-                        "Cannot create ontology from file: " + file.getName(), e);
+                viewManager.errorExceptionDialog(getTranslation("ERROR_CREATING_ONTOLOGY"), null,
+                        getTranslation("ERROR_CREATING_ONTOLOGY_FROM_FILE") + ' ' + file.getName(), e);
                 patientsService.createKnowledgeBase(ontologyUrl);
             }
         }
@@ -166,8 +165,8 @@ public class RootLayoutController {
                 patientsService.saveKnowledgeBase(file);
             } catch (OWLOntologyStorageException e) {
                 LOG.error("Failed to save ontology to file " + file.getPath());
-                viewManager.errorExceptionDialog("Error saving ontology", null,
-                        "Cannot save ontology to file: " + file.getName(), e);
+                viewManager.errorExceptionDialog(getTranslation("ERROR_SAVING_ONTOLOGY"), null,
+                        getTranslation("ERROR_SAVING_ONTOLOGY_TO_FILE") + ' ' + file.getName(), e);
             }
         } else {
             handleSaveAs();
@@ -192,8 +191,8 @@ public class RootLayoutController {
                 setDefaultDirectoryFile(file.getParentFile());
                 viewManager.setTitle("Diseases Diagnoser - " + file.getName());
             } catch (OWLOntologyStorageException e) {
-                viewManager.errorExceptionDialog("Error saving ontology", null,
-                        "Cannot save ontology to file: " + file.getName(), e);
+                viewManager.errorExceptionDialog(getTranslation("ERROR_SAVING_ONTOLOGY"), null,
+                        getTranslation("ERROR_SAVING_ONTOLOGY_TO_FILE") + ' ' + file.getName(), e);
             }
         }
     }
@@ -217,13 +216,13 @@ public class RootLayoutController {
             patientsService.deleteRules(oldGeneratedRules);
             patientsService.addRules(newGeneratedRules);
         } catch (PartialStarCreationException e) {
-            viewManager.errorExceptionDialog("Error generating rules", e.getMessage(),
-                    "Couldn't create partial star", e);
+            viewManager.errorExceptionDialog(getTranslation("ERROR_GENERATING_RULES"), e.getMessage(),
+                    getTranslation("ERROR_CREATING_PARTIAL_STAR"), e);
         } catch (CreateRuleException | RuleAlreadyExistsException e) {
-            viewManager.errorExceptionDialog("Error generating rules", e.getMessage(),
-                    "Couldn't save generated rules", e);
+            viewManager.errorExceptionDialog(getTranslation("ERROR_GENERATING_RULES"), e.getMessage(),
+                    getTranslation("ERROR_SAVING_RULES"), e);
         } catch (Throwable e) {
-            viewManager.errorExceptionDialog("Error generating rules", e.getMessage(), null, e);
+            viewManager.errorExceptionDialog(getTranslation("ERROR_GENERATING_RULES"), e.getMessage(), null, e);
         }
     }
 
@@ -233,7 +232,7 @@ public class RootLayoutController {
     @FXML
     private void handleAbout() {
         LOG.info("Open an about dialog.");
-        viewManager.informationAlert("Diseases Dagnoser", "About", "Author: Bartłomiej Płonka");
+        viewManager.informationAlert("Diseases Dagnoser", getTranslation("ABOUT"), getTranslation("ABOUT_CONTEXT"));
     }
 
     /**
