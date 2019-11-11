@@ -92,12 +92,12 @@ public class RuleBuilder implements ObservableValue<String> {
                     case HEIGHT_PROPERTY:
                         heightVariable = (Variable) twoArgumentsAtom.getArgument2();
                         heightAtom = twoArgumentsAtom;
-                        heightRange = alignRange(heightVariable, rule.getBodyAtoms(), ageRange);
+                        heightRange = alignRange(heightVariable, rule.getBodyAtoms(), heightRange);
                         break;
                     case WEIGHT_PROPERTY:
                         weightVariable = (Variable) twoArgumentsAtom.getArgument2();
                         weightAtom = twoArgumentsAtom;
-                        weightRange = alignRange(weightVariable, rule.getBodyAtoms(), ageRange);
+                        weightRange = alignRange(weightVariable, rule.getBodyAtoms(), weightRange);
                         break;
                 }
             }
@@ -265,14 +265,26 @@ public class RuleBuilder implements ObservableValue<String> {
                 .collect(toSet()));
 
         if (!isRangeUniversal(ageRange)) {
+            if (ageVariable == null) {
+                ageVariable = new Variable("_age");
+                ageAtom = new TwoArgumentsAtom<>(AGE_PROPERTY, patientVariable, ageVariable);
+            }
             declarationAtoms.add(ageAtom);
             bodyAtoms.addAll(getLinearAtoms(ageRange, ageVariable));
         }
         if (!isRangeUniversal(heightRange)) {
+            if (heightVariable == null) {
+                heightVariable = new Variable("_height");
+                heightAtom = new TwoArgumentsAtom<>(HEIGHT_PROPERTY, patientVariable, heightVariable);
+            }
             declarationAtoms.add(heightAtom);
             bodyAtoms.addAll(getLinearAtoms(heightRange, heightVariable));
         }
         if (!isRangeUniversal(weightRange)) {
+            if (weightVariable == null) {
+                weightVariable = new Variable("_weight");
+                weightAtom = new TwoArgumentsAtom<>(WEIGHT_PROPERTY, patientVariable, weightVariable);
+            }
             declarationAtoms.add(weightAtom);
             bodyAtoms.addAll(getLinearAtoms(weightRange, weightVariable));
         }
@@ -350,6 +362,18 @@ public class RuleBuilder implements ObservableValue<String> {
 
     public Set<Entity> getCauses() {
         return causes;
+    }
+
+    public Range<Integer> getAgeRange() {
+        return ageRange;
+    }
+
+    public Range<Integer> getHeightRange() {
+        return heightRange;
+    }
+
+    public Range<Integer> getWeightRange() {
+        return weightRange;
     }
 
     private boolean isRangeUniversal(Range range) {

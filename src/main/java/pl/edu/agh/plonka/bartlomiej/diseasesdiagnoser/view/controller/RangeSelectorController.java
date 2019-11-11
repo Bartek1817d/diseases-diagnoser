@@ -31,6 +31,28 @@ public class RangeSelectorController implements ResponseController<Range<Integer
     private Stage dialogStage;
     private boolean okClicked = false;
 
+    public void init(Stage dialogStage, Integer minValue, Integer maxValue, Range<Integer> range) {
+        this.dialogStage = dialogStage;
+        this.initRangeSlider(minValue, maxValue, range);
+    }
+
+    private void initRangeSlider(Integer minValue, Integer maxValue, Range<Integer> range) {
+        rangeSlider.setMin(minValue);
+        rangeSlider.setMax(maxValue);
+        if (range.hasLowerBound()) {
+            rangeSlider.setLowValue(range.lowerEndpoint());
+            leftInclusiveCheckBox.setSelected(range.lowerBoundType() == CLOSED);
+        } else {
+            rangeSlider.setLowValue(minValue);
+        }
+        if (range.hasUpperBound()) {
+            rangeSlider.setHighValue(range.upperEndpoint());
+            rightInclusiveCheckBox.setSelected(range.upperBoundType() == CLOSED);
+        } else {
+            rangeSlider.setHighValue(maxValue);
+        }
+    }
+
     @FXML
     private void initialize() {
         bindTranslations();
@@ -41,10 +63,6 @@ public class RangeSelectorController implements ResponseController<Range<Integer
         rightInclusiveCheckBox.textProperty().bind(getStringBinding("RIGHT_INCLUSIVE"));
         okButton.textProperty().bind(getStringBinding("OK"));
         cancelButton.textProperty().bind(getStringBinding("CANCEL"));
-    }
-
-    public void init(Stage dialogStage) {
-        this.dialogStage = dialogStage;
     }
 
     public void setMinValue(Integer minValue) {
@@ -88,7 +106,7 @@ public class RangeSelectorController implements ResponseController<Range<Integer
         else
             upperType = OPEN;
 
-        return range((int)round(rangeSlider.getLowValue()), lowerType, (int)round(rangeSlider.getHighValue()), upperType);
+        return range((int) round(rangeSlider.getLowValue()), lowerType, (int) round(rangeSlider.getHighValue()), upperType);
     }
 
 }

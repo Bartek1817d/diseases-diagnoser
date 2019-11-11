@@ -126,14 +126,16 @@ public class ViewManager {
         return controller.isOkClicked();
     }
 
-    public Response<Collection<Entity>> showEntitiesEditDialog(Entity rootEntity, Collection<Entity> currentEntities, PatientsService patientsService) {
+    public Response<Collection<Entity>> showEntitiesEditDialog(Entity rootEntity, Collection<Entity> currentEntities,
+                                                               PatientsService patientsService) {
         try {
             FXMLLoader loader = getFXMLLoader("fxml/EntitiesEditDialog.fxml");
             AnchorPane page = loader.load();
 
             EntitiesEditDialogController controller = loader.getController();
 
-            ResponseStage<Collection<Entity>> dialogStage = createDialogStage(page, getTranslation("EDIT") + " " + rootEntity.getLabel().toLowerCase(), controller);
+            ResponseStage<Collection<Entity>> dialogStage = createDialogStage(
+                    page, getTranslation("EDIT") + " " + rootEntity.getLabel().toLowerCase(), controller);
 
             controller.init(this, dialogStage, patientsService);
             controller.setEntities(rootEntity, currentEntities);
@@ -185,18 +187,15 @@ public class ViewManager {
         }
     }
 
-    public Response<Range<Integer>> showRangeSelectorDialog(String title, Integer minValue, Integer maxValue) {
+    public Response<Range<Integer>> showRangeSelectorDialog(String title, Integer minValue, Integer maxValue, Range<Integer> range) {
         try {
             FXMLLoader loader = getFXMLLoader("fxml/RangeSelectorDialog.fxml");
             AnchorPane page = loader.load();
 
             RangeSelectorController controller = loader.getController();
-            controller.setMinValue(minValue);
-            controller.setMaxValue(maxValue);
-
             ResponseStage<Range<Integer>> dialogStage = createDialogStage(page, title, controller);
             dialogStage.setResizable(false);
-            controller.init(dialogStage);
+            controller.init(dialogStage, minValue, maxValue, range);
 
             return dialogStage.showAndWaitForResponse();
         } catch (IOException e) {

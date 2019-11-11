@@ -16,7 +16,6 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.view.ViewManager;
 
 import java.util.Collection;
 
-import static java.util.Collections.emptyList;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getStringBinding;
 import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.binding.ObservableResourceFactory.getTranslation;
@@ -133,7 +132,8 @@ public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
     private void handleAddSymptoms() {
-        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(SYMPTOM_CLASS),
+        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(
+                patientsService.getOntology().getClasses().get(SYMPTOM_CLASS),
                 ruleBuilder.getSymptoms(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withSymptoms(response.content);
@@ -142,7 +142,8 @@ public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
     private void handleAddDiseases() {
-        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(DISEASE_CLASS),
+        Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(
+                patientsService.getOntology().getClasses().get(DISEASE_CLASS),
                 ruleBuilder.getDiseases(), patientsService);
         if (response.okClicked) {
             ruleBuilder.withDiseases(response.content);
@@ -151,7 +152,8 @@ public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
     private void handleAddAge() {
-        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog(getTranslation("SELECT_AGE_RANGE"), 0, 100);
+        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog(
+                getTranslation("SELECT_AGE_RANGE"), PATIENT_MIN_AGE, PATIENT_MAX_AGE, ruleBuilder.getAgeRange());
         if (response.okClicked) {
             ruleBuilder.withAge(response.content);
         }
@@ -159,7 +161,8 @@ public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
     private void handleAddHeight() {
-        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog(getTranslation("SELECT_HEIGHT_RANGE"), 0, 300);
+        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog(
+                getTranslation("SELECT_HEIGHT_RANGE"), PATIENT_MIN_HEIGHT, PATIENT_MAX_HEIGHT, ruleBuilder.getHeightRange());
         if (response.okClicked) {
             ruleBuilder.withHeight(response.content);
         }
@@ -167,7 +170,8 @@ public class RuleEditDialogController implements ResponseController<Rule> {
 
     @FXML
     private void handleAddWeight() {
-        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog(getTranslation("SELECT_WEIGHT_RANGE"), 0, 200);
+        Response<Range<Integer>> response = viewManager.showRangeSelectorDialog(
+                getTranslation("SELECT_WEIGHT_RANGE"), PATIENT_MIN_WEIGHT, PATIENT_MAX_WEIGHT, ruleBuilder.getWeightRange());
         if (response.okClicked) {
             ruleBuilder.withWeight(response.content);
         }
