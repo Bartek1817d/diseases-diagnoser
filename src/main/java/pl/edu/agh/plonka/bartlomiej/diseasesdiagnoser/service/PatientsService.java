@@ -124,6 +124,10 @@ public class PatientsService {
         ontology.changeLanguage();
     }
 
+    public void infer() {
+        patients.forEach(ontology::getInferredPatient);
+    }
+
     public void learnNewRules(MachineLearning machineLearning) throws Throwable {
         Collection<Patient> patients = getPatients();
         Collection<Rule> newGeneratedRules = machineLearning.sequentialCovering(new HashSet<>(patients));

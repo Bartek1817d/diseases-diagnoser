@@ -198,13 +198,14 @@ public class OntologyWrapper {
         setPatientIndObjectProperty(patientInd, properties.causeProperty, patient.getCauses());
         setPatientIndObjectProperty(patientInd, properties.previousOrCurrentDiseaseProperty, patient.getPreviousDiseases());
 
-        getInferredPatient(patient);
+//        getInferredPatient(patient);
     }
 
     public Patient updatePatient(Patient patient) {
         deleteEntity(patient);
         addPatient(patient);
-        return getInferredPatient(patient);
+//        return getInferredPatient(patient);
+        return patient;
     }
 
     public List<Patient> getPatients() {
@@ -212,7 +213,7 @@ public class OntologyWrapper {
         Patient patient;
         for (OWLIndividual patientInd : EntitySearcher.getIndividuals(properties.patientClass, ontology)) {
             patient = getPatient(patientInd);
-            patient = getInferredPatient(patient);
+//            patient = getInferredPatient(patient);
             patients.add(patient);
         }
 //        patients.addAll(generatePatientsFromRules());
@@ -287,7 +288,7 @@ public class OntologyWrapper {
         causes.values().forEach(Entity::setLanguage);
     }
 
-    private Patient getInferredPatient(Patient patient) {
+    public Patient getInferredPatient(Patient patient) {
         reasoner.flush();
         OWLNamedIndividual patientInd = factory.getOWLNamedIndividual(patient.getID(), prefixManager);
 

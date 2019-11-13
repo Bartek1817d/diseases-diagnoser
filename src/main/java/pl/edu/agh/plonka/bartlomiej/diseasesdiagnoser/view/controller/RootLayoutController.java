@@ -220,6 +220,12 @@ public class RootLayoutController {
         viewManager.informationAlert("Diseases Dagnoser", getTranslation("ABOUT"), getTranslation("ABOUT_CONTEXT"));
     }
 
+    @FXML
+    private void handleInfer() {
+        LOG.info("Infer");
+        patientsService.infer();
+    }
+
     /**
      * Closes the application.
      */
