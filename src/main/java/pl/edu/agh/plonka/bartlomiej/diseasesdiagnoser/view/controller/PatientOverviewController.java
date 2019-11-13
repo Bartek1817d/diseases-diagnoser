@@ -631,8 +631,9 @@ public class PatientOverviewController {
             protected void updateItem(Entity item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty && item != null)
-                    setText(item.getLabel());
+                    textProperty().bind(item.getObservableLabel());
                 else {
+                    textProperty().unbind();
                     setText(null);
                     setGraphic(null);
                 }
