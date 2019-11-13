@@ -353,35 +353,7 @@ public class Patient extends Entity implements Comparable<Patient> {
     }
 
     public String toString() {
-        StringBuilder str = new StringBuilder();
-        str.append("Patient data:");
-        str.append("\n\tFirst Name: ");
-        str.append(getFirstName());
-        str.append("\n\tLast Name: ");
-        str.append(getLastName());
-        str.append("\n\tAge: ");
-        str.append(getAge());
-        str.append("\n\nSymptoms:");
-        for (Entity symptom : getSymptoms()) {
-            str.append("\n\t");
-            str.append(symptom.toString());
-        }
-        str.append("\n\nNegative tests:");
-        for (Entity test : getNegativeTests()) {
-            str.append("\n\t");
-            str.append(test.toString());
-        }
-        str.append("\n\nPrevious and current diseases:");
-        for (Entity disease : getPreviousAndCurrentDiseases()) {
-            str.append("\n\t");
-            str.append(disease.toString());
-        }
-        str.append("\n\nDiseases:");
-        for (Entity disease : getDiseases()) {
-            str.append("\n\t");
-            str.append(disease.toString());
-        }
-        return str.toString();
+        return firstName.get() + ' ' + lastName.get();
     }
 
     /**
