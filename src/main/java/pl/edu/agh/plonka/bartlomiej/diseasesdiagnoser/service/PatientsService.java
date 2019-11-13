@@ -9,11 +9,13 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.RuleAlreadyExistsException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.RequiredEntitiesToLearn;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -124,8 +126,15 @@ public class PatientsService {
         ontology.changeLanguage();
     }
 
-    public void infer() {
-        patients.forEach(ontology::getInferredPatient);
+    public void infer(RequiredEntitiesToLearn requiredEntities, MachineLearning machineLearning) throws Throwable {
+        Optional<Patient> invalidPatient = patients.stream()
+                .map(ontology::getInferredPatient)
+                .filter(requiredEntities::invalidPatient)
+                .findAny();
+        if (invalidPatient.isPresent()) {
+            learnNewRules(machineLearning);
+            patients.forEach(ontology::getInferredPatient);
+        }
     }
 
     public void learnNewRules(MachineLearning machineLearning) throws Throwable {

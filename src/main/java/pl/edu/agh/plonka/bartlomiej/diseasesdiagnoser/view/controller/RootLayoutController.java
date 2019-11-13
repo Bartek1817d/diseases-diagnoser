@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.PartialStarCreationException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.RuleAlreadyExistsException;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.RequiredEntitiesToLearn;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.MachineLearning;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service.PatientsService;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Language;
@@ -67,6 +68,14 @@ public class RootLayoutController {
     private RadioMenuItem englishMenu;
     @FXML
     private RadioMenuItem polishMenu;
+    @FXML
+    private RadioMenuItem requiredDiseasesMenu;
+    @FXML
+    private RadioMenuItem requiredTestsMenu;
+    @FXML
+    private RadioMenuItem requiredTreatmentsMenu;
+    @FXML
+    private RadioMenuItem requiredCausesMenu;
 
     private PatientsService patientsService;
     private MachineLearning machineLearning;
@@ -223,7 +232,19 @@ public class RootLayoutController {
     @FXML
     private void handleInfer() {
         LOG.info("Infer");
-        patientsService.infer();
+        try {
+            RequiredEntitiesToLearn requiredEntities = new RequiredEntitiesToLearn(requiredDiseasesMenu.isSelected(),
+                    requiredTestsMenu.isSelected(), requiredTreatmentsMenu.isSelected(), requiredCausesMenu.isSelected());
+            patientsService.infer(requiredEntities, machineLearning);
+        } catch (PartialStarCreationException e) {
+            viewManager.errorExceptionDialog(getTranslation("ERROR_GENERATING_RULES"), e.getMessage(),
+                    getTranslation("ERROR_CREATING_PARTIAL_STAR"), e);
+        } catch (CreateRuleException | RuleAlreadyExistsException e) {
+            viewManager.errorExceptionDialog(getTranslation("ERROR_GENERATING_RULES"), e.getMessage(),
+                    getTranslation("ERROR_SAVING_RULES"), e);
+        } catch (Throwable e) {
+            viewManager.errorExceptionDialog(getTranslation("ERROR_GENERATING_RULES"), e.getMessage(), null, e);
+        }
     }
 
     /**

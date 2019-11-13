@@ -49,6 +49,19 @@
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
+                  <MenuItem fx:id="inferMenu" mnemonicParsing="false" onAction="#handleInfer" text="Infer">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+                  <Menu mnemonicParsing="false" text="Required">
+                     <items>
+                        <RadioMenuItem fx:id="requiredDiseasesMenu" mnemonicParsing="false" text="Diseases" />
+                        <RadioMenuItem fx:id="requiredTestsMenu" mnemonicParsing="false" text="Tests" />
+                        <RadioMenuItem fx:id="requiredTreatmentsMenu" mnemonicParsing="false" text="Treatments" />
+                        <RadioMenuItem fx:id="requiredCausesMenu" mnemonicParsing="false" text="Causes" />
+                     </items>
+                  </Menu>
                     </items>
                 </Menu>
                 <Menu fx:id="helpMenu" mnemonicParsing="false" text="Help">
