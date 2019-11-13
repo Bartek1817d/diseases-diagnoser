@@ -533,7 +533,6 @@ public class PatientOverviewController {
         heightLabel.textProperty().bind(new PositiveIntegerStringBinding(patient.getObservableHeight()));
         weightLabel.textProperty().bind(new PositiveIntegerStringBinding(patient.getObservableWeight()));
 
-
         symptomsList.setItems(patient.getSymptoms());
         inferredSymptomsList.setItems(patient.getInferredSymptoms());
         diseasesList.setItems(patient.getDiseases());
@@ -546,8 +545,6 @@ public class PatientOverviewController {
         inferredCausesList.setItems(patient.getInferredCauses());
         negativeTestsList.setItems(patient.getNegativeTests());
         previousAndCurrentDiseasesList.setItems(patient.getPreviousAndCurrentDiseases());
-
-
     }
 
     private void unbindPatientProperties() {
@@ -634,7 +631,11 @@ public class PatientOverviewController {
             protected void updateItem(Entity item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty && item != null)
-                    textProperty().bind(item.getObservableLabel());
+                    setText(item.getLabel());
+                else {
+                    setText(null);
+                    setGraphic(null);
+                }
             }
         };
     }
