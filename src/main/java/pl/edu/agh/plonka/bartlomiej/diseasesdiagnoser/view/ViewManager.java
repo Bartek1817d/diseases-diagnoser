@@ -329,4 +329,8 @@ public class ViewManager {
 
         return dialogStage;
     }
+
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
 }

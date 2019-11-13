@@ -3,7 +3,6 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
-import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.PartialStarCreationException;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.Rule;
@@ -127,7 +126,7 @@ public class MachineLearningTest {
         patient.setDiseases(selectRandomSubset(ontology.getDiseases().values()));
         patient.setNegativeTests(selectRandomSubset(ontology.getTests().values()));
         patient.setTreatments(selectRandomSubset(ontology.getTreatments().values()));
-        patient.setPreviousAndCurrentDiseases(selectRandomSubset(ontology.getDiseases().values()));
+        patient.setPreviousDiseases(selectRandomSubset(ontology.getDiseases().values()));
         patient.setTests(selectRandomSubset(ontology.getTests().values()));
         return patient;
     }

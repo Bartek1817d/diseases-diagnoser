@@ -21,6 +21,7 @@ import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.exception.CreateRuleExcept
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Patient;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.rule.*;
+import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.NameUtils;
 import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImplPlain;
 
 import java.io.File;
@@ -178,6 +179,7 @@ public class OntologyWrapper {
     }
 
     public void addPatient(Patient patient) {
+        generatePatientID(patient);
         OWLNamedIndividual patientInd = factory.getOWLNamedIndividual(patient.getID(), prefixManager);
 
         setIndClass(properties.patientClass, patientInd);
@@ -194,7 +196,7 @@ public class OntologyWrapper {
         setPatientIndObjectProperty(patientInd, properties.negativeTestProperty, patient.getNegativeTests());
         setPatientIndObjectProperty(patientInd, properties.treatmentProperty, patient.getTreatments());
         setPatientIndObjectProperty(patientInd, properties.causeProperty, patient.getCauses());
-        setPatientIndObjectProperty(patientInd, properties.previousOrCurrentDiseaseProperty, patient.getPreviousAndCurrentDiseases());
+        setPatientIndObjectProperty(patientInd, properties.previousOrCurrentDiseaseProperty, patient.getPreviousDiseases());
 
         getInferredPatient(patient);
     }
@@ -546,5 +548,21 @@ public class OntologyWrapper {
 
     private void setIndClass(OWLClassExpression classExpression, OWLIndividual individual) {
         ontologyManager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(classExpression, individual));
+    }
+
+    private void generatePatientID(Patient patient) {
+        if (patient.getID() == null) {
+            String fn = patient.getFirstName();
+            String ln = patient.getLastName();
+            if (containsID(NameUtils.generateName(fn, ln))) {
+                int i = 1;
+                String newID = NameUtils.generateName(fn, ln, Integer.toString(i));
+                while (containsID(newID)) {
+                    newID = NameUtils.generateName(fn, ln, Integer.toString(++i));
+                }
+                patient.setID(newID);
+            } else
+                patient.setID(NameUtils.generateName(fn, ln));
+        }
     }
 }

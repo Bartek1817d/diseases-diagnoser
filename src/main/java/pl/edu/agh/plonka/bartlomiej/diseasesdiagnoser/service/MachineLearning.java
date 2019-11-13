@@ -146,8 +146,8 @@ public class MachineLearning {
         for (Patient otherPatient : otherPatients) {
             symptomDiff += Sets.symmetricDifference(new HashSet<>(patient.getSymptoms()), new HashSet<>(otherPatient.getSymptoms())).size();
             negTestDiff += Sets.symmetricDifference(new HashSet<>(patient.getNegativeTests()), new HashSet<>(otherPatient.getNegativeTests())).size();
-            disDiff += Sets.symmetricDifference(new HashSet<>(patient.getPreviousAndCurrentDiseases()),
-                    new HashSet<>(otherPatient.getPreviousAndCurrentDiseases())).size();
+            disDiff += Sets.symmetricDifference(new HashSet<>(patient.getPreviousDiseases()),
+                    new HashSet<>(otherPatient.getPreviousDiseases())).size();
             if (patient.getAge() >= 0 && otherPatient.getAge() >= 0)
                 ageDiff += Math.abs(patient.getAge() - otherPatient.getAge());
             if (patient.getHeight() >= 0 && otherPatient.getHeight() >= 0)
@@ -169,7 +169,7 @@ public class MachineLearning {
         Collection<Complex> resultComplexes = new ArrayList<>();
         resultComplexes.addAll(createComplexes(positivePatient.getSymptoms(), negativePatient.getSymptoms(), Complex::setSymptomSelector));
         resultComplexes.addAll(createComplexes(positivePatient.getNegativeTests(), negativePatient.getNegativeTests(), Complex::setNegativeTestsSelector));
-        resultComplexes.addAll(createComplexes(positivePatient.getPreviousAndCurrentDiseases(), negativePatient.getPreviousAndCurrentDiseases(), Complex::setPreviousDiseasesSelector));
+        resultComplexes.addAll(createComplexes(positivePatient.getPreviousDiseases(), negativePatient.getPreviousDiseases(), Complex::setPreviousDiseasesSelector));
 
         Complex ageComplex = createLinearComplex(positivePatient.getAge(), negativePatient.getAge(), Complex::setAgeSelector);
         Complex heightComplex = createLinearComplex(positivePatient.getHeight(), negativePatient.getHeight(), Complex::setHeightSelector);

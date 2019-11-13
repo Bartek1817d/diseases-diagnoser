@@ -206,7 +206,7 @@ public class Complex implements Comparable<Complex> {
         if (!covers(negativeTestsSelector, patient.getNegativeTests())) {
             return false;
         }
-        if (!covers(previousDiseasesSelector, patient.getPreviousAndCurrentDiseases())) {
+        if (!covers(previousDiseasesSelector, patient.getPreviousDiseases())) {
             return false;
         }
         if (!covers(ageSelector, patient.getAge())) {

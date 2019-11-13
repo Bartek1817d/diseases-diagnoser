@@ -37,7 +37,10 @@ public class Patient extends Entity implements Comparable<Patient> {
     private final ObservableList<Entity> causes = FXCollections.observableArrayList();
     private final ObservableList<Entity> inferredCauses = FXCollections.observableArrayList();
     private final ObservableList<Entity> negativeTests = FXCollections.observableArrayList();
-    private final ObservableList<Entity> previousAndCurrentDiseases = FXCollections.observableArrayList();
+    private final ObservableList<Entity> inferredNegativeTests = FXCollections.observableArrayList();
+    private final ObservableList<Entity> previousDiseases = FXCollections.observableArrayList();
+    private final ObservableList<Entity> inferredPreviousDiseases = FXCollections.observableArrayList();
+
 
     private float evaluation;
 
@@ -252,7 +255,7 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.inferredTests.addAll(inferredTests);
     }
 
-    public void addInfrredTest(Entity inferredTest) {
+    public void addInferredTest(Entity inferredTest) {
         this.inferredTests.add(inferredTest);
     }
 
@@ -336,20 +339,36 @@ public class Patient extends Entity implements Comparable<Patient> {
         this.negativeTests.add(negativeTest);
     }
 
-    public ObservableList<Entity> getPreviousAndCurrentDiseases() {
-        return previousAndCurrentDiseases;
+    public ObservableList<Entity> getPreviousDiseases() {
+        return previousDiseases;
     }
 
-    public void setPreviousAndCurrentDiseases(Collection<Entity> previousAndCurrentDiseases) {
-        this.previousAndCurrentDiseases.setAll(previousAndCurrentDiseases);
+    public void setPreviousDiseases(Collection<Entity> previousDiseases) {
+        this.previousDiseases.setAll(previousDiseases);
     }
 
-    public void addPreviousAndCurrentDiseases(Collection<Entity> previousAndCurrentDiseases) {
-        this.previousAndCurrentDiseases.addAll(previousAndCurrentDiseases);
+    public void addPreviousDiseases(Collection<Entity> previousAndCurrentDiseases) {
+        this.previousDiseases.addAll(previousAndCurrentDiseases);
     }
 
     public void addPreviousOrCurrentDisease(Entity previousAndCurrentDisease) {
-        this.previousAndCurrentDiseases.add(previousAndCurrentDisease);
+        this.previousDiseases.add(previousAndCurrentDisease);
+    }
+
+    public ObservableList<Entity> getInferredNegativeTests() {
+        return inferredNegativeTests;
+    }
+
+    public void addInferredNegativeTests(Collection<Entity> inferredNegativeTests) {
+        this.inferredNegativeTests.addAll(inferredNegativeTests);
+    }
+
+    public ObservableList<Entity> getInferredPreviousDiseases() {
+        return inferredPreviousDiseases;
+    }
+
+    public void addInferredPreviousDiseases(Collection<Entity> inferredPreviousDiseases) {
+        this.inferredPreviousDiseases.addAll(inferredPreviousDiseases);
     }
 
     public String toString() {

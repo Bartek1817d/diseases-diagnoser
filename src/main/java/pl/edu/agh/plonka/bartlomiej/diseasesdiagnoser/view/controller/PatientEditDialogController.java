@@ -87,19 +87,6 @@ public class PatientEditDialogController {
     @FXML
     private void handleOk() {
         if (isInputValid()) {
-            String fn = firstNameField.getText();
-            String ln = lastNameField.getText();
-            if (patient.getID() == null) {
-                if (patientsService.getOntology().containsID(NameUtils.generateName(fn, ln))) {
-                    int i = 1;
-                    String newID = NameUtils.generateName(fn, ln, Integer.toString(i));
-                    while (patientsService.getOntology().containsID(newID)) {
-                        newID = NameUtils.generateName(fn, ln, Integer.toString(++i));
-                    }
-                    patient.setID(newID);
-                } else
-                    patient.setID(NameUtils.generateName(fn, ln));
-            }
             patient.setFirstName(firstNameField.getText());
             patient.setLastName(lastNameField.getText());
             patient.setAge(Integer.parseInt(ageField.getText()));

@@ -4,7 +4,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.model.Entity;
@@ -182,6 +186,7 @@ public class PatientOverviewController {
     private Label inferredCausesLabel;
 
     private ViewManager viewManager;
+    private Scene mainScene;
 
     /**
      * The constructor. The constructor is called before the initialize()
@@ -224,8 +229,11 @@ public class PatientOverviewController {
     public void init(ViewManager viewManager, PatientsService patientsService) {
         this.viewManager = viewManager;
         this.patientsService = patientsService;
+        this.mainScene = viewManager.getPrimaryStage().getScene();
 
         patientTable.setItems(patientsService.getPatients());
+
+        mainScene.getAccelerators().put(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN), this::copyPatient);
     }
 
     /**
@@ -482,9 +490,9 @@ public class PatientOverviewController {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
             Response<Collection<Entity>> response = viewManager.showEntitiesEditDialog(patientsService.getOntology().getClasses().get(DISEASE_CLASS),
-                    selectedPatient.getPreviousAndCurrentDiseases(), patientsService);
+                    selectedPatient.getPreviousDiseases(), patientsService);
             if (response.okClicked) {
-                selectedPatient.setPreviousAndCurrentDiseases(response.content);
+                selectedPatient.setPreviousDiseases(response.content);
                 patientsService.getOntology().updatePatient(selectedPatient);
             }
         } else {
@@ -499,7 +507,7 @@ public class PatientOverviewController {
         if (selectedPatient != null) {
             ObservableList<Entity> previousAndCurrentDiseases = previousAndCurrentDiseasesList.getSelectionModel().getSelectedItems();
             if (!previousAndCurrentDiseases.isEmpty()) {
-                selectedPatient.getPreviousAndCurrentDiseases().removeAll(previousAndCurrentDiseases);
+                selectedPatient.getPreviousDiseases().removeAll(previousAndCurrentDiseases);
                 patientsService.getOntology().updatePatient(selectedPatient);
             } else {
                 viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PREVIOUS_DISEASES_SELECTED"),
@@ -508,6 +516,33 @@ public class PatientOverviewController {
         } else {
             viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
                     getTranslation("SELECT_PATIENT"));
+        }
+    }
+
+    private void copyPatient() {
+        Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
+        if (selectedPatient != null) {
+            LOG.debug("Copy patient {}.", selectedPatient);
+            Patient newPatient = new Patient();
+            newPatient.setFirstName(selectedPatient.getFirstName());
+            newPatient.setLastName(selectedPatient.getLastName());
+            newPatient.setAge(selectedPatient.getAge());
+            newPatient.setHeight(selectedPatient.getHeight());
+            newPatient.addSymptoms(selectedPatient.getSymptoms());
+            newPatient.addInferredSymptoms(selectedPatient.getInferredSymptoms());
+            newPatient.addNegativeTests(selectedPatient.getNegativeTests());
+            newPatient.addInferredNegativeTests(selectedPatient.getInferredNegativeTests());
+            newPatient.addPreviousDiseases(selectedPatient.getPreviousDiseases());
+            newPatient.addInferredPreviousDiseases(selectedPatient.getInferredPreviousDiseases());
+            newPatient.addDiseases(selectedPatient.getDiseases());
+            newPatient.addInferredDiseases(selectedPatient.getInferredDiseases());
+            newPatient.addTests(selectedPatient.getTests());
+            newPatient.addInferredTests(selectedPatient.getInferredTests());
+            newPatient.addTreatments(selectedPatient.getTreatments());
+            newPatient.addInferredTreatments(selectedPatient.getInferredTreatments());
+            newPatient.addCauses(selectedPatient.getCauses());
+            newPatient.addInferredCauses(selectedPatient.getInferredCauses());
+            patientsService.addPatient(newPatient);
         }
     }
 
@@ -544,7 +579,7 @@ public class PatientOverviewController {
         causesList.setItems(patient.getCauses());
         inferredCausesList.setItems(patient.getInferredCauses());
         negativeTestsList.setItems(patient.getNegativeTests());
-        previousAndCurrentDiseasesList.setItems(patient.getPreviousAndCurrentDiseases());
+        previousAndCurrentDiseasesList.setItems(patient.getPreviousDiseases());
     }
 
     private void unbindPatientProperties() {
