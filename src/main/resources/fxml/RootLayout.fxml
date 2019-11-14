@@ -42,19 +42,14 @@
                   </Menu>
                </items>
             </Menu>
-                <Menu fx:id="rulesMenu" mnemonicParsing="false" text="Rules">
-                    <items>
-                        <MenuItem fx:id="rulesEditMenu" mnemonicParsing="false" onAction="#handleEditRules" text="Edit" />
-                        <MenuItem fx:id="rulesLearnMenu" mnemonicParsing="false" onAction="#handleRunMachineLearning" text="Learn">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
+            <Menu fx:id="inferringMenu" mnemonicParsing="false" text="Inferring">
+              <items>
                   <MenuItem fx:id="inferMenu" mnemonicParsing="false" onAction="#handleInfer" text="Infer">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
-                  <Menu mnemonicParsing="false" text="Required">
+                  <Menu fx:id="triggerRulesLearningMenu" mnemonicParsing="false" text="Trigger rules learning when missing">
                      <items>
                         <RadioMenuItem fx:id="requiredDiseasesMenu" mnemonicParsing="false" text="Diseases" />
                         <RadioMenuItem fx:id="requiredTestsMenu" mnemonicParsing="false" text="Tests" />
@@ -62,6 +57,15 @@
                         <RadioMenuItem fx:id="requiredCausesMenu" mnemonicParsing="false" text="Causes" />
                      </items>
                   </Menu>
+              </items>
+            </Menu>
+                <Menu fx:id="rulesMenu" mnemonicParsing="false" text="Rules">
+                    <items>
+                        <MenuItem fx:id="rulesEditMenu" mnemonicParsing="false" onAction="#handleEditRules" text="Edit" />
+                        <MenuItem fx:id="rulesLearnMenu" mnemonicParsing="false" onAction="#handleRunMachineLearning" text="Learn">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
                     </items>
                 </Menu>
                 <Menu fx:id="helpMenu" mnemonicParsing="false" text="Help">

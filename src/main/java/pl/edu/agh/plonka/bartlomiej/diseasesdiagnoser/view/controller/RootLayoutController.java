@@ -43,6 +43,8 @@ public class RootLayoutController {
     @FXML
     private Menu viewMenu;
     @FXML
+    private Menu inferringMenu;
+    @FXML
     private Menu rulesMenu;
     @FXML
     private Menu helpMenu;
@@ -65,9 +67,13 @@ public class RootLayoutController {
     @FXML
     private MenuItem aboutMenu;
     @FXML
+    private Menu triggerRulesLearningMenu;
+    @FXML
     private RadioMenuItem englishMenu;
     @FXML
     private RadioMenuItem polishMenu;
+    @FXML
+    private MenuItem inferMenu;
     @FXML
     private RadioMenuItem requiredDiseasesMenu;
     @FXML
@@ -108,6 +114,7 @@ public class RootLayoutController {
     private void bindResourceBundle() {
         fileMenu.textProperty().bind(getStringBinding("FILE"));
         viewMenu.textProperty().bind(getStringBinding("VIEW"));
+        inferringMenu.textProperty().bind(getStringBinding("INFERRING"));
         rulesMenu.textProperty().bind(getStringBinding("RULES"));
         helpMenu.textProperty().bind(getStringBinding("HELP"));
         newMenu.textProperty().bind(getStringBinding("NEW"));
@@ -119,8 +126,14 @@ public class RootLayoutController {
         rulesEditMenu.textProperty().bind(getStringBinding("RULES_EDIT"));
         rulesLearnMenu.textProperty().bind(getStringBinding("RULES_LEARN"));
         aboutMenu.textProperty().bind(getStringBinding("ABOUT"));
+        triggerRulesLearningMenu.textProperty().bind(getStringBinding("TRIGGER_RULES_LEARNING"));
         englishMenu.textProperty().bind(getStringBinding("ENGLISH"));
         polishMenu.textProperty().bind(getStringBinding("POLISH"));
+        inferMenu.textProperty().bind(getStringBinding("INFER"));
+        requiredDiseasesMenu.textProperty().bind(getStringBinding("DISEASES"));
+        requiredTestsMenu.textProperty().bind(getStringBinding("TESTS"));
+        requiredTreatmentsMenu.textProperty().bind(getStringBinding("TREATMENTS"));
+        requiredCausesMenu.textProperty().bind(getStringBinding("CAUSES"));
     }
 
     /**
