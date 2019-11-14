@@ -211,8 +211,9 @@
                                             <children>
                                                 <ButtonBar prefHeight="40.0" styleClass="horizontal-button-bar" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="10.0">
                                                     <buttons>
-                                                        <Button fx:id="newDiseaseButton" mnemonicParsing="false" onAction="#handleAddDiseases" text="NewEdit..." />
+                                                        <Button fx:id="newDiseaseButton" mnemonicParsing="false" onAction="#handleAddDiseases" text="New/Edit..." />
                                                         <Button fx:id="deleteDiseaseButton" mnemonicParsing="false" onAction="#handleDeleteDiseases" text="Delete" />
+                                          <Button fx:id="confirmDiseasesButton" mnemonicParsing="false" onAction="#handleConfirmDiseases" text="Confirm" />
                                                     </buttons>
                                                 </ButtonBar>
                                                 <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -256,6 +257,7 @@
                                                     <buttons>
                                                         <Button fx:id="newTestButton" mnemonicParsing="false" onAction="#handleAddTests" text="New/Edit..." />
                                                         <Button fx:id="deleteTestButton" mnemonicParsing="false" onAction="#handleDeleteTests" text="Delete" />
+                                          <Button fx:id="confirmTestsButton" mnemonicParsing="false" onAction="#handleConfirmTests" text="Confirm" />
                                                     </buttons>
                                                 </ButtonBar>
                                                 <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -299,6 +301,7 @@
                                                     <buttons>
                                                         <Button fx:id="newTreatmentButton" mnemonicParsing="false" onAction="#handleAddTreatments" text="New/Edit..." />
                                                         <Button fx:id="deleteTreatmentButton" mnemonicParsing="false" onAction="#handleDeleteTreatments" text="Delete" />
+                                          <Button fx:id="confirmTreatmentsButton" mnemonicParsing="false" onAction="#handleConfirmTreatments" text="Confirm" />
                                                     </buttons>
                                                 </ButtonBar>
                                                 <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -342,6 +345,7 @@
                                                     <buttons>
                                                         <Button fx:id="newCauseButton" mnemonicParsing="false" onAction="#handleAddCauses" text="New/Edit..." />
                                                         <Button fx:id="deleteCauseButton" mnemonicParsing="false" onAction="#handleDeleteCauses" text="Delete" />
+                                          <Button fx:id="confirmCausesButton" mnemonicParsing="false" onAction="#handleConfirmCauses" text="Confirm" />
                                                     </buttons>
                                                 </ButtonBar>
                                                 <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

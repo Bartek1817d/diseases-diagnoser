@@ -144,17 +144,25 @@ public class PatientOverviewController {
     @FXML
     private Button deleteDiseaseButton;
     @FXML
+    private Button confirmDiseasesButton;
+    @FXML
     private Button newTestButton;
     @FXML
     private Button deleteTestButton;
+    @FXML
+    private Button confirmTestsButton;
     @FXML
     private Button newTreatmentButton;
     @FXML
     private Button deleteTreatmentButton;
     @FXML
+    private Button confirmTreatmentsButton;
+    @FXML
     private Button newCauseButton;
     @FXML
     private Button deleteCauseButton;
+    @FXML
+    private Button confirmCausesButton;
 
     @FXML
     private Label assertedSymptomsLabel;
@@ -193,6 +201,22 @@ public class PatientOverviewController {
      * method.
      */
     public PatientOverviewController() {
+    }
+
+    private static ListCell<Entity> listViewCellFactory(ListView<Entity> list) {
+        return new ListCell<Entity>() {
+            @Override
+            protected void updateItem(Entity item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty && item != null)
+                    textProperty().bind(item.getObservableLabel());
+                else {
+                    textProperty().unbind();
+                    setText(null);
+                    setGraphic(null);
+                }
+            }
+        };
     }
 
     /**
@@ -519,6 +543,55 @@ public class PatientOverviewController {
         }
     }
 
+    @FXML
+    private void handleConfirmDiseases() {
+        Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
+        if (selectedPatient != null) {
+            selectedPatient.addDiseases(selectedPatient.getInferredDiseases());
+            selectedPatient.getInferredDiseases().clear();
+        } else {
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
+        }
+    }
+
+    @FXML
+    private void handleConfirmTests() {
+        Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
+        if (selectedPatient != null) {
+            selectedPatient.addTests(selectedPatient.getInferredTests());
+            selectedPatient.getInferredTests().clear();
+
+        } else {
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
+        }
+    }
+
+    @FXML
+    private void handleConfirmTreatments() {
+        Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
+        if (selectedPatient != null) {
+            selectedPatient.addTreatments(selectedPatient.getInferredTreatments());
+            selectedPatient.getInferredTreatments().clear();
+        } else {
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
+        }
+    }
+
+    @FXML
+    private void handleConfirmCauses() {
+        Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
+        if (selectedPatient != null) {
+            selectedPatient.addCauses(selectedPatient.getInferredCauses());
+            selectedPatient.getInferredCauses().clear();
+        } else {
+            viewManager.warningDialog(getTranslation("NO_SELECTION"), getTranslation("NO_PATIENT_SELECTED"),
+                    getTranslation("SELECT_PATIENT"));
+        }
+    }
+
     private void copyPatient() {
         Patient selectedPatient = patientTable.getSelectionModel().getSelectedItem();
         if (selectedPatient != null) {
@@ -661,22 +734,6 @@ public class PatientOverviewController {
         previousAndCurrentDiseasesList.setOnKeyPressed(createDeleteEventHandler(this::handleDeletePreviousAndCurrentDiseases));
     }
 
-    private static ListCell<Entity> listViewCellFactory(ListView<Entity> list) {
-        return new ListCell<Entity>() {
-            @Override
-            protected void updateItem(Entity item, boolean empty) {
-                super.updateItem(item, empty);
-                if (!empty && item != null)
-                    textProperty().bind(item.getObservableLabel());
-                else {
-                    textProperty().unbind();
-                    setText(null);
-                    setGraphic(null);
-                }
-            }
-        };
-    }
-
     private void bindResourceBundle() {
         firstNameColumn.textProperty().bind(getStringBinding("FIRST_NAME"));
         lastNameColumn.textProperty().bind(getStringBinding("LAST_NAME"));
@@ -724,5 +781,9 @@ public class PatientOverviewController {
         testTab.textProperty().bind(getStringBinding("TESTS"));
         treatmentTab.textProperty().bind(getStringBinding("TREATMENTS"));
         causeTab.textProperty().bind(getStringBinding("CAUSES"));
+        confirmDiseasesButton.textProperty().bind(getStringBinding("CONFIRM"));
+        confirmTestsButton.textProperty().bind(getStringBinding("CONFIRM"));
+        confirmTreatmentsButton.textProperty().bind(getStringBinding("CONFIRM"));
+        confirmCausesButton.textProperty().bind(getStringBinding("CONFIRM"));
     }
 }
