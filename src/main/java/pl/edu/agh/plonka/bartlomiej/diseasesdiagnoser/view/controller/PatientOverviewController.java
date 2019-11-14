@@ -528,20 +528,21 @@ public class PatientOverviewController {
             newPatient.setLastName(selectedPatient.getLastName());
             newPatient.setAge(selectedPatient.getAge());
             newPatient.setHeight(selectedPatient.getHeight());
+            newPatient.setWeight(selectedPatient.getWeight());
             newPatient.addSymptoms(selectedPatient.getSymptoms());
-            newPatient.addInferredSymptoms(selectedPatient.getInferredSymptoms());
+//            newPatient.addInferredSymptoms(selectedPatient.getInferredSymptoms());
             newPatient.addNegativeTests(selectedPatient.getNegativeTests());
-            newPatient.addInferredNegativeTests(selectedPatient.getInferredNegativeTests());
+//            newPatient.addInferredNegativeTests(selectedPatient.getInferredNegativeTests());
             newPatient.addPreviousDiseases(selectedPatient.getPreviousDiseases());
-            newPatient.addInferredPreviousDiseases(selectedPatient.getInferredPreviousDiseases());
+//            newPatient.addInferredPreviousDiseases(selectedPatient.getInferredPreviousDiseases());
             newPatient.addDiseases(selectedPatient.getDiseases());
-            newPatient.addInferredDiseases(selectedPatient.getInferredDiseases());
+//            newPatient.addInferredDiseases(selectedPatient.getInferredDiseases());
             newPatient.addTests(selectedPatient.getTests());
-            newPatient.addInferredTests(selectedPatient.getInferredTests());
+//            newPatient.addInferredTests(selectedPatient.getInferredTests());
             newPatient.addTreatments(selectedPatient.getTreatments());
-            newPatient.addInferredTreatments(selectedPatient.getInferredTreatments());
+//            newPatient.addInferredTreatments(selectedPatient.getInferredTreatments());
             newPatient.addCauses(selectedPatient.getCauses());
-            newPatient.addInferredCauses(selectedPatient.getInferredCauses());
+//            newPatient.addInferredCauses(selectedPatient.getInferredCauses());
             patientsService.addPatient(newPatient);
         }
     }

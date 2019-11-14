@@ -2,6 +2,8 @@ package pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.service;
 
 import org.semanticweb.owlapi.model.*;
 
+import static pl.edu.agh.plonka.bartlomiej.diseasesdiagnoser.utils.Constants.*;
+
 class OntologyProperties {
 
      final OWLDataProperty firstNameProperty;
@@ -26,24 +28,24 @@ class OntologyProperties {
      final OWLClass patientClass;
 
      OntologyProperties(OWLDataFactory factory, PrefixManager prefixManager) {
-         firstNameProperty = factory.getOWLDataProperty("firstName", prefixManager);
-         lastNameProperty = factory.getOWLDataProperty("lastName", prefixManager);
-         ageProperty = factory.getOWLDataProperty("age", prefixManager);
-         heightProperty = factory.getOWLDataProperty("height", prefixManager);
-         weightProperty = factory.getOWLDataProperty("weight", prefixManager);
-         symptomProperty = factory.getOWLObjectProperty("hasSymptom", prefixManager);
-         diseaseProperty = factory.getOWLObjectProperty("hasDisease", prefixManager);
-         testProperty = factory.getOWLObjectProperty("shouldMakeTest", prefixManager);
-         negativeTestProperty = factory.getOWLObjectProperty("negativeTest", prefixManager);
-         treatmentProperty = factory.getOWLObjectProperty("shouldBeTreatedWith", prefixManager);
-         causeProperty = factory.getOWLObjectProperty("causeOfDisease", prefixManager);
-         previousOrCurrentDiseaseProperty = factory.getOWLObjectProperty("hadOrHasDisease", prefixManager);
+         firstNameProperty = factory.getOWLDataProperty(FIRST_NAME_PROPERTY, prefixManager);
+         lastNameProperty = factory.getOWLDataProperty(LAST_NAME_PROPERTY, prefixManager);
+         ageProperty = factory.getOWLDataProperty(AGE_PROPERTY, prefixManager);
+         heightProperty = factory.getOWLDataProperty(HEIGHT_PROPERTY, prefixManager);
+         weightProperty = factory.getOWLDataProperty(WEIGHT_PROPERTY, prefixManager);
+         symptomProperty = factory.getOWLObjectProperty(HAS_SYMPTOM_PROPERTY, prefixManager);
+         diseaseProperty = factory.getOWLObjectProperty(HAS_DISEASE_PROPERTY, prefixManager);
+         testProperty = factory.getOWLObjectProperty(SHOULD_MAKE_TEST_PROPERTY, prefixManager);
+         negativeTestProperty = factory.getOWLObjectProperty(NEGATIVE_TEST_PROPERTY, prefixManager);
+         treatmentProperty = factory.getOWLObjectProperty(SHOULD_BE_TREATED_WITH_PROPERTY, prefixManager);
+         causeProperty = factory.getOWLObjectProperty(CAUSE_OF_DISEASE_PROPERTY, prefixManager);
+         previousOrCurrentDiseaseProperty = factory.getOWLObjectProperty(PREVIOUS_DISEASE_PROPERTY, prefixManager);
 
-         diseaseClass = factory.getOWLClass("Disease", prefixManager);
-         symptomClass = factory.getOWLClass("Symptom", prefixManager);
-         causeClass = factory.getOWLClass("Cause", prefixManager);
-         treatmentClass = factory.getOWLClass("Treatment", prefixManager);
-         testingClass = factory.getOWLClass("Testing", prefixManager);
-         patientClass = factory.getOWLClass("Patient", prefixManager);
+         diseaseClass = factory.getOWLClass(DISEASE_CLASS, prefixManager);
+         symptomClass = factory.getOWLClass(SYMPTOM_CLASS, prefixManager);
+         causeClass = factory.getOWLClass(CAUSE_CLASS, prefixManager);
+         treatmentClass = factory.getOWLClass(TREATMENT_CLASS, prefixManager);
+         testingClass = factory.getOWLClass(TESTING_CLASS, prefixManager);
+         patientClass = factory.getOWLClass(PATIENT_CLASS, prefixManager);
      }
 }
