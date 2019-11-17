@@ -587,7 +587,19 @@
         <NamedIndividual IRI="#AdamNowak"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#KrzysztofJarzyna"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#JanKowalski"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#AdamNowak2"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#AdamNowak1"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#AdamNowak3"/>
     </Declaration>
     <SubClassOf>
         <Class IRI="#AnimalCause"/>
@@ -787,6 +799,18 @@
     <ClassAssertion>
         <Class IRI="#Patient"/>
         <NamedIndividual IRI="#AdamNowak"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#Patient"/>
+        <NamedIndividual IRI="#AdamNowak1"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#Patient"/>
+        <NamedIndividual IRI="#AdamNowak2"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#Patient"/>
+        <NamedIndividual IRI="#AdamNowak3"/>
     </ClassAssertion>
     <ClassAssertion>
         <Class IRI="#EnvirommentalCause"/>
@@ -1021,6 +1045,10 @@
         <NamedIndividual IRI="#JanKowalski"/>
     </ClassAssertion>
     <ClassAssertion>
+        <Class IRI="#Patient"/>
+        <NamedIndividual IRI="#KrzysztofJarzyna"/>
+    </ClassAssertion>
+    <ClassAssertion>
         <Class IRI="#LifestypeCause"/>
         <NamedIndividual IRI="#LackOfExercise"/>
     </ClassAssertion>
@@ -1248,57 +1276,52 @@
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#hasSymptom"/>
         <NamedIndividual IRI="#AdamNowak"/>
-        <NamedIndividual IRI="#Chills"/>
-    </ObjectPropertyAssertion>
-    <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#AdamNowak"/>
-        <NamedIndividual IRI="#DryCough"/>
-    </ObjectPropertyAssertion>
-    <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#AdamNowak"/>
         <NamedIndividual IRI="#Dyspnoea"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#hasSymptom"/>
         <NamedIndividual IRI="#AdamNowak"/>
-        <NamedIndividual IRI="#FastHeartRate"/>
+        <NamedIndividual IRI="#Palpitations"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#AdamNowak"/>
+        <NamedIndividual IRI="#AdamNowak1"/>
+        <NamedIndividual IRI="#ChestPain"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#hasSymptom"/>
+        <NamedIndividual IRI="#AdamNowak1"/>
         <NamedIndividual IRI="#Fatigue"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#AdamNowak"/>
-        <NamedIndividual IRI="#Fever"/>
+        <NamedIndividual IRI="#AdamNowak1"/>
+        <NamedIndividual IRI="#Palpitations"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#AdamNowak"/>
-        <NamedIndividual IRI="#Weakness"/>
+        <NamedIndividual IRI="#AdamNowak2"/>
+        <NamedIndividual IRI="#ChestPain"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#negativeTest"/>
-        <NamedIndividual IRI="#AdamNowak"/>
-        <NamedIndividual IRI="#BloodTest"/>
+        <ObjectProperty IRI="#hasSymptom"/>
+        <NamedIndividual IRI="#AdamNowak2"/>
+        <NamedIndividual IRI="#Dyspnoea"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#negativeTest"/>
-        <NamedIndividual IRI="#AdamNowak"/>
-        <NamedIndividual IRI="#ChestXRay"/>
+        <ObjectProperty IRI="#hasSymptom"/>
+        <NamedIndividual IRI="#AdamNowak2"/>
+        <NamedIndividual IRI="#Fatigue"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#negativeTest"/>
-        <NamedIndividual IRI="#AdamNowak"/>
-        <NamedIndividual IRI="#EKG"/>
+        <ObjectProperty IRI="#hasSymptom"/>
+        <NamedIndividual IRI="#AdamNowak3"/>
+        <NamedIndividual IRI="#Dyspnoea"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#negativeTest"/>
-        <NamedIndividual IRI="#AdamNowak"/>
-        <NamedIndividual IRI="#Echocardiogram"/>
+        <ObjectProperty IRI="#hasSymptom"/>
+        <NamedIndividual IRI="#AdamNowak3"/>
+        <NamedIndividual IRI="#Palpitations"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#causedBy"/>
@@ -1348,57 +1371,22 @@
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#hasSymptom"/>
         <NamedIndividual IRI="#JanKowalski"/>
-        <NamedIndividual IRI="#Cough"/>
-    </ObjectPropertyAssertion>
-    <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#JanKowalski"/>
-        <NamedIndividual IRI="#Dyspnoea"/>
-    </ObjectPropertyAssertion>
-    <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#JanKowalski"/>
         <NamedIndividual IRI="#Fatigue"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#hasSymptom"/>
         <NamedIndividual IRI="#JanKowalski"/>
-        <NamedIndividual IRI="#Hoarseness"/>
+        <NamedIndividual IRI="#Palpitations"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#JanKowalski"/>
-        <NamedIndividual IRI="#LossOfAppetite"/>
+        <NamedIndividual IRI="#KrzysztofJarzyna"/>
+        <NamedIndividual IRI="#Dyspnoea"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#JanKowalski"/>
-        <NamedIndividual IRI="#NightSweats"/>
-    </ObjectPropertyAssertion>
-    <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#JanKowalski"/>
-        <NamedIndividual IRI="#StabbingChestPain"/>
-    </ObjectPropertyAssertion>
-    <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#hasSymptom"/>
-        <NamedIndividual IRI="#JanKowalski"/>
-        <NamedIndividual IRI="#Weakness"/>
-    </ObjectPropertyAssertion>
-    <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#negativeTest"/>
-        <NamedIndividual IRI="#JanKowalski"/>
-        <NamedIndividual IRI="#ChestXRay"/>
-    </ObjectPropertyAssertion>
-    <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#negativeTest"/>
-        <NamedIndividual IRI="#JanKowalski"/>
-        <NamedIndividual IRI="#SputumCulture"/>
-    </ObjectPropertyAssertion>
-    <ObjectPropertyAssertion>
-        <ObjectProperty IRI="#previousDisease"/>
-        <NamedIndividual IRI="#JanKowalski"/>
-        <NamedIndividual IRI="#Bronchitis"/>
+        <NamedIndividual IRI="#KrzysztofJarzyna"/>
+        <NamedIndividual IRI="#Fatigue"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="#causedBy"/>
@@ -1507,6 +1495,81 @@
     </DataPropertyAssertion>
     <DataPropertyAssertion>
         <DataProperty IRI="#age"/>
+        <NamedIndividual IRI="#AdamNowak1"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">25</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#firstName"/>
+        <NamedIndividual IRI="#AdamNowak1"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Jan</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#height"/>
+        <NamedIndividual IRI="#AdamNowak1"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">170</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#lastName"/>
+        <NamedIndividual IRI="#AdamNowak1"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Kowalski</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#weight"/>
+        <NamedIndividual IRI="#AdamNowak1"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">60</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#age"/>
+        <NamedIndividual IRI="#AdamNowak2"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">25</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#firstName"/>
+        <NamedIndividual IRI="#AdamNowak2"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Krzysztof</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#height"/>
+        <NamedIndividual IRI="#AdamNowak2"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">170</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#lastName"/>
+        <NamedIndividual IRI="#AdamNowak2"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Jarzyna</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#weight"/>
+        <NamedIndividual IRI="#AdamNowak2"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">60</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#age"/>
+        <NamedIndividual IRI="#AdamNowak3"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">25</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#firstName"/>
+        <NamedIndividual IRI="#AdamNowak3"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Adam</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#height"/>
+        <NamedIndividual IRI="#AdamNowak3"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">170</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#lastName"/>
+        <NamedIndividual IRI="#AdamNowak3"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Nowak2</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#weight"/>
+        <NamedIndividual IRI="#AdamNowak3"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">60</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#age"/>
         <NamedIndividual IRI="#JanKowalski"/>
         <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">25</Literal>
     </DataPropertyAssertion>
@@ -1523,11 +1586,36 @@
     <DataPropertyAssertion>
         <DataProperty IRI="#lastName"/>
         <NamedIndividual IRI="#JanKowalski"/>
-        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Kowalski</Literal>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Kowalski2</Literal>
     </DataPropertyAssertion>
     <DataPropertyAssertion>
         <DataProperty IRI="#weight"/>
         <NamedIndividual IRI="#JanKowalski"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">60</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#age"/>
+        <NamedIndividual IRI="#KrzysztofJarzyna"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">25</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#firstName"/>
+        <NamedIndividual IRI="#KrzysztofJarzyna"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Krzysztof</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#height"/>
+        <NamedIndividual IRI="#KrzysztofJarzyna"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">170</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#lastName"/>
+        <NamedIndividual IRI="#KrzysztofJarzyna"/>
+        <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">Jarzyna2</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#weight"/>
+        <NamedIndividual IRI="#KrzysztofJarzyna"/>
         <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">60</Literal>
     </DataPropertyAssertion>
     <SubObjectPropertyOf>
@@ -2932,6 +3020,132 @@
                 <ObjectProperty IRI="#hasDisease"/>
                 <Variable IRI="#patient"/>
                 <NamedIndividual IRI="#MyocardialInfarction"/>
+            </ObjectPropertyAtom>
+        </Head>
+    </DLSafeRule>
+    <DLSafeRule>
+        <Annotation>
+            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">PericarditisDisease2</Literal>
+        </Annotation>
+        <Body>
+            <ClassAtom>
+                <Class IRI="#Patient"/>
+                <Variable IRI="#patient"/>
+            </ClassAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#ChestPain"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Fatigue"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Dyspnoea"/>
+            </ObjectPropertyAtom>
+        </Body>
+        <Head>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasDisease"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Pericarditis"/>
+            </ObjectPropertyAtom>
+        </Head>
+    </DLSafeRule>
+    <DLSafeRule>
+        <Annotation>
+            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">MyocardialInfarctionDisease2</Literal>
+        </Annotation>
+        <Body>
+            <ClassAtom>
+                <Class IRI="#Patient"/>
+                <Variable IRI="#patient"/>
+            </ClassAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#ChestPain"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Dyspnoea"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Palpitations"/>
+            </ObjectPropertyAtom>
+        </Body>
+        <Head>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasDisease"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#MyocardialInfarction"/>
+            </ObjectPropertyAtom>
+        </Head>
+    </DLSafeRule>
+    <DLSafeRule>
+        <Annotation>
+            <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string"></Literal>
+        </Annotation>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:label"/>
+            <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">MyocarditisDisease2</Literal>
+        </Annotation>
+        <Body>
+            <ClassAtom>
+                <Class IRI="#Patient"/>
+                <Variable IRI="#patient"/>
+            </ClassAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#ChestPain"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Fatigue"/>
+            </ObjectPropertyAtom>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasSymptom"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Palpitations"/>
+            </ObjectPropertyAtom>
+        </Body>
+        <Head>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#hasDisease"/>
+                <Variable IRI="#patient"/>
+                <NamedIndividual IRI="#Myocarditis"/>
             </ObjectPropertyAtom>
         </Head>
     </DLSafeRule>
