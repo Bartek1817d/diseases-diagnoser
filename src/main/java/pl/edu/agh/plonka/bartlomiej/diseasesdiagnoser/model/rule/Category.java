@@ -27,13 +27,13 @@ public class Category {
     public boolean assertPatientInCategory(Patient patient) {
         switch (predicate) {
             case HAS_DISEASE:
-                return patient.getDiseases().contains(entity);
+                return patient.getDiseases().contains(entity) || patient.getInferredDiseases().contains(entity);
             case CAUSE_OF_DISEASE:
-                return patient.getCauses().contains(entity);
+                return patient.getCauses().contains(entity) || patient.getInferredCauses().contains(entity);
             case SHOULD_MAKE_TEST:
-                return patient.getTests().contains(entity);
+                return patient.getTests().contains(entity) || patient.getInferredTests().contains(entity);
             case SHOULD_BE_TREATED_WITH:
-                return patient.getTreatments().contains(entity);
+                return patient.getTreatments().contains(entity) || patient.getInferredTreatments().contains(entity);
             default:
                 return false;
         }
