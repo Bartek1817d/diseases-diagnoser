@@ -16,9 +16,9 @@ public class Complex implements Comparable<Complex> {
 
     private static final Logger LOG = LoggerFactory.getLogger(Complex.class);
 
-    private NominalSelector<Entity> previousDiseasesSelector;
-    private NominalSelector<Entity> symptomSelector;
-    private NominalSelector<Entity> negativeTestsSelector;
+    private EntitiesSelector<Entity> previousDiseasesSelector;
+    private EntitiesSelector<Entity> symptomSelector;
+    private EntitiesSelector<Entity> negativeTestsSelector;
     private LinearSelector<Integer> ageSelector;
     private LinearSelector<Integer> heightSelector;
     private LinearSelector<Integer> weightSelector;
@@ -28,11 +28,11 @@ public class Complex implements Comparable<Complex> {
     @SuppressWarnings("unchecked")
     public static Complex conjunction(Complex complex1, Complex complex2) {
         Complex resultComplex = new Complex();
-        resultComplex.previousDiseasesSelector = (NominalSelector<Entity>) setSelector(
+        resultComplex.previousDiseasesSelector = (EntitiesSelector<Entity>) setSelector(
                 complex1.previousDiseasesSelector, complex2.previousDiseasesSelector);
-        resultComplex.symptomSelector = (NominalSelector<Entity>) setSelector(complex1.symptomSelector,
+        resultComplex.symptomSelector = (EntitiesSelector<Entity>) setSelector(complex1.symptomSelector,
                 complex2.symptomSelector);
-        resultComplex.negativeTestsSelector = (NominalSelector<Entity>) setSelector(complex1.negativeTestsSelector,
+        resultComplex.negativeTestsSelector = (EntitiesSelector<Entity>) setSelector(complex1.negativeTestsSelector,
                 complex2.negativeTestsSelector);
         resultComplex.ageSelector = (LinearSelector<Integer>) setSelector(complex1.ageSelector, complex2.ageSelector);
         resultComplex.heightSelector = (LinearSelector<Integer>) setSelector(complex1.heightSelector, complex2.heightSelector);
@@ -119,19 +119,19 @@ public class Complex implements Comparable<Complex> {
         return atoms;
     }
 
-    public NominalSelector<Entity> getPreviousDiseasesSelector() {
+    public EntitiesSelector<Entity> getPreviousDiseasesSelector() {
         return previousDiseasesSelector;
     }
 
-    public void setPreviousDiseasesSelector(NominalSelector<Entity> previousDiseasesSelector) {
+    public void setPreviousDiseasesSelector(EntitiesSelector<Entity> previousDiseasesSelector) {
         this.previousDiseasesSelector = previousDiseasesSelector;
     }
 
-    public NominalSelector<Entity> getSymptomSelector() {
+    public EntitiesSelector<Entity> getSymptomSelector() {
         return symptomSelector;
     }
 
-    public void setSymptomSelector(NominalSelector<Entity> symptomSelector) {
+    public void setSymptomSelector(EntitiesSelector<Entity> symptomSelector) {
         this.symptomSelector = symptomSelector;
     }
 
@@ -143,11 +143,11 @@ public class Complex implements Comparable<Complex> {
         this.ageSelector = ageSelector;
     }
 
-    public NominalSelector<Entity> getNegativeTestsSelector() {
+    public EntitiesSelector<Entity> getNegativeTestsSelector() {
         return negativeTestsSelector;
     }
 
-    public void setNegativeTestsSelector(NominalSelector<Entity> negativeTestsSelector) {
+    public void setNegativeTestsSelector(EntitiesSelector<Entity> negativeTestsSelector) {
         this.negativeTestsSelector = negativeTestsSelector;
     }
 

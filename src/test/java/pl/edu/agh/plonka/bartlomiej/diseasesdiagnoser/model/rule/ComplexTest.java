@@ -32,7 +32,7 @@ public class ComplexTest {
 
     @Test
     public void testShouldNotContain() {
-        NominalSelector<Entity> symptomSelector = createNominalSelector(symptom1);
+        EntitiesSelector<Entity> symptomSelector = createNominalSelector(symptom1);
         complex2.setSymptomSelector(symptomSelector);
 
         assertFalse(complex2.contains(complex1));
@@ -40,7 +40,7 @@ public class ComplexTest {
 
     @Test
     public void testShouldContain() {
-        NominalSelector<Entity> symptomSelector = createNominalSelector(symptom1);
+        EntitiesSelector<Entity> symptomSelector = createNominalSelector(symptom1);
         complex2.setSymptomSelector(symptomSelector);
 
         assertTrue(complex1.contains(complex2));
@@ -48,7 +48,7 @@ public class ComplexTest {
 
     @Test
     public void testPatientIsCovered() {
-        NominalSelector<Entity> symptomSelector = createNominalSelector(symptom1);
+        EntitiesSelector<Entity> symptomSelector = createNominalSelector(symptom1);
         complex1.setSymptomSelector(symptomSelector);
         patient.addSymptom(symptom1);
 
@@ -57,22 +57,22 @@ public class ComplexTest {
 
     @Test
     public void testPatientIsNotCovered() {
-        NominalSelector<Entity> symptomSelector = createNominalSelector(Arrays.asList(symptom1, symptom2));
+        EntitiesSelector<Entity> symptomSelector = createNominalSelector(Arrays.asList(symptom1, symptom2));
         complex1.setSymptomSelector(symptomSelector);
         patient.addSymptom(symptom1);
 
         assertFalse(complex1.isPatientCovered(patient));
     }
 
-    private <T> NominalSelector<T> createNominalSelector(T entity) {
-        NominalSelector<T> selector = new NominalSelector<>();
+    private <T> EntitiesSelector<T> createNominalSelector(T entity) {
+        EntitiesSelector<T> selector = new EntitiesSelector<>();
         selector.add(entity);
 
         return selector;
     }
 
-    private <T> NominalSelector<T> createNominalSelector(Collection<T> entities) {
-        NominalSelector<T> selector = new NominalSelector<>();
+    private <T> EntitiesSelector<T> createNominalSelector(Collection<T> entities) {
+        EntitiesSelector<T> selector = new EntitiesSelector<>();
         selector.addAll(entities);
 
         return selector;

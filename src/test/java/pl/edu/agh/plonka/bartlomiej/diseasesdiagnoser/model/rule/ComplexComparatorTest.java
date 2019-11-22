@@ -56,10 +56,10 @@ public class ComplexComparatorTest {
         Category category = new Category(disease1, HAS_DISEASE);
 
         Complex complex1 = new Complex();
-        complex1.setSymptomSelector(new NominalSelector<>(singleton(symptom1)));
+        complex1.setSymptomSelector(new EntitiesSelector<>(singleton(symptom1)));
 
         Complex complex2 = new Complex();
-        complex2.setSymptomSelector(new NominalSelector<>(singleton(symptom3)));
+        complex2.setSymptomSelector(new EntitiesSelector<>(singleton(symptom3)));
 
         Star star = new Star();
         star.intersection(Arrays.asList(complex1, complex2));
